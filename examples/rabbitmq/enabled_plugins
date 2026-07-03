@@ -1,0 +1,1 @@
+[rabbitmq_management,rabbitmq_management_agent,rabbitmq_federation,rabbitmq_federation_management,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_management,rabbitmq_top,rabbitmq_tracing,rabbitmq_prometheus].

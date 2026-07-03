@@ -1,0 +1,57 @@
+import { describe, expect, it } from "vitest";
+import { messageResponseSchema, queueSchema } from "./queue-schema";
+import { mockQueue } from "@/test/fixtures/queues";
+
+describe("queueSchema", () => {
+  it("parses a valid queue", () => {
+    const parsed = queueSchema.parse(mockQueue);
+    expect(parsed.name).toBe("my-queue");
+    expect(parsed.type).toBe("classic");
+    expect(parsed.message_stats?.publish_details?.rate).toBe(5.0);
+  });
+
+  it("tolerates missing optional fields", () => {
+    const minimal = { name: "test-queue" };
+    const parsed = queueSchema.parse(minimal);
+    expect(parsed.name).toBe("test-queue");
+    expect(parsed.type).toBeUndefined();
+  });
+
+  it("passes through unknown additive fields", () => {
+    const withExtra = { ...mockQueue, unknown_future_field: "value" };
+    const parsed = queueSchema.parse(withExtra);
+    expect((parsed as any).unknown_future_field).toBe("value");
+  });
+
+  it("parses typed chart samples", () => {
+    const parsed = queueSchema.parse({
+      name: "sampled",
+      messages_details: {
+        rate: 1,
+        samples: [{ timestamp: 1_700_000_000, sample: 42 }],
+      },
+    });
+
+    expect(parsed.messages_details?.samples?.[0]).toEqual({
+      timestamp: 1_700_000_000,
+      sample: 42,
+    });
+  });
+
+  it("validates message envelopes and preserves additive fields", () => {
+    const parsed = messageResponseSchema.parse({
+      payload_bytes: 5,
+      redelivered: false,
+      exchange: "events",
+      routing_key: "created",
+      message_count: 2,
+      properties: { headers: { trace: "abc" } },
+      payload: "hello",
+      payload_encoding: "string",
+      future_field: true,
+    });
+
+    expect(parsed.properties.headers).toEqual({ trace: "abc" });
+    expect(parsed.future_field).toBe(true);
+  });
+});
