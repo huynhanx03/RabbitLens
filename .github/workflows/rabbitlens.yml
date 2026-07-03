@@ -1,0 +1,65 @@
+name: RabbitLens CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit Tests
+        run: npm run test
+
+      - name: Parity Verification
+        run: npm run test:parity
+        
+      - name: Build
+        run: npm run build
+
+      - name: Verify Bundle Budget
+        run: npm run check:bundle
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run E2E Tests
+        run: npm run test:e2e
+        
+      - name: Run Performance Tests
+        run: npm run test:performance
+        
+      - name: Scan Artifacts for Leaked Secrets
+        run: npm run test:artifact-secrets
+        
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: website/playwright-report/
+          retention-days: 7

@@ -1,0 +1,210 @@
+{
+  "rabbit_version": "4.3.2",
+  "rabbitmq_version": "4.3.2",
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    },
+    {
+      "name": "monitor",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "monitoring"
+    },
+    {
+      "name": "policymaker",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "policymaker"
+    },
+    {
+      "name": "operator",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "management"
+    },
+    {
+      "name": "readonly",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "management"
+    },
+    {
+      "name": "restricted",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "management"
+    },
+    {
+      "name": "bridge",
+      "password_hash": "Slf8uWIKhxNsQMKnKtHXOuzrAW2UP6Agqok+oHCN4rkPiSvR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/demo",
+      "metadata": {
+        "description": "RabbitLens primary demo workspace",
+        "tags": ["demo", "rabbitlens"],
+        "default_queue_type": "classic"
+      }
+    },
+    {
+      "name": "/upstream",
+      "metadata": {
+        "description": "Internal Federation and Shovel source",
+        "tags": ["demo", "upstream"],
+        "default_queue_type": "classic"
+      }
+    },
+    {
+      "name": "/restricted",
+      "metadata": {
+        "description": "Vhost isolation and authorization demo",
+        "tags": ["demo", "restricted"],
+        "default_queue_type": "classic"
+      }
+    }
+  ],
+  "permissions": [
+    {"user": "admin", "vhost": "/demo", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "admin", "vhost": "/upstream", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "admin", "vhost": "/restricted", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "monitor", "vhost": "/demo", "configure": "^---$", "write": "^---$", "read": ".*"},
+    {"user": "monitor", "vhost": "/upstream", "configure": "^---$", "write": "^---$", "read": ".*"},
+    {"user": "monitor", "vhost": "/restricted", "configure": "^---$", "write": "^---$", "read": ".*"},
+    {"user": "policymaker", "vhost": "/demo", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "policymaker", "vhost": "/upstream", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "operator", "vhost": "/demo", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "readonly", "vhost": "/demo", "configure": "^---$", "write": "^---$", "read": ".*"},
+    {"user": "restricted", "vhost": "/restricted", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "bridge", "vhost": "/demo", "configure": ".*", "write": ".*", "read": ".*"},
+    {"user": "bridge", "vhost": "/upstream", "configure": ".*", "write": ".*", "read": ".*"}
+  ],
+  "topic_permissions": [],
+  "parameters": [
+    {
+      "component": "federation-upstream",
+      "name": "demo-upstream",
+      "vhost": "/demo",
+      "value": {
+        "uri": "amqp://bridge:rabbitlens-demo@rabbitmq:5672/%2Fupstream",
+        "exchange": "upstream.events",
+        "ack-mode": "on-confirm",
+        "max-hops": 1,
+        "reconnect-delay": 1,
+        "trust-user-id": false
+      }
+    },
+    {
+      "component": "shovel",
+      "name": "upstream-to-demo",
+      "vhost": "/demo",
+      "value": {
+        "src-uri": "amqp://bridge:rabbitlens-demo@rabbitmq:5672/%2Fupstream",
+        "src-queue": "shovel.source",
+        "src-prefetch-count": 100,
+        "src-delete-after": "never",
+        "dest-uri": "amqp://bridge:rabbitlens-demo@rabbitmq:5672/%2Fdemo",
+        "dest-exchange": "demo.events",
+        "dest-exchange-key": "shoveled.demo",
+        "dest-add-forward-headers": true,
+        "ack-mode": "on-confirm",
+        "reconnect-delay": 1
+      }
+    },
+    {
+      "component": "operator_policy",
+      "name": "demo-queue-guardrails",
+      "vhost": "/demo",
+      "value": {
+        "pattern": "^(orders\\.created|orders\\.cancelled|notifications\\.email|shovel\\.received)$",
+        "definition": {"max-length": 10000},
+        "priority": 100,
+        "apply-to": "queues"
+      }
+    },
+    {
+      "component": "vhost-limits",
+      "name": "limits",
+      "vhost": "/demo",
+      "value": {"max-connections": 100, "max-queues": 100}
+    },
+    {
+      "component": "vhost-limits",
+      "name": "limits",
+      "vhost": "/upstream",
+      "value": {"max-connections": 50, "max-queues": 50}
+    },
+    {
+      "component": "vhost-limits",
+      "name": "limits",
+      "vhost": "/restricted",
+      "value": {"max-connections": 20, "max-queues": 20}
+    }
+  ],
+  "global_parameters": [
+    {"name": "cluster_name", "value": "rabbitlens-demo"}
+  ],
+  "policies": [
+    {
+      "vhost": "/demo",
+      "name": "orders-dead-letter",
+      "pattern": "^(orders\\.created|orders\\.cancelled)$",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "demo.dlx",
+        "dead-letter-routing-key": "order.dead"
+      },
+      "priority": 20
+    },
+    {
+      "vhost": "/demo",
+      "name": "federate-demo-events",
+      "pattern": "^federated\\.events$",
+      "apply-to": "exchanges",
+      "definition": {"federation-upstream": "demo-upstream"},
+      "priority": 20
+    }
+  ],
+  "queues": [
+    {"name": "orders.created", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "orders.cancelled", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "notifications.email", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "orders.dead-letter", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "orders.quorum", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "quorum"}, "type": "quorum"},
+    {"name": "audit.stream", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "stream"}, "type": "stream"},
+    {"name": "shovel.received", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "shovel.source", "vhost": "/upstream", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "restricted.queue", "vhost": "/restricted", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"}
+  ],
+  "exchanges": [
+    {"name": "demo.events", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "demo.direct", "vhost": "/demo", "type": "direct", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "demo.broadcast", "vhost": "/demo", "type": "fanout", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "demo.headers", "vhost": "/demo", "type": "headers", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "demo.dlx", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "federated.events", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "upstream.events", "vhost": "/upstream", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "restricted.events", "vhost": "/restricted", "type": "direct", "durable": true, "auto_delete": false, "internal": false, "arguments": {}}
+  ],
+  "bindings": [
+    {"source": "demo.events", "vhost": "/demo", "destination": "orders.created", "destination_type": "queue", "routing_key": "order.created", "arguments": {}},
+    {"source": "demo.events", "vhost": "/demo", "destination": "orders.cancelled", "destination_type": "queue", "routing_key": "order.cancelled", "arguments": {}},
+    {"source": "demo.events", "vhost": "/demo", "destination": "orders.quorum", "destination_type": "queue", "routing_key": "order.quorum", "arguments": {}},
+    {"source": "demo.events", "vhost": "/demo", "destination": "audit.stream", "destination_type": "queue", "routing_key": "audit.#", "arguments": {}},
+    {"source": "demo.events", "vhost": "/demo", "destination": "shovel.received", "destination_type": "queue", "routing_key": "shoveled.#", "arguments": {}},
+    {"source": "demo.direct", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "email.send", "arguments": {}},
+    {"source": "demo.broadcast", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "", "arguments": {}},
+    {"source": "demo.headers", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "", "arguments": {"x-match": "all", "format": "json", "priority": "high"}},
+    {"source": "demo.dlx", "vhost": "/demo", "destination": "orders.dead-letter", "destination_type": "queue", "routing_key": "order.dead", "arguments": {}},
+    {"source": "federated.events", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "federated.#", "arguments": {}},
+    {"source": "upstream.events", "vhost": "/upstream", "destination": "shovel.source", "destination_type": "queue", "routing_key": "shovel.#", "arguments": {}},
+    {"source": "restricted.events", "vhost": "/restricted", "destination": "restricted.queue", "destination_type": "queue", "routing_key": "restricted.demo", "arguments": {}}
+  ]
+}

@@ -1,0 +1,27 @@
+services:
+  rabbitmq:
+    image: ${RABBITMQ_IMAGE:-rabbitmq:4.3.2-management}
+    hostname: rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_STREAM_ADVERTISED_HOST: ${RABBITMQ_STREAM_ADVERTISED_HOST:-127.0.0.1}
+      RABBITMQ_STREAM_ADVERTISED_PORT: ${RABBITMQ_STREAM_ADVERTISED_PORT:-${RABBITMQ_STREAM_PORT:-5552}}
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_STREAM_PORT:-5552}:5552"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+      - "${RABBITMQ_PROMETHEUS_PORT:-15692}:15692"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+      - ./definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
+
+volumes:
+  rabbitmq-data:

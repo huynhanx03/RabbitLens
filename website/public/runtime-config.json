@@ -1,0 +1,9 @@
+{
+  "apiBaseUrl": "/api",
+  "auth": {
+    "basic": true,
+    "oauth": null
+  },
+  "defaultLocale": "en",
+  "defaultTheme": "system"
+}

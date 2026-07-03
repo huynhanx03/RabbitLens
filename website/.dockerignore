@@ -1,0 +1,11 @@
+.git
+.DS_Store
+coverage
+dist
+node_modules
+playwright-report
+test-results
+tests
+**/*.test.ts
+**/*.test.tsx
+*.log
