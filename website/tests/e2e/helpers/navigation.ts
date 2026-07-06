@@ -4,7 +4,12 @@ export async function openAppNavigation(page: Page): Promise<void> {
   const navigation = page.getByRole("navigation", {
     name: "Primary navigation",
   });
-  if (await navigation.isVisible()) return;
+  try {
+    await navigation.waitFor({ state: "visible", timeout: 3_000 });
+    return;
+  } catch {
+    // Mobile navigation remains hidden until the trigger is activated.
+  }
 
   await page.getByRole("button", { name: "Open navigation" }).click();
   await navigation.waitFor({ state: "visible" });

@@ -73,7 +73,7 @@ test.describe("Performance Budgets", () => {
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
     
-    await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
     
     expect(apiRequestCount).toBeLessThanOrEqual(
       PERFORMANCE_BUDGETS.initialApiRequestCount,
@@ -110,7 +110,8 @@ test.describe("Performance Budgets", () => {
     await page.getByRole("button", { name: "Sign in" }).click();
     
     await navigateTo(page, "Queues and Streams");
-    await expect(page.getByRole("heading", { name: "Queues and Streams" })).toBeVisible();
+    await expect(page).toHaveURL(/\/queues/);
+    await expect(page.locator("tbody tr").first()).toBeVisible();
 
     // Verify row count is bounded by virtualization/pagination
     const rows = await page.locator("tbody tr").count();

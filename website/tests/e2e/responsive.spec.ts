@@ -31,7 +31,8 @@ async function signIn(page: Page, heading: "Overview" | "Tổng quan") {
   await page.locator("#username").fill("operator");
   await page.locator("#password").fill("secret");
   await page.locator('button[type="submit"]').click();
-  await expect(page.getByRole("heading", { name: heading })).toBeVisible();
+  const clusterHealth = heading === "Tổng quan" ? "Sức khỏe cụm" : "Cluster health";
+  await expect(page.getByRole("region", { name: clusterHealth })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
 }
 

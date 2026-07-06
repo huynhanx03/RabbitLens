@@ -3,6 +3,7 @@ import { paginatedResponseSchema } from "@/api/pagination-schema";
 import { buildListQuery, withQuery } from "@/api/query-string";
 import type { ResourceListSearch } from "@/api/pagination-schema";
 import { connectionSchema } from "./connection-schema";
+import { connectionSessionsSchema } from "./session-schema";
 
 const paginatedConnectionsSchema = paginatedResponseSchema(connectionSchema);
 
@@ -44,3 +45,11 @@ export async function closeConnection(
   });
 }
 
+export async function getConnectionSessions(
+  client: ManagementApiClient,
+  name: string,
+  signal?: AbortSignal,
+) {
+  const path = `/connections/${encodeURIComponent(name)}/sessions`;
+  return client.request(path, connectionSessionsSchema, { signal });
+}

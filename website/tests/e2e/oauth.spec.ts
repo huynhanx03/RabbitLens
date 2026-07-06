@@ -52,6 +52,6 @@ test.describe("OAuth Tests", () => {
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
     
-    await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
   });
 });

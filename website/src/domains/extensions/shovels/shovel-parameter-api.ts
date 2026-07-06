@@ -19,6 +19,28 @@ export const shovelParameterSchema = z
 export type ShovelParameter = z.infer<typeof shovelParameterSchema>;
 export type ShovelValue = z.infer<typeof shovelValueSchema>;
 
+export function buildMoveMessagesShovel(
+  sourceQueue: string,
+  destinationQueue: string,
+  queueType: string | undefined,
+): ShovelValue {
+  return {
+    "src-uri": "amqp:///",
+    "src-queue": sourceQueue,
+    "src-protocol": "amqp091",
+    "src-prefetch-count": 1000,
+    "src-delete-after": "queue-length",
+    ...(queueType === "stream"
+      ? { "src-consumer-args": { "x-stream-offset": "first" } }
+      : {}),
+    "dest-uri": "amqp:///",
+    "dest-queue": destinationQueue,
+    "dest-protocol": "amqp091",
+    "dest-add-forward-headers": false,
+    "ack-mode": "on-confirm",
+  };
+}
+
 function parameterPath(vhost?: string, name?: string) {
   const root = "/parameters/shovel";
   if (vhost === undefined || name === undefined) return root;

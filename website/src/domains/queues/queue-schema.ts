@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { consumerSchema } from "@/domains/consumers/consumer-schema";
 
 export const rateSampleSchema = z.object({
   timestamp: z.number(),
@@ -31,7 +32,21 @@ export const queueSchema = z
     messages_ready_details: rateDetailsSchema,
     messages_unacknowledged_details: rateDetailsSchema,
     consumers: z.number().optional(),
+    consumer_details: z.array(consumerSchema).optional(),
+    consumer_capacity: z.number().nullish(),
     consumer_utilisation: z.number().optional(),
+    leader: z.string().nullish(),
+    members: z.array(z.string()).optional(),
+    online: z.array(z.string()).optional(),
+    slave_nodes: z.array(z.string()).optional(),
+    synchronised_slave_nodes: z.array(z.string()).optional(),
+    policy: z.string().nullish(),
+    operator_policy: z.string().nullish(),
+    effective_policy_definition: z.record(z.string(), z.unknown()).nullish(),
+    owner_pid_details: z
+      .object({ name: z.string().optional() })
+      .passthrough()
+      .nullish(),
     idle_since: z.string().optional(),
     memory: z.number().optional(),
     message_bytes: z.number().optional(),

@@ -11,7 +11,8 @@ import { AmqpValue } from "@/components/shared/amqp-value";
 import { StatusBadge } from "@/components/shared/status-badge";
 
 import { getQueue } from "@/domains/queues/queue-api";
-import { queueKeys, usePurgeQueueMutation } from "@/domains/queues/queue-query";
+import { queueKeys, usePurgeQueueMutation, useQueueActionMutation } from "@/domains/queues/queue-query";
+import type { QueueAction } from "@/domains/queues/queue-api";
 import { createQueueViewModel } from "./queue-view-model";
 import { DeleteQueueDialog } from "./delete-queue-dialog";
 import { GetMessagesDialog } from "./get-messages-dialog";
@@ -26,6 +27,15 @@ import { Button } from "@/components/ui/button";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-capabilities";
 import { StatisticsAvailability } from "@/components/shared/statistics-availability";
+import { AsyncState } from "@/components/shared/async-state";
+import { ConsumerTable } from "@/features/consumers/consumer-table";
+import { QueueReplicationState } from "./queue-replication-state";
+import { PublishMessageDialog } from "@/features/exchanges/publish-message-dialog";
+import { getStreamQueuePublishers } from "@/domains/extensions/streams/stream-api";
+import { StreamPublisherTable } from "@/features/streams/stream-publisher-table";
+import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
+import { isExtensionInstalled } from "@/extensions/extension-registry";
+import { MoveMessagesDialog } from "./move-messages-dialog";
 
 type QueueDetailPageProps = {
   vhost: string;
@@ -40,6 +50,15 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [purgeDialogOpen, setPurgeDialogOpen] = useState(false);
   const [getMessagesDialogOpen, setGetMessagesDialogOpen] = useState(false);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [queueAction, setQueueAction] = useState<QueueAction | null>(null);
+
+  const extensionsQuery = useQuery(extensionsQueryOptions(context.apiClient));
+  const tags = context.auth?.user?.tags ?? [];
+  const canMoveMessages =
+    isExtensionInstalled("shovel", extensionsQuery.data ?? []) &&
+    (tags.includes("administrator") || tags.includes("policymaker"));
 
   const overviewQuery = useQuery(
     overviewQueryOptions(context.apiClient, () => true),
@@ -48,6 +67,7 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
   const statsCapabilities = getStatisticsSelectors(statsMode);
 
   const purgeMutation = usePurgeQueueMutation(context.apiClient);
+  const queueActionMutation = useQueueActionMutation(context.apiClient);
 
   const { data: queue } = useQuery({
     queryKey: [...queueKeys.detail(vhost, name), range, statsCapabilities.canShowRates, statsCapabilities.canShowQueueTotals],
@@ -65,6 +85,12 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
   });
 
   const vm = queue ? createQueueViewModel(queue) : null;
+  const streamPublishers = useQuery({
+    queryKey: ["stream-publishers", vhost, name],
+    queryFn: ({ signal }) => getStreamQueuePublishers(context.apiClient, vhost, name, signal),
+    enabled: queue?.type === "stream",
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
+  });
 
   const msgRateSeries = useMemo<RateChartSeries[]>(() => {
     if (!queue?.message_stats) return [];
@@ -150,11 +176,46 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
         metadata={[vhost, vm?.type, vm?.node].filter(Boolean)}
         actions={
           <>
+            <Button onClick={() => setPublishDialogOpen(true)}>{t("exchanges.publishMessage")}</Button>
             <Button onClick={() => setGetMessagesDialogOpen(true)}>{t("queues.getMessages")}</Button>
+            {canMoveMessages ? <Button variant="outline" onClick={() => setMoveDialogOpen(true)}>{t("queues.moveMessages")}</Button> : null}
+            {queue?.slave_nodes?.length ? <Button variant="outline" onClick={() => setQueueAction("sync")}>{t("queues.syncMirrors")}</Button> : null}
+            {queue?.state === "syncing" ? <Button variant="outline" onClick={() => setQueueAction("cancel_sync")}>{t("queues.cancelSync")}</Button> : null}
             <Button variant="outline" onClick={() => setPurgeDialogOpen(true)}>{t("queues.purge")}</Button>
             <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>{t("common.remove")}</Button>
           </>
         }
+      />
+
+      <PublishMessageDialog
+        vhost={vhost}
+        name=""
+        initialRoutingKey={name}
+        lockRoutingKey
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+      />
+
+      <MoveMessagesDialog
+        open={moveDialogOpen}
+        onOpenChange={setMoveDialogOpen}
+        vhost={vhost}
+        sourceQueue={name}
+        queueType={queue?.type}
+      />
+
+      <ConfirmDialog
+        open={queueAction !== null}
+        onOpenChange={(open) => { if (!open) setQueueAction(null); }}
+        title={queueAction === "cancel_sync" ? t("queues.cancelSync") : t("queues.syncMirrors")}
+        description={t("queues.queueActionWarning", { queue: name })}
+        confirmText={queueAction === "cancel_sync" ? t("queues.cancelSync") : t("queues.syncMirrors")}
+        isConfirming={queueActionMutation.isPending}
+        error={queueActionMutation.error}
+        onConfirm={() => {
+          if (!queueAction) return;
+          queueActionMutation.mutate({ vhost, name, action: queueAction }, { onSuccess: () => setQueueAction(null) });
+        }}
       />
 
       <GetMessagesDialog
@@ -204,6 +265,9 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
               { label: t("queues.node"), value: vm?.node, monospace: true },
               { label: t("queues.features"), value: vm?.features?.join(", ") },
               { label: t("queues.consumers"), value: vm?.consumers ?? 0 },
+              { label: t("policies.title"), value: queue?.policy },
+              { label: t("queues.operatorPolicy"), value: queue?.operator_policy },
+              { label: t("queues.consumerCapacity"), value: queue?.consumer_capacity ?? queue?.consumer_utilisation },
             ]}
           />
         </SectionCard>
@@ -272,6 +336,30 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
           </div>
         </SectionCard>
       )}
+
+      {queue?.members?.length ? (
+        <SectionCard title={t("queues.replication")}>
+          <QueueReplicationState leader={queue.leader} members={queue.members} online={queue.online ?? []} />
+        </SectionCard>
+      ) : null}
+
+      {queue?.effective_policy_definition && Object.keys(queue.effective_policy_definition).length > 0 ? (
+        <SectionCard title={t("queues.effectivePolicy")}>
+          <AmqpValue value={queue.effective_policy_definition} />
+        </SectionCard>
+      ) : null}
+
+      <SectionCard title={t("queues.consumersDetail")}>
+        <ConsumerTable consumers={queue?.consumer_details ?? []} />
+      </SectionCard>
+
+      {queue?.type === "stream" ? (
+        <SectionCard title={t("streams.publishers")}>
+          <AsyncState isPending={streamPublishers.isPending} isError={streamPublishers.isError} error={streamPublishers.error} onRetry={() => void streamPublishers.refetch()}>
+            <StreamPublisherTable publishers={streamPublishers.data ?? []} />
+          </AsyncState>
+        </SectionCard>
+      ) : null}
 
       <BindingList vhost={vhost} resourceName={name} mode="to-queue" />
     </div>

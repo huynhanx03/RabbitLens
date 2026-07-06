@@ -21,6 +21,7 @@ import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-
 import { StatisticsAvailability } from "@/components/shared/statistics-availability";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { useResetNodeStatisticsMutation } from "@/domains/admin/cluster/cluster-query";
+import { NodeOperationalDiagnostics } from "./node-operational-diagnostics";
 
 const BYTES_PER_KIBIBYTE = 1024;
 
@@ -228,6 +229,8 @@ export function NodeDetailPage() {
                 ]}
               />
             </Section>
+
+            <NodeOperationalDiagnostics node={nodeQuery.data!} />
 
             <Section title={t("nodes.memory")}>
               {renderUnknown(node.memory) ?? (

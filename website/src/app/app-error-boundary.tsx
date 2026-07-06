@@ -19,6 +19,8 @@ function getErrorTranslationKey(kind: ApiErrorKind) {
       return "errors.forbidden";
     case "not-found":
       return "errors.notFound";
+    case "conflict":
+      return "errors.conflict";
     case "validation":
       return "errors.validation";
     case "network":

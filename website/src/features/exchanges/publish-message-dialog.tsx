@@ -41,6 +41,8 @@ export interface PublishMessageDialogProps {
   name: string; // empty string for default exchange
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialRoutingKey?: string;
+  lockRoutingKey?: boolean;
 }
 
 export function PublishMessageDialog({
@@ -48,6 +50,8 @@ export function PublishMessageDialog({
   name,
   open,
   onOpenChange,
+  initialRoutingKey = "",
+  lockRoutingKey = false,
 }: PublishMessageDialogProps) {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
@@ -64,7 +68,7 @@ export function PublishMessageDialog({
   } = useForm<PublishMessageFormValues>({
     resolver: zodResolver(publishMessageSchema),
     defaultValues: {
-      routing_key: "",
+      routing_key: initialRoutingKey,
       payload_encoding: "string",
       payload: "",
       properties: {},
@@ -131,7 +135,7 @@ export function PublishMessageDialog({
               <Input
                 id="routing_key"
                 {...register("routing_key")}
-                disabled={publishMutation.isPending}
+                disabled={publishMutation.isPending || lockRoutingKey}
               />
               {errors.routing_key && (
                 <p className="text-sm text-destructive">{errors.routing_key.message}</p>

@@ -18,11 +18,13 @@ import { StatusBadge } from "@/components/shared/status-badge";
 
 import {
   connectionDetailQueryOptions,
+  connectionKeys,
   useCloseConnectionMutation,
 } from "@/domains/connections/connection-query";
 import { createConnectionViewModel } from "@/domains/connections/connection-view-model";
 
 import { getConnectionChannels } from "@/domains/channels/channel-api";
+import { getConnectionSessions } from "@/domains/connections/connection-api";
 import { channelKeys } from "@/domains/channels/channel-query";
 import { createChannelViewModel, type ChannelViewModel } from "@/domains/channels/channel-view-model";
 import { createChannelColumns } from "@/features/channels/channel-columns";
@@ -34,6 +36,7 @@ import type { ResourceListSearch } from "@/api/pagination-schema";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Route } from "@/app/routes/_authenticated/connections/$name";
+import { AmqpSessionList } from "./amqp-session-list";
 
 type ConnectionDetailPageProps = {
   name: string;
@@ -71,12 +74,20 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
     ),
   );
   const connection = connectionQuery.data;
+  const isAmqp10 = connection?.protocol === "AMQP 1-0" || connection?.protocol === "Web AMQP 1-0";
   // Query: Child channels
   const { data: channelsData, isLoading: isLoadingChannels } = useQuery({
     queryKey: channelKeys.connectionChannels(name, channelsSearch),
     queryFn: ({ signal }) =>
       getConnectionChannels(context.apiClient, name, channelsSearch, signal),
+    enabled: Boolean(connection && !isAmqp10),
     refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
+  });
+  const sessionsQuery = useQuery({
+    queryKey: connectionKeys.children(name, connection?.protocol ?? "AMQP 1-0"),
+    queryFn: ({ signal }) => getConnectionSessions(context.apiClient, name, signal),
+    enabled: Boolean(connection && isAmqp10),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
 
   const vm = connection ? createConnectionViewModel(connection) : null;
@@ -199,6 +210,43 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
           />
         </SectionCard>
 
+        <SectionCard title={t("connections.network")}>
+          <DetailGrid
+            unavailableLabel={t("common.unavailable")}
+            items={[
+              { label: t("connections.localEndpoint"), value: vm?.endpoint, monospace: true },
+              { label: t("connections.peerEndpoint"), value: vm?.peerEndpoint, monospace: true },
+              { label: t("connections.connectedAt"), value: vm?.connectedAt?.toLocaleString() },
+              { label: t("connections.connectionType"), value: connection?.type },
+            ]}
+          />
+        </SectionCard>
+
+        <SectionCard title={t("connections.protocolDetails")}>
+          <DetailGrid
+            unavailableLabel={t("common.unavailable")}
+            items={[
+              { label: t("connections.authMechanism"), value: connection?.auth_mechanism },
+              { label: t("connections.heartbeat"), value: connection?.timeout },
+              { label: t("connections.frameMax"), value: connection?.frame_max },
+              { label: t("connections.channelMax"), value: connection?.channel_max },
+            ]}
+          />
+        </SectionCard>
+
+        {connection?.ssl ? (
+          <SectionCard title={t("connections.tlsDetails")}>
+            <DetailGrid
+              unavailableLabel={t("common.unavailable")}
+              items={[
+                { label: t("connections.tlsProtocol"), value: connection.ssl_protocol },
+                { label: t("connections.tlsCipher"), value: connection.ssl_cipher },
+                { label: t("connections.tlsHash"), value: connection.ssl_hash },
+              ]}
+            />
+          </SectionCard>
+        ) : null}
+
         {(!statsCapabilities.canShowRates || rateSeries.length > 0) && (
           <SectionCard title={t("connections.dataRates")}>
             <RateChart
@@ -222,7 +270,16 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
         </SectionCard>
       )}
 
-      <SectionCard title={t("channels.title")}>
+      {isAmqp10 ? (
+        <AsyncState
+          error={sessionsQuery.error}
+          isError={sessionsQuery.isError}
+          isPending={sessionsQuery.isPending}
+          onRetry={() => void sessionsQuery.refetch()}
+        >
+          <AmqpSessionList sessions={sessionsQuery.data ?? []} />
+        </AsyncState>
+      ) : <SectionCard title={t("channels.title")}>
         <div className="space-y-4">
           <DataTable
             ariaLabel={t("connections.channelTableLabel")}
@@ -264,7 +321,7 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
             />
           )}
         </div>
-      </SectionCard>
+      </SectionCard>}
       </AsyncState>
     </div>
   );

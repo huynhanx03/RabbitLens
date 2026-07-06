@@ -92,19 +92,11 @@ test.describe("RabbitLens foundation", () => {
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await expect(page).toHaveURL("http://127.0.0.1:4173/");
-    const overviewHeading = page.getByRole("heading", {
-      name: "Overview",
-      exact: true,
-    });
-    await expect(overviewHeading).toBeVisible();
-    await expect(
-      overviewHeading.locator("..").getByText("rabbit@localhost"),
-    ).toBeVisible();
+    await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
 
     await navigateTo(page, "Nodes");
-    await expect(
-      page.getByRole("heading", { name: "Nodes", exact: true }),
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/nodes$/);
+    await expect(page.getByRole("link", { name: "rabbit@localhost" })).toBeVisible();
 
     await page.getByRole("link", { name: "rabbit@localhost" }).click();
     await expect(

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { getConnections, getConnection } from "./connection-api";
+import { getConnections, getConnection, getConnectionSessions } from "./connection-api";
 import { ManagementApiClient } from "@/api/management-api-client";
 
 describe("connection API", () => {
@@ -58,6 +58,30 @@ describe("connection API", () => {
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/connections/127.0.0.1%3A5672%20-%3E%20127.0.0.1%3A5555",
       expect.any(Object)
+    );
+  });
+
+  it("loads AMQP 1.0 sessions from the encoded connection path", async () => {
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const testClient = new ManagementApiClient({
+      baseUrl: "http://localhost:15672/api",
+      getSession,
+      timeoutMs: 1000,
+      onUnauthorized,
+      fetcher,
+    });
+    const controller = new AbortController();
+
+    await getConnectionSessions(testClient, "client -> rabbit", controller.signal);
+
+    expect(fetcher).toHaveBeenCalledWith(
+      "http://localhost:15672/api/connections/client%20-%3E%20rabbit/sessions",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
   });
 });

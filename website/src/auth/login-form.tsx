@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { AppBrand } from "@/app/layout/app-brand";
@@ -118,6 +118,8 @@ export function LoginForm() {
         <Card className="w-full max-w-md rounded-2xl border bg-card/80 shadow-2xl backdrop-blur-sm animate-animated animate-fadeInRight">
           <CardHeader className="px-6 pt-7 sm:px-8 pb-0">
             <div className="flex justify-center mb-4"><AppBrand /></div>
+            <h1 className="text-center text-2xl font-semibold tracking-tight">{t("auth.title")}</h1>
+            <CardDescription className="text-center">{t("auth.description")}</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6 px-6 pb-8 pt-4 sm:px-8">

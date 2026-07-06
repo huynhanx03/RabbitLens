@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
 import { channelDetailQueryOptions } from "@/domains/channels/channel-query";
 import { createChannelViewModel } from "@/domains/channels/channel-view-model";
+import { ConsumerTable } from "@/features/consumers/consumer-table";
 
 export function ChannelDetailPage({ name }: { name: string }) {
   const { t } = useTranslation();
@@ -52,6 +53,17 @@ export function ChannelDetailPage({ name }: { name: string }) {
             ]} />
           </SectionCard>
           <SectionCard title={t("channels.messageRates")}><div className="grid gap-4 sm:grid-cols-3"><MetricCard title={t("channels.publishRate")} value={channel.publishRate} unit="msg/s" /><MetricCard title={t("channels.deliverRate")} value={channel.deliverRate} unit="msg/s" /><MetricCard title={t("channels.ackRate")} value={channel.ackRate} unit="msg/s" /></div></SectionCard>
+          {(query.data?.pending_raft_commands != null || query.data?.cached_segments != null) ? (
+            <SectionCard title={t("channels.protocolDiagnostics")}>
+              <DetailGrid unavailableLabel={t("common.unavailable")} items={[
+                { label: t("channels.pendingRaftCommands"), value: query.data.pending_raft_commands },
+                { label: t("channels.cachedSegments"), value: query.data.cached_segments },
+              ]} />
+            </SectionCard>
+          ) : null}
+          <SectionCard title={t("queues.consumersDetail")}>
+            <ConsumerTable consumers={query.data?.consumer_details ?? []} />
+          </SectionCard>
         </div> : null}
       </AsyncState>
     </div>

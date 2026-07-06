@@ -5,6 +5,7 @@ import {
   getStreamConnection,
   getStreamConnectionConsumers,
   getStreamConnectionPublishers,
+  getStreamQueuePublishers,
   getStreamConnections,
 } from "./stream-api";
 
@@ -69,6 +70,16 @@ describe("stream management API", () => {
     expect(client.requestVoid).toHaveBeenCalledWith(
       "/stream/super-streams/%2F/orders",
       { method: "PUT", body: JSON.stringify(body) },
+    );
+  });
+
+  it("reads publishers for an encoded stream queue", async () => {
+    vi.mocked(client.request).mockResolvedValue([]);
+    await getStreamQueuePublishers(client, "/", "events/high");
+    expect(client.request).toHaveBeenCalledWith(
+      "/stream/publishers/%2F/events%2Fhigh",
+      expect.any(Object),
+      expect.any(Object),
     );
   });
 });

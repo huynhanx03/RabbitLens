@@ -28,4 +28,22 @@ describe("Nodes Schema", () => {
     expect(parsed).toHaveLength(1);
     expect(parsed[0].name).toBe("rabbit@localhost");
   });
+
+  it("types operational persistence IO and churn metrics", () => {
+    const parsed = nodeSchema.parse({
+      name: "rabbit@one",
+      mnesia_ram_tx_count: 10,
+      queue_index_journal_write_count: 20,
+      msg_store_read_count: 30,
+      io_read_count: 40,
+      io_read_details: { rate: 2.5, samples: [{ timestamp: 1, sample: 2 }] },
+      io_read_avg_time: 0.4,
+      connection_created: 50,
+      channel_closed: 60,
+      queue_declared: 70,
+    });
+
+    expect(parsed.io_read_details?.rate).toBe(2.5);
+    expect(parsed.connection_created).toBe(50);
+  });
 });

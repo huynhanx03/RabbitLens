@@ -46,6 +46,8 @@ function getErrorKind(status: number): ApiErrorKind {
       return "forbidden";
     case 404:
       return "not-found";
+    case 409:
+      return "conflict";
     case 408:
       return "timeout";
     case 429:

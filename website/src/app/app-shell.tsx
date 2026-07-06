@@ -45,6 +45,14 @@ export function AppShell() {
     userTags,
     extensions: extensionsQuery.data,
   });
+  const currentItem = groups
+    .flatMap((group) => group.items)
+    .filter((item) =>
+      item.to === "/"
+        ? currentPath === "/"
+        : currentPath === item.to || currentPath.startsWith(`${item.to}/`),
+    )
+    .sort((left, right) => right.to.length - left.to.length)[0];
   return (
     <>
       <a
@@ -66,6 +74,9 @@ export function AppShell() {
           />
           <ConnectivityBanner />
           <div className="min-w-0 flex-1 bg-background px-(--page-gutter) py-5 md:py-6">
+            <h1 className="sr-only">
+              {currentItem ? t(currentItem.labelKey) : t("common.appName")}
+            </h1>
             <Outlet />
           </div>
         </SidebarInset>

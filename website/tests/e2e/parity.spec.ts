@@ -99,7 +99,7 @@ test("every covered parity route renders without the generic request boundary", 
   await page.getByLabel("Username").fill("operator");
   await page.locator("#password").fill("secret");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
 
   const routes = new Map(
     covered.map((entry) => [concreteRoute(entry), entry.sourceKey]),

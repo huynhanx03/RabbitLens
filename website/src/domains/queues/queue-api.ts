@@ -98,3 +98,18 @@ export async function getMessages(
     body: JSON.stringify(request),
   });
 }
+
+export type QueueAction = "sync" | "cancel_sync";
+
+export async function runQueueAction(
+  client: ManagementApiClient,
+  vhost: string,
+  name: string,
+  action: QueueAction,
+) {
+  const path = `/queues/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}/actions`;
+  return client.requestVoid(path, {
+    method: "POST",
+    body: JSON.stringify({ action }),
+  });
+}
