@@ -23,7 +23,9 @@ async function signIn(page: Page) {
   await page.getByLabel("Username").fill("operator");
   await page.locator("#password").fill("secret");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Cluster health" }),
+  ).toBeVisible();
 }
 
 test.describe("Connections reference data experience", () => {
@@ -59,7 +61,12 @@ test.describe("Connections reference data experience", () => {
     await expect(
       page.getByRole("table", { name: "RabbitMQ connections" }),
     ).toBeVisible();
-    await expect(page.getByText("1 connection")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: connection.name, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Pagination" }),
+    ).toContainText("1 item(s)");
     expect(listRequests).toBe(1);
 
     await page.getByRole("button", { name: "Name", exact: true }).click();
@@ -93,10 +100,18 @@ test.describe("Connections reference data experience", () => {
     await page.getByRole("button", { name: "Open navigation" }).click();
     await page.getByRole("link", { name: "Connections", exact: true }).click();
 
-    await expect(page.getByRole("columnheader", { name: "Name" })).toBeVisible();
-    await expect(page.getByRole("columnheader", { name: "State" })).toBeVisible();
-    await expect(page.getByRole("columnheader", { name: "Protocol" })).toBeHidden();
-    await expect(page.getByRole("toolbar", { name: "Connection controls" })).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: "Name" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: "State" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: "Protocol" }),
+    ).toBeHidden();
+    await expect(
+      page.getByRole("toolbar", { name: "Connection controls" }),
+    ).toBeVisible();
     expect(
       await page.evaluate(
         () =>

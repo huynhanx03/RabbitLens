@@ -131,31 +131,41 @@ export function OverviewPage() {
               </div>
             </section>
 
-            <div className="grid gap-6 xl:grid-cols-2">
-              <SectionCard
-                title={t("overview.messageTotals")}
-                description={t("overview.messageTotalsDescription")}
-              >
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <MetricCard title={t("overview.messagesReady")} value={viewModel.totals.messagesReady} icon={<Inbox aria-hidden="true" />} status={(viewModel.totals.messagesReady ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesReady ?? 0) > 0 ? t("overview.backlogPresent") : t("overview.noBacklog")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
-                  <MetricCard title={t("overview.messagesUnacked")} value={viewModel.totals.messagesUnacked} icon={<Activity aria-hidden="true" />} status={(viewModel.totals.messagesUnacked ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesUnacked ?? 0) > 0 ? t("overview.unackedPresent") : t("overview.noUnacked")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
-                  <MetricCard title={t("overview.messagesTotal")} value={viewModel.totals.messagesTotal} icon={<Box aria-hidden="true" />} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
-                </div>
-              </SectionCard>
-
-              {showNodeHealth ? (
-                <SectionCard
-                  title={t("overview.nodeHealth")}
-                  description={t("overview.nodeHealthDescription")}
+            <section
+              aria-labelledby="overview-workload-health-title"
+              className="space-y-3"
+            >
+              <div>
+                <h2
+                  id="overview-workload-health-title"
+                  className="text-lg font-semibold"
                 >
-                  <div className="grid gap-4 sm:grid-cols-3">
+                  {showNodeHealth
+                    ? t("overview.workloadHealth")
+                    : t("overview.messageTotals")}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {showNodeHealth
+                    ? t("overview.workloadHealthDescription")
+                    : t("overview.messageTotalsDescription")}
+                </p>
+              </div>
+              <div
+                data-testid="overview-workload-health-grid"
+                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+              >
+                <MetricCard title={t("overview.messagesReady")} value={viewModel.totals.messagesReady} icon={<Inbox aria-hidden="true" />} status={(viewModel.totals.messagesReady ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesReady ?? 0) > 0 ? t("overview.backlogPresent") : t("overview.noBacklog")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
+                <MetricCard title={t("overview.messagesUnacked")} value={viewModel.totals.messagesUnacked} icon={<Activity aria-hidden="true" />} status={(viewModel.totals.messagesUnacked ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesUnacked ?? 0) > 0 ? t("overview.unackedPresent") : t("overview.noUnacked")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
+                <MetricCard title={t("overview.messagesTotal")} value={viewModel.totals.messagesTotal} icon={<Box aria-hidden="true" />} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
+                {showNodeHealth ? (
+                  <>
                     <MetricCard title={t("overview.runningNodes")} value={viewModel.nodeHealth.running} icon={<Server aria-hidden="true" />} />
                     <MetricCard title={t("overview.stoppedNodes")} value={viewModel.nodeHealth.stopped} icon={<CircleDot aria-hidden="true" />} status={viewModel.nodeHealth.stopped > 0 ? "critical" : "normal"} statusLabel={viewModel.nodeHealth.stopped > 0 ? t("overview.attentionRequired") : t("overview.operational")} />
                     <MetricCard title={t("overview.alarmedNodes")} value={viewModel.nodeHealth.alarmed} icon={<Activity aria-hidden="true" />} status={viewModel.nodeHealth.alarmed > 0 ? "warning" : "normal"} statusLabel={viewModel.nodeHealth.alarmed > 0 ? t("overview.attentionRequired") : t("overview.operational")} />
-                  </div>
-                </SectionCard>
-              ) : null}
-            </div>
+                  </>
+                ) : null}
+              </div>
+            </section>
           </div>
         ) : null}
       </AsyncState>

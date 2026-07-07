@@ -21,6 +21,21 @@ describe("FilterBar", () => {
     expect(onSubmit).toHaveBeenLastCalledWith("", false);
   });
 
+  it("renders as a flat inline filter group", () => {
+    renderWithProviders(
+      <FilterBar name="" useRegex={false} onSubmit={vi.fn()} />,
+    );
+
+    expect(screen.getByRole("search")).toHaveClass(
+      "border-0",
+      "bg-transparent",
+      "p-0",
+      "shadow-none",
+    );
+    expect(screen.getByRole("search")).not.toHaveClass("rl-action-strip");
+    expect(screen.getByRole("search")).not.toHaveClass("p-2");
+  });
+
   it("rejects an invalid regular expression", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();

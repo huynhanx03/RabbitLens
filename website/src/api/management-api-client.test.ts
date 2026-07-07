@@ -124,6 +124,7 @@ describe("ManagementApiClient", () => {
     [401, "unauthorized", false],
     [403, "forbidden", false],
     [404, "not-found", false],
+    [409, "conflict", false],
     [412, "validation", false],
     [503, "server", true],
   ] as const)(

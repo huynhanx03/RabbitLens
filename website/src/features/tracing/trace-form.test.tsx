@@ -14,6 +14,9 @@ describe("TraceForm", () => {
       />,
     );
 
+    expect(screen.getByRole("form", { name: "Trace form" })).toHaveClass(
+      "rl-admin-form",
+    );
     expect(screen.getByLabelText("Virtual Host")).toBeVisible();
     expect(screen.getByLabelText("Name")).toBeVisible();
     expect(screen.getByLabelText("Format")).toBeVisible();

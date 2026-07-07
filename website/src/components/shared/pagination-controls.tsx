@@ -47,7 +47,7 @@ export function PaginationControls({
   return (
     <nav
       aria-label={t("pagination.label")}
-      className="flex flex-col gap-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+      className="rl-pagination flex flex-col gap-2 border-0 bg-transparent px-0 py-1 shadow-none sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="text-sm text-muted-foreground">
         {filteredCount === totalCount
@@ -63,7 +63,10 @@ export function PaginationControls({
           value={String(pageSize)}
           onValueChange={(value) => onPageSizeChange(Number(value))}
         >
-          <SelectTrigger className="h-8 w-[80px]" aria-label={t("pagination.pageSize")}>
+          <SelectTrigger
+            className="h-8 w-24 justify-center text-center *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:justify-center"
+            aria-label={t("pagination.pageSize")}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

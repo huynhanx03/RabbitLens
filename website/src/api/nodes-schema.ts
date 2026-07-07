@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+const metricDetailsSchema = z
+  .object({
+    rate: z.number(),
+    samples: z.array(z.object({ timestamp: z.number(), sample: z.number() })).optional(),
+  })
+  .passthrough()
+  .optional();
+
 export const nodeSchema = z.object({
   name: z.string(),
   type: z.string().optional(),
@@ -40,6 +48,33 @@ export const nodeSchema = z.object({
   config_files: z.array(z.string()).optional(),
   log_files: z.array(z.string()).optional(),
   cluster_links: z.unknown().optional(),
+  mnesia_ram_tx_count: z.number().optional(),
+  mnesia_disk_tx_count: z.number().optional(),
+  queue_index_journal_write_count: z.number().optional(),
+  queue_index_read_count: z.number().optional(),
+  queue_index_write_count: z.number().optional(),
+  msg_store_read_count: z.number().optional(),
+  msg_store_write_count: z.number().optional(),
+  io_read_count: z.number().optional(),
+  io_write_count: z.number().optional(),
+  io_seek_count: z.number().optional(),
+  io_sync_count: z.number().optional(),
+  io_reopen_count: z.number().optional(),
+  io_read_bytes: z.number().optional(),
+  io_write_bytes: z.number().optional(),
+  io_read_avg_time: z.number().optional(),
+  io_write_avg_time: z.number().optional(),
+  io_seek_avg_time: z.number().optional(),
+  io_sync_avg_time: z.number().optional(),
+  io_read_details: metricDetailsSchema,
+  io_write_details: metricDetailsSchema,
+  connection_created: z.number().optional(),
+  connection_closed: z.number().optional(),
+  channel_created: z.number().optional(),
+  channel_closed: z.number().optional(),
+  queue_declared: z.number().optional(),
+  queue_created: z.number().optional(),
+  queue_deleted: z.number().optional(),
 }).passthrough();
 
 export const nodesSchema = z.array(nodeSchema);

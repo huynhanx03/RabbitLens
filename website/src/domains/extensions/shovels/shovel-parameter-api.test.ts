@@ -6,6 +6,7 @@ import {
   getShovelParameters,
   putShovelParameter,
   restartShovel,
+  buildMoveMessagesShovel,
 } from "./shovel-parameter-api";
 
 describe("dynamic shovel API", () => {
@@ -56,5 +57,26 @@ describe("dynamic shovel API", () => {
       "/shovels/vhost/%2F/move/restart",
       { method: "DELETE" },
     );
+  });
+
+  it("builds a bounded temporary shovel for moving queue contents", () => {
+    expect(buildMoveMessagesShovel("orders", "archive", "classic")).toEqual({
+      "src-uri": "amqp:///",
+      "src-queue": "orders",
+      "src-protocol": "amqp091",
+      "src-prefetch-count": 1000,
+      "src-delete-after": "queue-length",
+      "dest-uri": "amqp:///",
+      "dest-queue": "archive",
+      "dest-protocol": "amqp091",
+      "dest-add-forward-headers": false,
+      "ack-mode": "on-confirm",
+    });
+  });
+
+  it("starts stream moves from the first offset", () => {
+    expect(buildMoveMessagesShovel("events", "archive", "stream")).toMatchObject({
+      "src-consumer-args": { "x-stream-offset": "first" },
+    });
   });
 });

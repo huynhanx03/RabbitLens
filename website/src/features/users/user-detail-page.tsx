@@ -2,7 +2,6 @@ import { useRouteContext, Link, useParams } from "@tanstack/react-router";
 import { useUser, useUserPermissions, useUserTopicPermissions } from "@/domains/admin/users/user-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DefinitionList, type DefinitionItem } from "@/components/shared/definition-list";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -10,7 +9,7 @@ import { UserForm } from "./user-form";
 import { useCreateUserMutation, useClearPermissionMutation, useClearTopicPermissionMutation, useSetPermissionMutation, useSetTopicPermissionMutation } from "./user-mutations";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { usePermissionDecision } from "@/auth/permissions/permission-gate";
-import { Trash2 } from "lucide-react";
+import { ArrowLeft, Cable, Pencil, Trash2 } from "lucide-react";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { PermissionForm } from "./permission-form";
 import { TopicPermissionForm } from "./topic-permission-form";
@@ -25,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import type { ColumnDef } from "@tanstack/react-table";
 import { AsyncState } from "@/components/shared/async-state";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 
 export function UserDetailPage() {
   const { t } = useTranslation();
@@ -57,23 +57,6 @@ export function UserDetailPage() {
 
   const tagsArray = user.tags || [];
 
-  const definitionItems: DefinitionItem[] = [
-    { 
-      label: "Tags", 
-      value: (
-        <div className="flex gap-1 flex-wrap">
-          {tagsArray.length > 0 ? (
-            tagsArray.map((tag: string) => <Badge key={tag} variant="secondary">{tag.trim()}</Badge>)
-          ) : "-"}
-        </div>
-      )
-    },
-    {
-      label: "Limits",
-      value: user.limits ? JSON.stringify(user.limits) : "-"
-    }
-  ];
-
   const permColumns: ColumnDef<PermissionResponse>[] = [
     { accessorKey: "vhost", header: "Virtual Host" },
     { accessorKey: "configure", header: "Configure regex" },
@@ -87,10 +70,11 @@ export function UserDetailPage() {
           <Button 
             variant="ghost" 
             size="icon"
+            className={destructiveIconButtonClassName}
             onClick={() => setPermissionToClear(row.original)}
             aria-label={`${t("users.clearPermission")} ${row.original.vhost}`}
           >
-            <Trash2 className="h-4 w-4 text-destructive" />
+            <Trash2 className="h-4 w-4" />
           </Button>
         );
       }
@@ -110,10 +94,11 @@ export function UserDetailPage() {
           <Button 
             variant="ghost" 
             size="icon"
+            className={destructiveIconButtonClassName}
             onClick={() => setTopicPermissionToClear(row.original)}
             aria-label={`${t("users.clearTopicPermission")} ${row.original.exchange}`}
           >
-            <Trash2 className="h-4 w-4 text-destructive" />
+            <Trash2 className="h-4 w-4" />
           </Button>
         );
       }
@@ -122,13 +107,38 @@ export function UserDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <DetailPageHeader title={name} description={t("users.detailDescription")} />
-        {canManageUsers && (
-          <div className="flex items-center gap-2">
+      <DetailPageHeader
+        title={name}
+        description={t("users.detailDescription")}
+        backAction={
+          <Button asChild variant="outline" size="icon" aria-label={t("common.back")}>
+            <Link to="/admin/users">
+              <ArrowLeft aria-hidden="true" />
+            </Link>
+          </Button>
+        }
+        metadata={[
+          ...(tagsArray.length > 0
+            ? tagsArray.map((tag: string) => (
+                <Badge key={tag} variant="secondary">{tag.trim()}</Badge>
+              ))
+            : [<Badge key="no-tags" variant="secondary">{t("users.noTags")}</Badge>]),
+          <span key="limits" className="inline-flex items-center gap-2">
+            <span>{t("limits.title")}</span>
+            <Badge variant="secondary">
+              {user.limits ? Object.keys(user.limits).length : 0}
+            </Badge>
+          </span>,
+        ]}
+        actions={
+          canManageUsers ? (
+            <>
             <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline">Edit</Button>
+                  <Button variant="outline">
+                    <Pencil aria-hidden="true" />
+                    {t("common.edit")}
+                  </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -155,41 +165,35 @@ export function UserDetailPage() {
               </DialogContent>
             </Dialog>
 
-            <Button variant="destructive" size="icon" onClick={() => setIsDeleteOpen(true)}>
-              <Trash2 className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className={destructiveIconButtonClassName}
+              onClick={() => setIsDeleteOpen(true)}
+                aria-label={t("common.delete")}
+            >
+                <Trash2 aria-hidden="true" />
             </Button>
-            
+
             <DeleteUserDialog 
               name={name}
               open={isDeleteOpen}
               onOpenChange={setIsDeleteOpen}
               apiClient={context.apiClient}
             />
-          </div>
-        )}
-      </div>
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl border bg-card text-card-foreground shadow">
-          <div className="p-6">
-            <h3 className="font-semibold leading-none tracking-tight mb-4">Details</h3>
-            <DefinitionList items={definitionItems} unavailableLabel="-" />
-          </div>
-        </div>
-
-        <div className="rounded-xl border bg-card text-card-foreground shadow">
-          <div className="p-6">
-            <h3 className="font-semibold leading-none tracking-tight mb-4">Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/connections" search={{ page: 1, pageSize: 100, name, useRegex: false, sortReverse: false }} className="text-primary hover:underline">
-                  View Connections
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <nav aria-label={t("common.resources")} className="flex flex-wrap gap-3">
+        <Button asChild variant="outline">
+          <Link to="/connections" search={{ page: 1, pageSize: 100, name, useRegex: false, sortReverse: false }}>
+            <Cable aria-hidden="true" />
+            {t("nav.connections")}
+          </Link>
+        </Button>
+      </nav>
 
       <div className="space-y-4 pt-6">
         <div className="flex justify-between items-center">

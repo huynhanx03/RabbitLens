@@ -53,6 +53,19 @@ describe("AsyncState", () => {
     expect(onRetry).toHaveBeenCalledOnce();
   });
 
+  it("preserves stale content when a background refresh fails", async () => {
+    await renderState({
+      hasData: true,
+      isError: true,
+      error: new ApiError("server", 503, true, "temporary failure"),
+      onRetry: vi.fn(),
+    });
+
+    expect(screen.getByText("Loaded content")).toBeVisible();
+    expect(screen.getByText("Showing previously loaded data.")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeVisible();
+  });
+
   it("renders the localized empty state", async () => {
     await renderState({ isEmpty: true });
     expect(screen.getByText("No results.")).toBeInTheDocument();

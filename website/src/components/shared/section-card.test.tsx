@@ -16,8 +16,11 @@ describe("SectionCard", () => {
     );
 
     expect(screen.getByRole("region", { name: "Properties" })).toHaveClass(
-      "rounded-xl",
-      "shadow-sm",
+      "rl-panel",
+      "rl-section-panel",
+    );
+    expect(screen.getByText("Properties").parentElement?.parentElement).toHaveClass(
+      "rl-section-header",
     );
     expect(screen.getByRole("button", { name: "Copy" })).toBeVisible();
   });

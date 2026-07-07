@@ -1,14 +1,32 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useRouteContext } from "@tanstack/react-router";
-import { ChevronLeft, RotateCcw } from "lucide-react";
+import {
+  Activity,
+  Boxes,
+  ChevronLeft,
+  FileText,
+  HardDrive,
+  MemoryStick,
+  Network,
+  PlugZap,
+  RotateCcw,
+  Server,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AsyncState } from "@/components/shared/async-state";
 import { DefinitionList } from "@/components/shared/definition-list";
 import { MetricCard } from "@/components/shared/metric-card";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
+import { DetailGrid } from "@/components/shared/detail-grid";
+import { RawDataDisclosure } from "@/components/shared/raw-data-disclosure";
 import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import {
+  StructuredKeyValue,
+} from "@/components/shared/structured-key-value";
+import { objectToStructuredEntries } from "@/components/shared/structured-key-value-utils";
+import { UsageMeterCard } from "@/components/shared/usage-meter-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { createNodeViewModel, type NodeStatus } from "./node-view-model";
@@ -21,6 +39,7 @@ import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-
 import { StatisticsAvailability } from "@/components/shared/statistics-availability";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { useResetNodeStatisticsMutation } from "@/domains/admin/cluster/cluster-query";
+import { NodeOperationalDiagnostics } from "./node-operational-diagnostics";
 
 const BYTES_PER_KIBIBYTE = 1024;
 
@@ -65,18 +84,62 @@ function statusPresentation(status: NodeStatus, t: (key: string) => string) {
   }
 }
 
-function renderUnknown(value: unknown): React.ReactNode {
-  if (value === null || value === undefined) {
+function formatUptime(ms: number | null | undefined): string | null {
+  if (ms === null || ms === undefined) {
     return null;
   }
-  if (typeof value === "string" || typeof value === "number") {
-    return String(value);
+
+  const seconds = Math.floor(ms / 1000);
+  const days = Math.floor(seconds / 86_400);
+  const hours = Math.floor((seconds % 86_400) / 3_600);
+  const minutes = Math.floor((seconds % 3_600) / 60);
+
+  if (days > 0) {
+    return `${days}d ${hours}h ${minutes}m`;
   }
-  return (
-    <pre className="max-h-80 overflow-auto rounded-md bg-muted p-3 text-xs">
-      {JSON.stringify(value, null, 2)}
-    </pre>
-  );
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  return `${minutes}m`;
+}
+
+function applicationEntries(
+  applications: Array<{ name: string; version?: string }> | undefined,
+) {
+  return applications?.map((application) => ({
+    key: application.name,
+    value: application.version ?? "—",
+    monospace: true,
+  })) ?? [];
+}
+
+function binaryMemoryEntries(value: unknown, limit = 12) {
+  if (Array.isArray(value)) {
+    return value.slice(0, limit).map((item, index) => {
+      if (item && typeof item === "object" && "pid" in item) {
+        const record = item as { pid?: unknown; bytes?: unknown };
+        return [
+          String(record.pid ?? `#${index + 1}`),
+          record.bytes,
+        ] as const;
+      }
+
+      return [`#${index + 1}`, item] as const;
+    });
+  }
+
+  if (!value || typeof value !== "object") {
+    return [];
+  }
+
+  return Object.entries(value)
+    .sort(([, left], [, right]) => {
+      const leftNumber = typeof left === "number" ? left : -1;
+      const rightNumber = typeof right === "number" ? right : -1;
+      return rightNumber - leftNumber;
+    })
+    .slice(0, limit)
+    .map(([key, value]) => [key, value] as const);
 }
 
 export function NodeDetailPage() {
@@ -179,46 +242,55 @@ export function NodeDetailPage() {
 
             <Section title={t("nodes.resources")}>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <MetricCard
-                  title={t("nodes.fileDescriptors")}
-                  value={node.fd_used ?? null}
-                  unit={node.fd_total === undefined ? undefined : `/ ${node.fd_total}`}
-                  isUnavailable={statsCapabilities.mode === "disabled" || statsCapabilities.mode === "queue-totals-only"}
-                  unavailableLabel={t("common.unavailable")}
-                />
-                <MetricCard
-                  title={t("nodes.socketDescriptors")}
-                  value={node.sockets_used ?? null}
-                  unit={
-                    node.sockets_total === undefined
-                      ? undefined
-                      : `/ ${node.sockets_total}`
-                  }
-                  isUnavailable={statsCapabilities.mode === "disabled" || statsCapabilities.mode === "queue-totals-only"}
-                  unavailableLabel={t("common.unavailable")}
-                />
-                <MetricCard
+                <UsageMeterCard
                   title={t("nodes.memory")}
-                  value={formatBytes(node.mem_used)}
+                  value={formatBytes(node.mem_used) ?? t("common.unavailable")}
+                  limit={formatBytes(node.mem_limit)}
+                  percent={node.memory.percent}
+                  icon={<MemoryStick aria-hidden="true" />}
                   status={node.mem_alarm ? "critical" : "normal"}
-                  isUnavailable={!statsCapabilities.canShowRates}
-                  unavailableLabel={t("common.unavailable")}
                 />
-                <MetricCard
+                <UsageMeterCard
                   title={t("nodes.disk")}
-                  value={formatBytes(node.disk_free)}
+                  value={formatBytes(node.disk_free) ?? t("common.unavailable")}
+                  limit={formatBytes(node.disk_free_limit)}
+                  percent={node.disk.percent}
+                  icon={<HardDrive aria-hidden="true" />}
                   status={node.disk_free_alarm ? "critical" : "normal"}
-                  isUnavailable={!statsCapabilities.canShowRates}
-                  unavailableLabel={t("common.unavailable")}
+                />
+                <UsageMeterCard
+                  title={t("nodes.fileDescriptors")}
+                  value={node.fd_used ?? t("common.unavailable")}
+                  limit={node.fd_total}
+                  percent={
+                    node.fd_used !== undefined && node.fd_total
+                      ? (node.fd_used / node.fd_total) * 100
+                      : null
+                  }
+                  icon={<FileText aria-hidden="true" />}
+                />
+                <UsageMeterCard
+                  title={t("nodes.socketDescriptors")}
+                  value={node.sockets_used ?? t("common.unavailable")}
+                  limit={node.sockets_total}
+                  percent={
+                    node.sockets_used !== undefined && node.sockets_total
+                      ? (node.sockets_used / node.sockets_total) * 100
+                      : null
+                  }
+                  icon={<Network aria-hidden="true" />}
                 />
               </div>
             </Section>
 
-            <Section title={t("nodes.runtime")}>
-              <DefinitionList
+            <SectionCard
+              title={t("nodes.runtime")}
+              description={t("nodes.runtimeDescription")}
+            >
+              <DetailGrid
                 unavailableLabel={t("common.unavailable")}
                 items={[
-                  { label: t("nodes.uptime"), value: node.uptime },
+                  { label: t("nodes.uptime"), value: formatUptime(node.uptime) },
                   { label: t("nodes.processUsage"), value: node.proc_used },
                   { label: "OS PID", value: node.os_pid },
                   { label: "Rates mode", value: node.rates_mode },
@@ -227,54 +299,102 @@ export function NodeDetailPage() {
                   { label: "Processors", value: node.processors },
                 ]}
               />
-            </Section>
+            </SectionCard>
 
-            <Section title={t("nodes.memory")}>
-              {renderUnknown(node.memory) ?? (
-                <p className="text-sm text-muted-foreground">
-                  {t("common.unavailable")}
-                </p>
-              )}
-            </Section>
+            <NodeOperationalDiagnostics node={nodeQuery.data!} />
 
-            <Section title={t("nodes.storage")}>
-              <DefinitionList
-                unavailableLabel={t("common.unavailable")}
-                items={[
-                  { label: t("nodes.memory"), value: formatBytes(node.mem_used) },
-                  { label: t("nodes.disk"), value: formatBytes(node.disk_free) },
-                ]}
+            <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+              <SectionCard
+                title={t("nodes.memory")}
+                description={t("nodes.memoryDescription")}
+              >
+                <div className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <MetricCard
+                      title={t("common.used")}
+                      value={formatBytes(node.mem_used)}
+                      icon={<MemoryStick aria-hidden="true" />}
+                    />
+                    <MetricCard
+                      title={t("common.limit")}
+                      value={formatBytes(node.mem_limit)}
+                      icon={<Server aria-hidden="true" />}
+                    />
+                    <MetricCard
+                      title={t("common.usage")}
+                      value={
+                        node.memory.percent === null
+                          ? null
+                          : `${node.memory.percent.toFixed(1)}%`
+                      }
+                      status={node.mem_alarm ? "critical" : "normal"}
+                      icon={<Activity aria-hidden="true" />}
+                    />
+                  </div>
+                  {node.memory && typeof node.memory === "object" ? (
+                    <StructuredKeyValue
+                      entries={objectToStructuredEntries(node.memory)}
+                      emptyLabel={t("common.unavailable")}
+                    />
+                  ) : null}
+                  {node.memory ? (
+                    <RawDataDisclosure title={t("nodes.rawMemoryData")} value={node.memory} />
+                  ) : null}
+                </div>
+              </SectionCard>
+
+              <SectionCard
+                title={t("nodes.clusterLinks")}
+                description={t("nodes.clusterLinksDescription")}
+              >
+                <div className="space-y-4">
+                  <MetricCard
+                    title={t("nodes.clusterLinks")}
+                    value={
+                      Array.isArray(node.cluster_links)
+                        ? node.cluster_links.length
+                        : node.cluster_links
+                          ? 1
+                          : 0
+                    }
+                    icon={<Network aria-hidden="true" />}
+                  />
+                  {Array.isArray(node.cluster_links) && node.cluster_links.length === 0 ? (
+                    <p className="rounded-xl border border-dashed border-border/70 bg-background/30 px-3 py-4 text-sm text-muted-foreground">
+                      {t("common.unavailable")}
+                    </p>
+                  ) : node.cluster_links ? (
+                    <RawDataDisclosure title={t("nodes.rawClusterLinks")} value={node.cluster_links} />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{t("common.unavailable")}</p>
+                  )}
+                </div>
+              </SectionCard>
+            </div>
+
+            <SectionCard
+              title={t("nodes.applications")}
+              description={t("nodes.applicationsDescription")}
+            >
+              <StructuredKeyValue
+                entries={applicationEntries(node.applications)}
+                emptyLabel={t("common.unavailable")}
+                className="md:grid-cols-2"
               />
-            </Section>
+            </SectionCard>
 
-            <Section title={t("nodes.clusterLinks")}>
-              {renderUnknown(node.cluster_links) ?? (
-                <p className="text-sm text-muted-foreground">
-                  {t("common.unavailable")}
-                </p>
-              )}
-            </Section>
-
-            <Section title={t("nodes.applications")}>
-              {node.applications?.length ? (
-                <ul className="space-y-2 text-sm">
-                  {node.applications.map((application) => (
-                    <li key={application.name}>
-                      <span className="font-medium">{application.name}</span>
-                      {application.version ? ` ${application.version}` : null}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t("common.unavailable")}</p>
-              )}
-            </Section>
-
-            <Section title={t("nodes.plugins")}>
+            <SectionCard
+              title={t("nodes.plugins")}
+              description={t("nodes.pluginsDescription")}
+            >
               {node.enabled_plugins?.length ? (
                 <ul className="flex flex-wrap gap-2 text-sm">
                   {node.enabled_plugins.map((plugin) => (
-                    <li key={plugin} className="rounded bg-muted px-2 py-1 font-mono">
+                    <li
+                      key={plugin}
+                      className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 font-mono text-xs font-medium text-primary"
+                    >
+                      <PlugZap aria-hidden="true" className="size-3.5" />
                       {plugin}
                     </li>
                   ))}
@@ -282,9 +402,12 @@ export function NodeDetailPage() {
               ) : (
                 <p className="text-sm text-muted-foreground">{t("common.unavailable")}</p>
               )}
-            </Section>
+            </SectionCard>
 
-            <Section title={t("nodes.files")}>
+            <SectionCard
+              title={t("nodes.files")}
+              description={t("nodes.filesDescription")}
+            >
               <DefinitionList
                 unavailableLabel={t("common.unavailable")}
                 items={[
@@ -295,9 +418,12 @@ export function NodeDetailPage() {
                   { label: "Log", value: node.log_files?.join(", ") },
                 ]}
               />
-            </Section>
+            </SectionCard>
 
-            <Section title={t("nodes.binaryMemory")}>
+            <SectionCard
+              title={t("nodes.binaryMemory")}
+              description={t("nodes.binaryMemoryDescription")}
+            >
               {!showBinaryWarning && !binaryEnabled ? (
                 <Button type="button" onClick={() => setShowBinaryWarning(true)}>
                   {t("nodes.loadBinaryMemory")}
@@ -329,14 +455,31 @@ export function NodeDetailPage() {
                   isPending={binaryQuery.isPending}
                   onRetry={() => void binaryQuery.refetch()}
                 >
-                  {renderUnknown(binaryQuery.data?.binary) ?? (
+                  {binaryMemoryEntries(binaryQuery.data?.binary).length ? (
+                    <div className="space-y-4">
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        {binaryMemoryEntries(binaryQuery.data?.binary).map(([key, value]) => (
+                          <MetricCard
+                            key={key}
+                            title={key}
+                            value={typeof value === "number" ? formatBytes(value) : String(value)}
+                            icon={<Boxes aria-hidden="true" />}
+                          />
+                        ))}
+                      </div>
+                      <RawDataDisclosure
+                        title={t("nodes.rawBinaryMemoryData")}
+                        value={binaryQuery.data?.binary}
+                      />
+                    </div>
+                  ) : (
                     <p className="text-sm text-muted-foreground">
                       {t("nodes.binaryEmpty")}
                     </p>
                   )}
                 </AsyncState>
               ) : null}
-            </Section>
+            </SectionCard>
           </div>
         ) : null}
       </AsyncState>

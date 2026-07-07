@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { getMessages, getQueues, getQueue } from "./queue-api";
+import { getMessages, getQueues, getQueue, runQueueAction } from "./queue-api";
 import { ManagementApiClient } from "@/api/management-api-client";
 
 describe("queue API", () => {
@@ -95,6 +95,24 @@ describe("queue API", () => {
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/queues/%2F/orders/get",
       expect.objectContaining({ method: "POST" }),
+    );
+  });
+
+  it("posts a typed synchronization action to the encoded queue path", async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    const client = new ManagementApiClient({
+      baseUrl: "http://localhost:15672/api",
+      getSession,
+      timeoutMs: 1000,
+      onUnauthorized,
+      fetcher,
+    });
+
+    await runQueueAction(client, "/", "orders/priority", "sync");
+
+    expect(fetcher).toHaveBeenCalledWith(
+      "http://localhost:15672/api/queues/%2F/orders%2Fpriority/actions",
+      expect.objectContaining({ method: "POST", body: JSON.stringify({ action: "sync" }) }),
     );
   });
 });

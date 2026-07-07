@@ -21,7 +21,7 @@ function renderValue(value: unknown, depth: number): ReactNode {
   }
 
   if (typeof value === "boolean") {
-    return <span className="text-blue-600 dark:text-blue-400">{String(value)}</span>;
+    return <span className="rl-amqp-boolean">{String(value)}</span>;
   }
 
   if (typeof value === "number") {

@@ -1,11 +1,18 @@
-import type { Query } from "@tanstack/react-query";
+import type { Query, QueryKey } from "@tanstack/react-query";
 import { ApiError } from "./api-error";
 
 export function createPollingInterval(
   intervalMs: number,
   isEnabled: () => boolean = () => true,
 ) {
-  return (query: Query<any, any, any, any>) => {
+  return <
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryKey extends QueryKey = QueryKey,
+  >(
+    query: Query<TQueryFnData, TError, TData, TQueryKey>,
+  ) => {
     if (
       !isEnabled() ||
       document.visibilityState !== "visible" ||

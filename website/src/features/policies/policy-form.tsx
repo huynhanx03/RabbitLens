@@ -86,7 +86,12 @@ export function PolicyForm({
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(submit)} noValidate>
+    <form
+      aria-label="Policy form"
+      className="rl-admin-form space-y-4"
+      onSubmit={handleSubmit(submit)}
+      noValidate
+    >
       <div className="space-y-2">
         <Label htmlFor="policy-vhost">{t("policies.vhost")}</Label>
         {vhosts.isPending ? (

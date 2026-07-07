@@ -16,6 +16,7 @@ describe("FormActions", () => {
       />,
     );
 
+    expect(screen.getByTestId("form-actions")).toHaveClass("rl-form-actions");
     expect(screen.getByRole("button", { name: "Saving" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));

@@ -30,7 +30,7 @@ async function signIn(page: Page) {
   await page.getByLabel("Username").fill("operator");
   await page.locator("#password").fill("secret");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
 }
 
 test.describe("Dashboard and detail archetypes", () => {

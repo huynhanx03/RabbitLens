@@ -6,6 +6,7 @@ import type { SortingState } from "@tanstack/react-table";
 
 import { DataTable } from "@/components/shared/data-table";
 import { FilterBar } from "@/components/shared/filter-bar";
+import { PageToolbar } from "@/components/shared/page-toolbar";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { Button } from "@/components/ui/button";
 import { createQueueColumns } from "./queue-columns";
@@ -59,23 +60,26 @@ export function QueueListPage({ search }: QueueListPageProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="flex-1">
+      <PageToolbar
+        ariaLabel={t("queues.title")}
+        primary={
           <FilterBar
             name={search.name}
             useRegex={search.useRegex}
             onSubmit={(name, useRegex) => updateSearch({ name, useRegex, page: 1 })}
           />
-        </div>
-        <Button onClick={() => setCreateDialogOpen(true)}>
-          {t("common.add")} Queue
-        </Button>
-      </div>
+        }
+        secondary={
+          <Button onClick={() => setCreateDialogOpen(true)}>
+            {t("common.add")} Queue
+          </Button>
+        }
+      />
 
       <CreateQueueDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
-        vhost="%2F"
+        vhost="/"
       />
 
       <DataTable

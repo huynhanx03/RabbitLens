@@ -78,6 +78,10 @@ describe("AppTopbar", () => {
     expect(
       screen.queryByRole("button", { name: "Density" }),
     ).not.toBeInTheDocument();
+    expect(screen.getByRole("banner")).toHaveClass("rl-topbar");
+    expect(screen.getByTestId("topbar-controls")).toHaveClass(
+      "rl-topbar-controls",
+    );
   });
 
   it("exposes user identity and sign out from the account menu", async () => {

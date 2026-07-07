@@ -32,8 +32,9 @@ export function createQueueColumns(
       accessorKey: "name",
       header: t("queues.name"),
       enableSorting: true,
+      meta: { className: "min-w-60 max-w-[24rem]", variant: "code", wrap: "break" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-sm font-medium whitespace-nowrap">
+        <span className="font-mono text-sm font-medium">
           {getValue<string>()}
         </span>
       ),
@@ -46,6 +47,7 @@ export function createQueueColumns(
     {
       accessorKey: "features",
       header: t("queues.features"),
+      meta: { wrap: "normal" },
       cell: ({ getValue }) => {
         const features = getValue<string[]>();
         if (features.length === 0) return null;
@@ -64,6 +66,7 @@ export function createQueueColumns(
       accessorKey: "state",
       header: t("queues.state"),
       enableSorting: true,
+      meta: { align: "center", variant: "status" },
       cell: ({ getValue }) => {
         const state = getValue<string>();
         return (
@@ -77,6 +80,7 @@ export function createQueueColumns(
       accessorKey: "messagesReady",
       header: t("queues.ready"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => (
         <span className="tabular-nums">{getValue<number>()}</span>
       ),
@@ -85,6 +89,7 @@ export function createQueueColumns(
       accessorKey: "messagesUnacked",
       header: t("queues.unacked"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => (
         <span className="tabular-nums">{getValue<number>()}</span>
       ),
@@ -93,6 +98,7 @@ export function createQueueColumns(
       accessorKey: "messagesTotal",
       header: t("queues.total"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => (
         <span className="tabular-nums font-medium">{getValue<number>()}</span>
       ),
@@ -101,6 +107,7 @@ export function createQueueColumns(
       accessorKey: "publishRate",
       header: t("queues.publishRate"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => {
         const val = getValue<number | null>();
         return <span className="tabular-nums">{val !== null ? val.toFixed(1) : "—"}</span>;
@@ -110,6 +117,7 @@ export function createQueueColumns(
       accessorKey: "deliverRate",
       header: t("queues.deliverRate"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => {
         const val = getValue<number | null>();
         return <span className="tabular-nums">{val !== null ? val.toFixed(1) : "—"}</span>;
@@ -119,6 +127,7 @@ export function createQueueColumns(
       accessorKey: "ackRate",
       header: t("queues.ackRate"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => {
         const val = getValue<number | null>();
         return <span className="tabular-nums">{val !== null ? val.toFixed(1) : "—"}</span>;

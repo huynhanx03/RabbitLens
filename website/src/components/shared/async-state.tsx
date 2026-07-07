@@ -10,6 +10,7 @@ type AsyncStateProps = {
   error?: unknown;
   isEmpty?: boolean;
   isError?: boolean;
+  hasData?: boolean;
   isFetching?: boolean;
   isPending?: boolean;
   isUnavailable?: boolean;
@@ -28,6 +29,8 @@ function getErrorTranslationKey(kind: ApiErrorKind) {
       return "errors.forbidden";
     case "not-found":
       return "errors.notFound";
+    case "conflict":
+      return "errors.conflict";
     case "validation":
       return "errors.validation";
     case "network":
@@ -48,6 +51,7 @@ export function AsyncState({
   error,
   isEmpty = false,
   isError = false,
+  hasData = false,
   isFetching = false,
   isPending = false,
   isUnavailable = false,
@@ -83,6 +87,25 @@ export function AsyncState({
     const messageKey = apiError
       ? getErrorTranslationKey(apiError.kind)
       : "errors.unexpected";
+
+    if (hasData) {
+      return (
+        <div className="space-y-3">
+          <Alert>
+            <AlertTitle>{t("errors.staleData")}</AlertTitle>
+            <AlertDescription className="flex flex-wrap items-center gap-3">
+              <span>{t(messageKey)}</span>
+              {apiError?.retryable && onRetry ? (
+                <Button type="button" variant="outline" onClick={onRetry}>
+                  {t("common.retry")}
+                </Button>
+              ) : null}
+            </AlertDescription>
+          </Alert>
+          {children}
+        </div>
+      );
+    }
 
     if (apiError?.kind === "not-found" && notFoundAction) {
       return (

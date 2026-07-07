@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { isExtensionAvailable, getAvailableExtensionNavigation, extensionRegistry } from "./extension-registry";
+import {
+  getAvailableExtensionNavigation,
+  isExtensionInstalled,
+  extensionRegistry,
+} from "./extension-registry";
 
 describe("Extension Registry", () => {
   const allMarkers = [
@@ -15,22 +19,14 @@ describe("Extension Registry", () => {
   const monitoringTags: string[] = ["monitoring"];
   const noTags: string[] = [];
 
-  it("returns available extensions based on markers and tags", () => {
-    // Admin has access to everything if markers are present
-    expect(isExtensionAvailable("federation", allMarkers, adminTags)).toBe(true);
-    expect(isExtensionAvailable("top", allMarkers, adminTags)).toBe(true);
-    
-    // Monitoring user cannot access Top (requires admin)
-    expect(isExtensionAvailable("federation", allMarkers, monitoringTags)).toBe(true);
-    expect(isExtensionAvailable("top", allMarkers, monitoringTags)).toBe(false);
-
-    // User with no tags cannot access anything
-    expect(isExtensionAvailable("federation", allMarkers, noTags)).toBe(false);
+  it("resolves broker installation independently from user authorization", () => {
+    expect(isExtensionInstalled("federation", allMarkers)).toBe(true);
+    expect(isExtensionInstalled("top", allMarkers)).toBe(true);
   });
 
   it("returns false if marker is missing", () => {
     const markersWithoutTop = allMarkers.filter(m => m.javascript !== "top.js");
-    expect(isExtensionAvailable("top", markersWithoutTop, adminTags)).toBe(false);
+    expect(isExtensionInstalled("top", markersWithoutTop)).toBe(false);
   });
 
   it("getAvailableExtensionNavigation returns correctly filtered list", () => {
@@ -48,7 +44,7 @@ describe("Extension Registry", () => {
   });
 
   it("handles empty markers", () => {
-    expect(isExtensionAvailable("federation", [], adminTags)).toBe(false);
+    expect(isExtensionInstalled("federation", [])).toBe(false);
     expect(getAvailableExtensionNavigation([], adminTags).length).toBe(0);
   });
 

@@ -2,7 +2,7 @@ import type { ResourceListSearch } from "@/api/pagination-schema";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
-import { createQueue, deleteQueue, purgeQueue, getMessages, type CreateQueueRequest, type GetMessagesRequest } from "./queue-api";
+import { createQueue, deleteQueue, purgeQueue, getMessages, runQueueAction, type CreateQueueRequest, type GetMessagesRequest, type QueueAction } from "./queue-api";
 
 export const queueKeys = {
   all: ["queues"] as const,
@@ -57,5 +57,15 @@ export function useGetMessagesMutation(apiClient: ManagementApiClient) {
     mutationFn: async (params: { vhost: string; name: string; request: GetMessagesRequest }) => {
       return await getMessages(apiClient, params.vhost, params.name, params.request);
     },
+  });
+}
+
+export function useQueueActionMutation(apiClient: ManagementApiClient) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ vhost, name, action }: { vhost: string; name: string; action: QueueAction }) =>
+      runQueueAction(apiClient, vhost, name, action),
+    onSuccess: (_, { vhost, name }) =>
+      queryClient.invalidateQueries({ queryKey: queueKeys.detail(vhost, name) }),
   });
 }

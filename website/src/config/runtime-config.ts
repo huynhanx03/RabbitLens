@@ -8,7 +8,7 @@ export const RUNTIME_CONFIG_FILE_NAME = "runtime-config.json";
 export async function loadRuntimeConfig(
   fetcher: typeof fetch = fetch,
 ): Promise<RuntimeConfig> {
-  const url = new URL(RUNTIME_CONFIG_FILE_NAME, document.baseURI);
+  const url = new URL(`/${RUNTIME_CONFIG_FILE_NAME}`, window.location.origin);
   const response = await fetcher(url, { cache: "no-store" });
 
   if (!response.ok) {

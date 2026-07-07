@@ -75,32 +75,28 @@ export const extensionRegistry: ExtensionDescriptor[] = [
 
 import { evaluatePermission } from "@/auth/permissions/permission-decision";
 
-export function isExtensionAvailable(
+export function isExtensionInstalled(
   id: ExtensionId,
   availableMarkers: Array<{ javascript?: string; javascript_src?: string }>,
-  userTags: readonly string[]
 ): boolean {
   const descriptor = extensionRegistry.find(ext => ext.id === id);
   if (!descriptor) return false;
 
-  const hasMarker = availableMarkers.some(ext => 
+  return availableMarkers.some(ext =>
     ext.javascript === descriptor.marker || 
     (ext.javascript_src && ext.javascript_src.includes(descriptor.marker))
   );
-  if (!hasMarker) return false;
-
-  // Re-use evaluatePermission logic but we have to mock AuthenticatedUser since this takes raw tags
-  const mockUser = { name: "unknown", tags: userTags };
-  const decision = evaluatePermission(descriptor.accessPolicy, mockUser, null);
-  
-  return decision.kind !== "deny";
 }
 
 export function getAvailableExtensionNavigation(
   availableMarkers: Array<{ javascript?: string; javascript_src?: string }>,
   userTags: readonly string[]
 ): ExtensionDescriptor[] {
-  return extensionRegistry.filter(descriptor => 
-    isExtensionAvailable(descriptor.id, availableMarkers, userTags)
+  const user = { name: "navigation", tags: [...userTags] };
+
+  return extensionRegistry.filter(
+    (descriptor) =>
+      isExtensionInstalled(descriptor.id, availableMarkers) &&
+      evaluatePermission(descriptor.accessPolicy, user, null).kind !== "deny",
   );
 }

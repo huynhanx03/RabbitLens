@@ -51,7 +51,7 @@ describe("ExchangeDetailPage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getAllByText("direct")).toHaveLength(2);
+      expect(screen.getByText("direct")).toBeInTheDocument();
       expect(screen.getByText("D")).toBeInTheDocument();
     });
 

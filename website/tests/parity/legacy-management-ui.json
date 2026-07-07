@@ -6,10 +6,27 @@
     "rabbitLensRoute": "/",
     "routeModule": "src/app/routes/_authenticated/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
+    "evidence": [
+      "tests/e2e/dashboard-detail-redesign.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/overview",
+    "uiSurface": "Page or detail section: overview",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "monitoring",
+    "userGoal": "Read page or detail section: overview using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/ from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /, GET /api/overview, and evidence in tests/e2e/dashboard-detail-redesign.spec.ts."
   },
   {
     "sourceKey": "nodes",
@@ -18,10 +35,27 @@
     "rabbitLensRoute": "/nodes",
     "routeModule": "src/app/routes/_authenticated/nodes/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
+    "evidence": [
+      "tests/e2e/dashboard-detail-redesign.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/nodes, /api/nodes/{name}",
+    "uiSurface": "Page or detail section: nodes",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/nodes/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "monitoring",
+    "userGoal": "Read page or detail section: nodes using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/nodes/:name from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /nodes, GET /api/nodes, /api/nodes/{name}, and evidence in tests/e2e/dashboard-detail-redesign.spec.ts."
   },
   {
     "sourceKey": "connections",
@@ -30,10 +64,28 @@
     "rabbitLensRoute": "/connections",
     "routeModule": "src/app/routes/_authenticated/connections/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/connections-redesign.spec.ts"],
+    "evidence": [
+      "tests/e2e/connections-redesign.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/connections",
+    "uiSurface": "Page or detail section: connections",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/connections/index.tsx",
+      "src/domains/connections/connection-api.ts"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "topology",
+    "userGoal": "Read page or detail section: connections using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/connections from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /connections, GET /api/connections, and evidence in tests/e2e/connections-redesign.spec.ts."
   },
   {
     "sourceKey": "channels",
@@ -42,10 +94,28 @@
     "rabbitLensRoute": "/channels",
     "routeModule": "src/app/routes/_authenticated/channels/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
+    "evidence": [
+      "tests/e2e/dashboard-detail-redesign.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/channels",
+    "uiSurface": "Page or detail section: channels",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/channels/index.tsx",
+      "src/domains/channels/channel-schema.ts"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "topology",
+    "userGoal": "Read page or detail section: channels using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/channels from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /channels, GET /api/channels, and evidence in tests/e2e/dashboard-detail-redesign.spec.ts."
   },
   {
     "sourceKey": "exchanges",
@@ -54,10 +124,27 @@
     "rabbitLensRoute": "/exchanges",
     "routeModule": "src/app/routes/_authenticated/exchanges/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/exchanges",
+    "uiSurface": "Page or detail section: exchanges",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/exchanges/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "topology",
+    "userGoal": "Read page or detail section: exchanges using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/exchanges from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /exchanges, GET /api/exchanges, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "queues",
@@ -66,10 +153,28 @@
     "rabbitLensRoute": "/queues",
     "routeModule": "src/app/routes/_authenticated/queues/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/queues",
+    "uiSurface": "Page or detail section: queues",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/index.tsx",
+      "src/domains/queues/queue-api.ts"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "topology",
+    "userGoal": "Read page or detail section: queues using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/queues from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues, GET /api/queues, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-users",
@@ -78,10 +183,26 @@
     "rabbitLensRoute": "/admin/users",
     "routeModule": "src/app/routes/_authenticated/admin/users/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/users",
+    "uiSurface": "Page or detail section: admin users",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/users/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin users using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/users from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/users, GET /api/users, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-vhosts",
@@ -90,10 +211,26 @@
     "rabbitLensRoute": "/admin/vhosts",
     "routeModule": "src/app/routes/_authenticated/admin/vhosts/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/vhosts",
+    "uiSurface": "Page or detail section: admin vhosts",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/vhosts/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin vhosts using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/vhosts from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/vhosts, GET /api/vhosts, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-policies",
@@ -102,10 +239,26 @@
     "rabbitLensRoute": "/admin/policies",
     "routeModule": "src/app/routes/_authenticated/admin/policies/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/policies, /api/operator-policies",
+    "uiSurface": "Page or detail section: admin policies",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/policies/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin policies using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/policies from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/policies, GET /api/policies, /api/operator-policies, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-limits",
@@ -114,10 +267,26 @@
     "rabbitLensRoute": "/admin/limits",
     "routeModule": "src/app/routes/_authenticated/admin/limits/index.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["management"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/vhost-limits, /api/user-limits",
+    "uiSurface": "Page or detail section: admin limits",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/limits/index.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin limits using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/limits from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/limits, GET /api/vhost-limits, /api/user-limits, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-feature-flags",
@@ -126,10 +295,26 @@
     "rabbitLensRoute": "/admin/feature-flags",
     "routeModule": "src/app/routes/_authenticated/admin/feature-flags.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/feature-flags",
+    "uiSurface": "Page or detail section: admin feature flags",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/feature-flags.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin feature flags using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/feature-flags from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/feature-flags, GET /api/feature-flags, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-deprecated-features",
@@ -138,10 +323,26 @@
     "rabbitLensRoute": "/admin/deprecated-features",
     "routeModule": "src/app/routes/_authenticated/admin/deprecated-features.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/deprecated-features",
+    "uiSurface": "Page or detail section: admin deprecated features",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/deprecated-features.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin deprecated features using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/deprecated-features from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/deprecated-features, GET /api/deprecated-features, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "admin-cluster",
@@ -150,10 +351,26 @@
     "rabbitLensRoute": "/admin/cluster",
     "routeModule": "src/app/routes/_authenticated/admin/cluster.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": []
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/cluster-name",
+    "uiSurface": "Page or detail section: admin cluster",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/admin/cluster.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "administration",
+    "userGoal": "Read page or detail section: admin cluster using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/cluster-name from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /admin/cluster, GET /api/cluster-name, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "federation-status",
@@ -162,10 +379,29 @@
     "rabbitLensRoute": "/extensions/federation/status",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/status.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": ["federation"]
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [
+      "federation"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/federation-links",
+    "uiSurface": "Page or detail section: federation status",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/federation/status.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: federation status using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/federation from ../rabbitmq-server/deps/rabbitmq_federation_management/priv/www/js/federation.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/federation/status, GET /api/federation-links, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "federation-upstreams",
@@ -174,10 +410,28 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "read",
-    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/federation/federation-upstream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["federation"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "federation"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/parameters/federation-upstream",
+    "uiSurface": "Page or detail section: federation upstreams",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: federation upstreams using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/federation-upstreams from ../rabbitmq-server/deps/rabbitmq_federation_management/priv/www/js/federation.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/federation/upstreams, GET /api/parameters/federation-upstream, and evidence in src/domains/extensions/federation/federation-upstream-api.test.ts."
   },
   {
     "sourceKey": "federation-upstream-create",
@@ -186,10 +440,28 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "create",
-    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/federation/federation-upstream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["federation"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "federation"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
+    "uiSurface": "Create form: federation upstream create",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Create create form: federation upstream create using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes PUT #/fed-parameters from ../rabbitmq-server/deps/rabbitmq_federation_management/priv/www/js/federation.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/federation/upstreams, PUT /api/parameters/federation-upstream/{vhost}/{name}, and evidence in src/domains/extensions/federation/federation-upstream-api.test.ts."
   },
   {
     "sourceKey": "federation-upstream-update",
@@ -198,10 +470,28 @@
     "rabbitLensRoute": "/extensions/federation/upstreams/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/$vhost.$name.tsx",
     "capability": "update",
-    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/federation/federation-upstream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["federation"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "federation"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
+    "uiSurface": "Edit form: federation upstream update",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/federation/upstreams/$vhost.$name.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Update edit form: federation upstream update using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/federation-upstreams/:vhost/:id from ../rabbitmq-server/deps/rabbitmq_federation_management/priv/www/js/federation.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/federation/upstreams/:vhost/:name, PUT /api/parameters/federation-upstream/{vhost}/{name}, and evidence in src/domains/extensions/federation/federation-upstream-api.test.ts."
   },
   {
     "sourceKey": "federation-upstream-delete",
@@ -210,10 +500,28 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "delete",
-    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/federation/federation-upstream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["federation"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "federation"
+    ],
+    "apiMethod": "DELETE",
+    "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
+    "uiSurface": "Delete control: federation upstream delete",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Delete delete control: federation upstream delete using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes DELETE #/fed-parameters from ../rabbitmq-server/deps/rabbitmq_federation_management/priv/www/js/federation.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/federation/upstreams, DELETE /api/parameters/federation-upstream/{vhost}/{name}, and evidence in src/domains/extensions/federation/federation-upstream-api.test.ts."
   },
   {
     "sourceKey": "shovel-status",
@@ -222,10 +530,29 @@
     "rabbitLensRoute": "/extensions/shovels/status",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/status.tsx",
     "capability": "read",
-    "evidence": ["tests/e2e/parity.spec.ts"],
+    "evidence": [
+      "tests/e2e/parity.spec.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": ["shovel"]
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/shovels",
+    "uiSurface": "Page or detail section: shovel status",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/shovels/status.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: shovel status using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/shovels from ../rabbitmq-server/deps/rabbitmq_shovel_management/priv/www/js/shovel.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/shovels/status, GET /api/shovels, and evidence in tests/e2e/parity.spec.ts."
   },
   {
     "sourceKey": "dynamic-shovels",
@@ -234,10 +561,28 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "read",
-    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["shovel"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/parameters/shovel",
+    "uiSurface": "Page or detail section: dynamic shovels",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/shovels/management/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: dynamic shovels using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/dynamic-shovels from ../rabbitmq-server/deps/rabbitmq_shovel_management/priv/www/js/shovel.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/shovels/management, GET /api/parameters/shovel, and evidence in src/domains/extensions/shovels/shovel-parameter-api.test.ts."
   },
   {
     "sourceKey": "dynamic-shovel-create",
@@ -246,10 +591,28 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "create",
-    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["shovel"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/parameters/shovel/{vhost}/{name}",
+    "uiSurface": "Create form: dynamic shovel create",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/shovels/management/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Create create form: dynamic shovel create using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes PUT #/shovel-parameters from ../rabbitmq-server/deps/rabbitmq_shovel_management/priv/www/js/shovel.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/shovels/management, PUT /api/parameters/shovel/{vhost}/{name}, and evidence in src/domains/extensions/shovels/shovel-parameter-api.test.ts."
   },
   {
     "sourceKey": "dynamic-shovel-update",
@@ -258,10 +621,28 @@
     "rabbitLensRoute": "/extensions/shovels/management/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/$vhost.$name.tsx",
     "capability": "update",
-    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["shovel"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/parameters/shovel/{vhost}/{name}",
+    "uiSurface": "Edit form: dynamic shovel update",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/shovels/management/$vhost.$name.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Update edit form: dynamic shovel update using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/dynamic-shovels/:vhost/:id from ../rabbitmq-server/deps/rabbitmq_shovel_management/priv/www/js/shovel.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/shovels/management/:vhost/:name, PUT /api/parameters/shovel/{vhost}/{name}, and evidence in src/domains/extensions/shovels/shovel-parameter-api.test.ts."
   },
   {
     "sourceKey": "dynamic-shovel-delete",
@@ -270,10 +651,28 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "delete",
-    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["policymaker"],
-    "requiredExtensions": ["shovel"]
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "DELETE",
+    "apiPath": "/api/parameters/shovel/{vhost}/{name}",
+    "uiSurface": "Delete control: dynamic shovel delete",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/shovels/management/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Delete delete control: dynamic shovel delete using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes DELETE #/shovel-parameters from ../rabbitmq-server/deps/rabbitmq_shovel_management/priv/www/js/shovel.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/shovels/management, DELETE /api/parameters/shovel/{vhost}/{name}, and evidence in src/domains/extensions/shovels/shovel-parameter-api.test.ts."
   },
   {
     "sourceKey": "stream-connections",
@@ -282,10 +681,29 @@
     "rabbitLensRoute": "/extensions/streams/connections",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/connections/index.tsx",
     "capability": "read",
-    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/streams/stream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring", "management"],
-    "requiredExtensions": ["streams"]
+    "requiredTags": [
+      "monitoring",
+      "management"
+    ],
+    "requiredExtensions": [
+      "streams"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/stream/connections",
+    "uiSurface": "Page or detail section: stream connections",
+    "permission": "monitoring or management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/streams/connections/index.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: stream connections using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/stream/connections from ../rabbitmq-server/deps/rabbitmq_stream_management/priv/www/js/stream.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/streams/connections, GET /api/stream/connections, and evidence in src/domains/extensions/streams/stream-api.test.ts."
   },
   {
     "sourceKey": "stream-connection-detail",
@@ -294,10 +712,28 @@
     "rabbitLensRoute": "/extensions/streams/connections/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/connections/$vhost.$name.tsx",
     "capability": "read",
-    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/streams/stream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["monitoring"],
-    "requiredExtensions": ["streams"]
+    "requiredTags": [
+      "monitoring"
+    ],
+    "requiredExtensions": [
+      "streams"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/stream/connections/{vhost}/{name}",
+    "uiSurface": "Page or detail section: stream connection detail",
+    "permission": "monitoring",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/streams/connections/$vhost.$name.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: stream connection detail using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/stream/connections/:vhost/:name from ../rabbitmq-server/deps/rabbitmq_stream_management/priv/www/js/stream.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/streams/connections/:vhost/:name, GET /api/stream/connections/{vhost}/{name}, and evidence in src/domains/extensions/streams/stream-api.test.ts."
   },
   {
     "sourceKey": "super-stream-create",
@@ -306,10 +742,28 @@
     "rabbitLensRoute": "/extensions/streams/super-streams",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/super-streams.tsx",
     "capability": "create",
-    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
+    "evidence": [
+      "src/domains/extensions/streams/stream-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["management"],
-    "requiredExtensions": ["streams"]
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [
+      "streams"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/stream/super-streams/{vhost}/{name}",
+    "uiSurface": "Create form: super stream create",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/streams/super-streams.tsx"
+    ],
+    "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
+    "category": "plugin-extension",
+    "userGoal": "Create create form: super stream create using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes PUT #/stream/super-streams from ../rabbitmq-server/deps/rabbitmq_stream_management/priv/www/js/stream.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/streams/super-streams, PUT /api/stream/super-streams/{vhost}/{name}, and evidence in src/domains/extensions/streams/stream-api.test.ts."
   },
   {
     "sourceKey": "top-processes",
@@ -318,10 +772,29 @@
     "rabbitLensRoute": "/extensions/top",
     "routeModule": "src/app/routes/_authenticated/extensions/top/index.tsx",
     "capability": "read",
-    "evidence": ["src/features/top/top-page.test.tsx", "src/domains/extensions/top/top-api.test.ts"],
+    "evidence": [
+      "src/features/top/top-page.test.tsx",
+      "src/domains/extensions/top/top-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["top"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "top"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/top/{node}",
+    "uiSurface": "Page or detail section: top processes",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/top/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: top processes using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/top from ../rabbitmq-server/deps/rabbitmq_top/priv/www/js/top.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/top, GET /api/top/{node}, and evidence in src/features/top/top-page.test.tsx, src/domains/extensions/top/top-api.test.ts."
   },
   {
     "sourceKey": "top-ets-tables",
@@ -330,10 +803,29 @@
     "rabbitLensRoute": "/extensions/top/ets",
     "routeModule": "src/app/routes/_authenticated/extensions/top/ets.tsx",
     "capability": "read",
-    "evidence": ["src/features/top/ets-tables-page.test.tsx", "src/domains/extensions/top/top-api.test.ts"],
+    "evidence": [
+      "src/features/top/ets-tables-page.test.tsx",
+      "src/domains/extensions/top/top-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["top"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "top"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/top/ets/{node}",
+    "uiSurface": "Page or detail section: top ets tables",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/top/ets.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: top ets tables using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/top/ets from ../rabbitmq-server/deps/rabbitmq_top/priv/www/js/top.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/top/ets, GET /api/top/ets/{node}, and evidence in src/features/top/ets-tables-page.test.tsx, src/domains/extensions/top/top-api.test.ts."
   },
   {
     "sourceKey": "top-process-detail",
@@ -342,10 +834,29 @@
     "rabbitLensRoute": "/extensions/top/process/:pid",
     "routeModule": "src/app/routes/_authenticated/extensions/top/process/$pid.tsx",
     "capability": "read",
-    "evidence": ["src/features/top/process-detail-page.test.tsx", "src/domains/extensions/top/top-api.test.ts"],
+    "evidence": [
+      "src/features/top/process-detail-page.test.tsx",
+      "src/domains/extensions/top/top-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["top"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "top"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/top/process/{node}/{pid}",
+    "uiSurface": "Page or detail section: top process detail",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/top/process/$pid.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: top process detail using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/process/:pid from ../rabbitmq-server/deps/rabbitmq_top/priv/www/js/top.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/top/process/:pid, GET /api/top/process/{node}/{pid}, and evidence in src/features/top/process-detail-page.test.tsx, src/domains/extensions/top/top-api.test.ts."
   },
   {
     "sourceKey": "tracing",
@@ -354,10 +865,29 @@
     "rabbitLensRoute": "/extensions/tracing",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/index.tsx",
     "capability": "read",
-    "evidence": ["src/features/tracing/tracing-page.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/tracing-page.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/traces",
+    "uiSurface": "Page or detail section: tracing",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: tracing using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/traces from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing, GET /api/traces, and evidence in src/features/tracing/tracing-page.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
   },
   {
     "sourceKey": "tracing-detail",
@@ -366,10 +896,29 @@
     "rabbitLensRoute": "/extensions/tracing/:node/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/$node.$vhost.$name.tsx",
     "capability": "read",
-    "evidence": ["src/features/tracing/trace-detail-page.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/trace-detail-page.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/traces/{vhost}/{name}",
+    "uiSurface": "Page or detail section: tracing detail",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/$node.$vhost.$name.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: tracing detail using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes #/traces/node/:node/:vhost/:name from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing/:node/:vhost/:name, GET /api/traces/{vhost}/{name}, and evidence in src/features/tracing/trace-detail-page.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
   },
   {
     "sourceKey": "tracing-create",
@@ -378,10 +927,29 @@
     "rabbitLensRoute": "/extensions/tracing",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/index.tsx",
     "capability": "create",
-    "evidence": ["src/features/tracing/trace-form.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/trace-form.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/traces/{vhost}/{name}",
+    "uiSurface": "Create form: tracing create",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Create create form: tracing create using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes PUT #/traces/node/:node from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing, PUT /api/traces/{vhost}/{name}, and evidence in src/features/tracing/trace-form.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
   },
   {
     "sourceKey": "tracing-delete",
@@ -390,10 +958,29 @@
     "rabbitLensRoute": "/extensions/tracing",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/index.tsx",
     "capability": "delete",
-    "evidence": ["src/features/tracing/tracing-page.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/tracing-page.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "DELETE",
+    "apiPath": "/api/traces/{vhost}/{name}",
+    "uiSurface": "Delete control: tracing delete",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Delete delete control: tracing delete using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes DELETE #/traces/node/:node from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing, DELETE /api/traces/{vhost}/{name}, and evidence in src/features/tracing/tracing-page.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
   },
   {
     "sourceKey": "tracing-files",
@@ -402,10 +989,29 @@
     "rabbitLensRoute": "/extensions/tracing?tab=files",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/index.tsx",
     "capability": "read",
-    "evidence": ["src/features/tracing/tracing-page.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/tracing-page.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/trace-files/{node}",
+    "uiSurface": "Page or detail section: tracing files",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: tracing files using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes GET /trace-files/node/:node from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing?tab=files, GET /api/trace-files/{node}, and evidence in src/features/tracing/tracing-page.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
   },
   {
     "sourceKey": "tracing-file-delete",
@@ -414,9 +1020,281 @@
     "rabbitLensRoute": "/extensions/tracing?tab=files",
     "routeModule": "src/app/routes/_authenticated/extensions/tracing/index.tsx",
     "capability": "delete",
-    "evidence": ["src/features/tracing/tracing-page.test.tsx", "src/domains/extensions/tracing/tracing-api.test.ts"],
+    "evidence": [
+      "src/features/tracing/tracing-page.test.tsx",
+      "src/domains/extensions/tracing/tracing-api.test.ts"
+    ],
     "status": "covered",
-    "requiredTags": ["administrator"],
-    "requiredExtensions": ["tracing"]
+    "requiredTags": [
+      "administrator"
+    ],
+    "requiredExtensions": [
+      "tracing"
+    ],
+    "apiMethod": "DELETE",
+    "apiPath": "/api/trace-files/{node}/{name}",
+    "uiSurface": "Delete control: tracing file delete",
+    "permission": "administrator",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
+    ],
+    "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
+    "category": "plugin-extension",
+    "userGoal": "Delete delete control: tracing file delete using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes DELETE #/trace-files/node/:node from ../rabbitmq-server/deps/rabbitmq_tracing/priv/www/js/tracing.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /extensions/tracing?tab=files, DELETE /api/trace-files/{node}/{name}, and evidence in src/features/tracing/tracing-page.test.tsx, src/domains/extensions/tracing/tracing-api.test.ts."
+  },
+  {
+    "sourceKey": "connection-amqp10-sessions",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js",
+    "sourceRouteOrAction": "GET /connections/:name/sessions",
+    "rabbitLensRoute": "/connections/:name?protocol=amqp10",
+    "routeModule": "src/app/routes/_authenticated/connections/$name.tsx",
+    "capability": "read",
+    "evidence": [
+      "src/domains/connections/session-schema.test.ts",
+      "src/features/connections/connection-detail-page.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/connections/{name}/sessions",
+    "uiSurface": "Page or detail section: connection amqp10 sessions",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/connections/$name.tsx",
+      "src/domains/connections/connection-api.ts",
+      "src/domains/connections/session-schema.ts",
+      "src/features/connections/amqp-session-list.tsx"
+    ],
+    "compatibility": "AMQP 1.0 sessions are requested only for AMQP 1.0 protocols; AMQP 0-9-1 continues to use channels.",
+    "category": "operations",
+    "userGoal": "Read page or detail section: connection amqp10 sessions using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes GET /connections/:name/sessions from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /connections/:name?protocol=amqp10, GET /api/connections/{name}/sessions, and evidence in src/domains/connections/session-schema.test.ts, src/features/connections/connection-detail-page.test.tsx."
+  },
+  {
+    "sourceKey": "channel-consumer-details",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/channel.ejs",
+    "sourceRouteOrAction": "channel.consumer_details",
+    "rabbitLensRoute": "/channels/:name?section=consumers",
+    "routeModule": "src/app/routes/_authenticated/channels/$name.tsx",
+    "capability": "read",
+    "evidence": [
+      "src/domains/consumers/consumer-schema.test.ts",
+      "src/features/consumers/consumer-table.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/channels/{name}",
+    "uiSurface": "Page or detail section: channel consumer details",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/channels/$name.tsx",
+      "src/domains/consumers/consumer-schema.ts",
+      "src/features/consumers/consumer-table.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "operations",
+    "userGoal": "Read page or detail section: channel consumer details using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes channel.consumer_details from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/channel.ejs for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /channels/:name?section=consumers, GET /api/channels/{name}, and evidence in src/domains/consumers/consumer-schema.test.ts, src/features/consumers/consumer-table.test.tsx."
+  },
+  {
+    "sourceKey": "queue-consumer-replication-details",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs",
+    "sourceRouteOrAction": "queue.consumer_details and queue members",
+    "rabbitLensRoute": "/queues/:vhost/:name?section=operations",
+    "routeModule": "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+    "capability": "read",
+    "evidence": [
+      "src/features/queues/queue-replication-state.test.tsx",
+      "src/domains/queues/queue-schema.test.ts"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/queues/{vhost}/{name}",
+    "uiSurface": "Page or detail section: queue consumer replication details",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+      "src/domains/queues/queue-schema.ts",
+      "src/features/queues/queue-replication-state.tsx",
+      "src/features/consumers/consumer-table.tsx"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "operations",
+    "userGoal": "Read page or detail section: queue consumer replication details using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes queue.consumer_details and queue members from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues/:vhost/:name?section=operations, GET /api/queues/{vhost}/{name}, and evidence in src/features/queues/queue-replication-state.test.tsx, src/domains/queues/queue-schema.test.ts."
+  },
+  {
+    "sourceKey": "queue-publish-direct",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs",
+    "sourceRouteOrAction": "POST default exchange publish from queue",
+    "rabbitLensRoute": "/queues/:vhost/:name?action=publish",
+    "routeModule": "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+    "capability": "action",
+    "evidence": [
+      "src/features/queues/queue-detail-page.test.tsx",
+      "src/domains/exchanges/exchange-api.test.ts"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "POST",
+    "apiPath": "/api/exchanges/{vhost}/amq.default/publish",
+    "uiSurface": "Action control: queue publish direct",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+      "src/features/exchanges/publish-message-dialog.tsx",
+      "src/domains/queues/queue-api.ts"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "operations",
+    "userGoal": "Action action control: queue publish direct using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes POST default exchange publish from queue from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues/:vhost/:name?action=publish, POST /api/exchanges/{vhost}/amq.default/publish, and evidence in src/features/queues/queue-detail-page.test.tsx, src/domains/exchanges/exchange-api.test.ts."
+  },
+  {
+    "sourceKey": "queue-sync-actions",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js",
+    "sourceRouteOrAction": "POST /queues/:vhost/:name/actions",
+    "rabbitLensRoute": "/queues/:vhost/:name?action=sync",
+    "routeModule": "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+    "capability": "action",
+    "evidence": [
+      "src/domains/queues/queue-api.test.ts",
+      "src/features/queues/queue-detail-page.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "POST",
+    "apiPath": "/api/queues/{vhost}/{name}/actions",
+    "uiSurface": "Action control: queue sync actions",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+      "src/domains/queues/queue-api.ts"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "operations",
+    "userGoal": "Action action control: queue sync actions using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes POST /queues/:vhost/:name/actions from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/dispatcher.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues/:vhost/:name?action=sync, POST /api/queues/{vhost}/{name}/actions, and evidence in src/domains/queues/queue-api.test.ts, src/features/queues/queue-detail-page.test.tsx."
+  },
+  {
+    "sourceKey": "queue-move-messages",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs",
+    "sourceRouteOrAction": "PUT #/shovel-parameters-move-messages",
+    "rabbitLensRoute": "/queues/:vhost/:name?action=move",
+    "routeModule": "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+    "capability": "action",
+    "evidence": [
+      "src/domains/extensions/shovels/shovel-parameter-api.test.ts",
+      "src/features/queues/move-messages-dialog.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "policymaker"
+    ],
+    "requiredExtensions": [
+      "shovel"
+    ],
+    "apiMethod": "PUT",
+    "apiPath": "/api/parameters/shovel/{vhost}/{name}",
+    "uiSurface": "Action control: queue move messages",
+    "permission": "policymaker",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+      "src/features/queues/move-messages-dialog.tsx",
+      "src/domains/extensions/shovels/shovel-parameter-api.ts"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "operations",
+    "userGoal": "Action action control: queue move messages using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes PUT #/shovel-parameters-move-messages from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/queue.ejs for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues/:vhost/:name?action=move, PUT /api/parameters/shovel/{vhost}/{name}, and evidence in src/domains/extensions/shovels/shovel-parameter-api.test.ts, src/features/queues/move-messages-dialog.test.tsx."
+  },
+  {
+    "sourceKey": "stream-queue-publishers",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_stream_management/priv/www/js/stream.js",
+    "sourceRouteOrAction": "GET /stream/publishers/:vhost/:queue",
+    "rabbitLensRoute": "/queues/:vhost/:name?section=stream-publishers",
+    "routeModule": "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+    "capability": "read",
+    "evidence": [
+      "src/domains/extensions/streams/stream-api.test.ts",
+      "src/features/queues/queue-detail-page.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "management"
+    ],
+    "requiredExtensions": [
+      "streams"
+    ],
+    "apiMethod": "GET",
+    "apiPath": "/api/stream/publishers/{vhost}/{queue}",
+    "uiSurface": "Page or detail section: stream queue publishers",
+    "permission": "management",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
+      "src/domains/extensions/streams/stream-api.ts",
+      "src/features/streams/stream-publisher-table.tsx"
+    ],
+    "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
+    "category": "plugin-extension",
+    "userGoal": "Read page or detail section: stream queue publishers using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes GET /stream/publishers/:vhost/:queue from ../rabbitmq-server/deps/rabbitmq_stream_management/priv/www/js/stream.js for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /queues/:vhost/:name?section=stream-publishers, GET /api/stream/publishers/{vhost}/{queue}, and evidence in src/domains/extensions/streams/stream-api.test.ts, src/features/queues/queue-detail-page.test.tsx."
+  },
+  {
+    "sourceKey": "node-operational-diagnostics",
+    "sourceFile": "../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/node.ejs",
+    "sourceRouteOrAction": "persistence, I/O and churn sections",
+    "rabbitLensRoute": "/nodes/:name?section=diagnostics",
+    "routeModule": "src/app/routes/_authenticated/nodes/$name.tsx",
+    "capability": "read",
+    "evidence": [
+      "src/api/nodes-schema.test.ts",
+      "src/features/nodes/node-operational-diagnostics.test.tsx"
+    ],
+    "status": "covered",
+    "requiredTags": [
+      "monitoring"
+    ],
+    "requiredExtensions": [],
+    "apiMethod": "GET",
+    "apiPath": "/api/nodes/{name}",
+    "uiSurface": "Page or detail section: node operational diagnostics",
+    "permission": "monitoring",
+    "implementationFiles": [
+      "src/app/routes/_authenticated/nodes/$name.tsx",
+      "src/api/nodes-schema.ts",
+      "src/features/nodes/node-operational-diagnostics.tsx"
+    ],
+    "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
+    "category": "operations",
+    "userGoal": "Read page or detail section: node operational diagnostics using RabbitMQ Management API-compatible data.",
+    "legacyBehavior": "Legacy RabbitMQ Management exposes persistence, I/O and churn sections from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/node.ejs for this operation.",
+    "rabbitLensCoverage": "RabbitLens covers this with /nodes/:name?section=diagnostics, GET /api/nodes/{name}, and evidence in src/api/nodes-schema.test.ts, src/features/nodes/node-operational-diagnostics.test.tsx."
   }
 ]

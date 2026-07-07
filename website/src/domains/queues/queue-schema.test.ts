@@ -54,4 +54,26 @@ describe("queueSchema", () => {
     expect(parsed.properties.headers).toEqual({ trace: "abc" });
     expect(parsed.future_field).toBe(true);
   });
+
+  it("types policy replication and consumer details", () => {
+    const parsed = queueSchema.parse({
+      name: "orders",
+      type: "quorum",
+      leader: "rabbit@one",
+      members: ["rabbit@one", "rabbit@two", "rabbit@three"],
+      online: ["rabbit@one", "rabbit@two"],
+      policy: "ha-orders",
+      operator_policy: "guardrails",
+      effective_policy_definition: { "delivery-limit": 20 },
+      consumer_capacity: 0.75,
+      consumer_details: [{
+        consumer_tag: "worker",
+        queue: { name: "orders", vhost: "/" },
+      }],
+    });
+
+    expect(parsed.members).toHaveLength(3);
+    expect(parsed.consumer_details?.[0]?.consumer_tag).toBe("worker");
+    expect(parsed.effective_policy_definition?.["delivery-limit"]).toBe(20);
+  });
 });

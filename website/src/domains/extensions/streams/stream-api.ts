@@ -33,7 +33,17 @@ export const streamConnectionSchema = z
   })
   .passthrough();
 
-export const streamPublisherSchema = z.record(z.string(), z.unknown());
+export const streamPublisherSchema = z
+  .object({
+    publisher_id: z.union([z.string(), z.number()]).optional(),
+    reference: z.string().nullish(),
+    published: z.number().optional(),
+    confirmed: z.number().optional(),
+    errored: z.number().optional(),
+    queue: z.object({ name: z.string(), vhost: z.string() }).passthrough().optional(),
+    connection_details: z.object({ name: z.string() }).passthrough().optional(),
+  })
+  .passthrough();
 export const streamConsumerSchema = z.record(z.string(), z.unknown());
 
 const streamConnectionsSchema = paginatedResponseSchema(streamConnectionSchema);
@@ -93,6 +103,19 @@ export function getStreamConnectionConsumers(
   return client.request(
     `${connectionPath(vhost, name)}/consumers`,
     z.array(streamConsumerSchema),
+  );
+}
+
+export function getStreamQueuePublishers(
+  client: ManagementApiClient,
+  vhost: string,
+  queue: string,
+  signal?: AbortSignal,
+) {
+  return client.request(
+    `/stream/publishers/${encodeURIComponent(vhost)}/${encodeURIComponent(queue)}`,
+    z.array(streamPublisherSchema),
+    { signal },
   );
 }
 

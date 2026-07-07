@@ -1,4 +1,4 @@
-import { useRouteContext, Link } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useUsers } from "@/domains/admin/users/user-query";
 import { DataTable } from "@/components/shared/data-table";
 import { FilterBar } from "@/components/shared/filter-bar";
@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 export function UserListPage() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "/_authenticated/admin/users/" });
+  const navigate = useNavigate({ from: "/admin/users/" });
   const { data: users, isPending, isError, error } = useUsers(context.apiClient);
   const [filter, setFilter] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -39,13 +40,7 @@ export function UserListPage() {
       accessorKey: "name",
       header: t("users.name"),
       cell: ({ row }) => (
-        <Link 
-          to="/admin/users/$name"
-          params={{ name: row.original.name }}
-          className="text-primary hover:underline font-medium"
-        >
-          {row.original.name}
-        </Link>
+        <span className="font-medium text-primary">{row.original.name}</span>
       ),
     },
     {
@@ -68,8 +63,17 @@ export function UserListPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        {canManageUsers && (
+      <PageToolbar
+        ariaLabel={t("users.filter")}
+        primary={
+          <FilterBar
+            name={filter}
+            useRegex={false}
+            onSubmit={(name, _) => setFilter(name)}
+          />
+        }
+        secondary={
+          canManageUsers ? (
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>{t("users.addUser")}</Button>
@@ -91,18 +95,22 @@ export function UserListPage() {
               />
             </DialogContent>
           </Dialog>
-        )}
-      </div>
+          ) : null
+        }
+      />
 
-      <PageToolbar ariaLabel={t("users.filter")} primary={
-        <FilterBar 
-          name={filter}
-          useRegex={false}
-          onSubmit={(name, _) => setFilter(name)}
-        />
-      } />
-
-      <DataTable ariaLabel={t("users.title")} columns={columns} data={filteredUsers} getRowId={(user) => user.name} />
+      <DataTable
+        ariaLabel={t("users.title")}
+        columns={columns}
+        data={filteredUsers}
+        getRowId={(user) => user.name}
+        onRowClick={(user) =>
+          navigate({
+            to: "/admin/users/$name",
+            params: { name: user.name },
+          })
+        }
+      />
     </div>
   );
 }

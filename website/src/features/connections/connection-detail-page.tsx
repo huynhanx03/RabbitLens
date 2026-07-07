@@ -10,7 +10,7 @@ import { SectionCard } from "@/components/shared/section-card";
 import { DataTable } from "@/components/shared/data-table";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { RateChart, type RateChartSeries } from "@/components/shared/rate-chart";
-import { AmqpValue } from "@/components/shared/amqp-value";
+import { MetricCard } from "@/components/shared/metric-card";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { AsyncState } from "@/components/shared/async-state";
@@ -18,11 +18,13 @@ import { StatusBadge } from "@/components/shared/status-badge";
 
 import {
   connectionDetailQueryOptions,
+  connectionKeys,
   useCloseConnectionMutation,
 } from "@/domains/connections/connection-query";
 import { createConnectionViewModel } from "@/domains/connections/connection-view-model";
 
 import { getConnectionChannels } from "@/domains/channels/channel-api";
+import { getConnectionSessions } from "@/domains/connections/connection-api";
 import { channelKeys } from "@/domains/channels/channel-query";
 import { createChannelViewModel, type ChannelViewModel } from "@/domains/channels/channel-view-model";
 import { createChannelColumns } from "@/features/channels/channel-columns";
@@ -31,9 +33,10 @@ import { createPollingInterval } from "@/api/polling";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
 import { CHART_RANGES, buildRangeQueryParams, CONNECTION_RANGE_PREFIXES } from "@/config/chart-ranges";
 import type { ResourceListSearch } from "@/api/pagination-schema";
-import { ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Route } from "@/app/routes/_authenticated/connections/$name";
+import { AmqpSessionList } from "./amqp-session-list";
 
 type ConnectionDetailPageProps = {
   name: string;
@@ -42,6 +45,33 @@ type ConnectionDetailPageProps = {
 
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-capabilities";
+
+function clientCapabilities(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return [];
+  }
+  return Object.entries(value).map(([key, item]) => ({
+    label: key,
+    value: clientPropertyText(item),
+    monospace: true,
+  }));
+}
+
+function clientPropertyText(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+
+  return JSON.stringify(value);
+}
 
 export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailPageProps) {
   const { t } = useTranslation();
@@ -71,12 +101,20 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
     ),
   );
   const connection = connectionQuery.data;
+  const isAmqp10 = connection?.protocol === "AMQP 1-0" || connection?.protocol === "Web AMQP 1-0";
   // Query: Child channels
   const { data: channelsData, isLoading: isLoadingChannels } = useQuery({
     queryKey: channelKeys.connectionChannels(name, channelsSearch),
     queryFn: ({ signal }) =>
       getConnectionChannels(context.apiClient, name, channelsSearch, signal),
+    enabled: Boolean(connection && !isAmqp10),
     refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
+  });
+  const sessionsQuery = useQuery({
+    queryKey: connectionKeys.children(name, connection?.protocol ?? "AMQP 1-0"),
+    queryFn: ({ signal }) => getConnectionSessions(context.apiClient, name, signal),
+    enabled: Boolean(connection && isAmqp10),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
 
   const vm = connection ? createConnectionViewModel(connection) : null;
@@ -104,15 +142,13 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
     if (connection.send_oct_details?.samples) {
       series.push({
         name: t("connections.sendRate"),
-        data: connection.send_oct_details.samples.map(s => [s.timestamp, s.sample]),
-        color: "hsl(var(--chart-1))"
+        data: connection.send_oct_details.samples.map(s => [s.timestamp, s.sample])
       });
     }
     if (connection.recv_oct_details?.samples) {
       series.push({
         name: t("connections.recvRate"),
-        data: connection.recv_oct_details.samples.map(s => [s.timestamp, s.sample]),
-        color: "hsl(var(--chart-2))"
+        data: connection.recv_oct_details.samples.map(s => [s.timestamp, s.sample])
       });
     }
     return series;
@@ -183,47 +219,118 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
           </Button>
         }
       >
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <SectionCard title={t("connections.properties")}>
-          <DetailGrid
-            unavailableLabel={t("common.unavailable")}
-            items={[
-              { label: t("connections.state"), value: vm?.state },
-              { label: t("connections.node"), value: vm?.node, monospace: true },
-              { label: t("connections.user"), value: vm?.user },
-              { label: t("connections.vhost"), value: vm?.vhost, monospace: true },
-              { label: t("connections.protocol"), value: vm?.protocol },
-              { label: t("connections.ssl"), value: vm?.ssl ? "TLS" : null },
-            ]}
-          />
-        </SectionCard>
-
-        {(!statsCapabilities.canShowRates || rateSeries.length > 0) && (
-          <SectionCard title={t("connections.dataRates")}>
-            <RateChart
-              title={t("connections.dataRates")}
-              unit="bytes/s"
-              series={rateSeries}
-              selectedRange={range}
-              onRangeChange={setRange}
-              isAvailable={statsCapabilities.canShowRates}
-              availabilityReason={statsCapabilities.availabilityReason}
-            />
-          </SectionCard>
-        )}
+      <div className="grid gap-6 md:grid-cols-2">
+        <MetricCard
+          title={t("connections.sendRate")}
+          value={vm?.sendRate ?? null}
+          unit="bytes/s"
+          icon={<Radio aria-hidden="true" />}
+          isUnavailable={!statsCapabilities.canShowRates}
+          unavailableLabel={t("common.unavailable")}
+          className="min-h-28"
+          contentClassName="pt-4"
+        />
+        <MetricCard
+          title={t("connections.recvRate")}
+          value={vm?.recvRate ?? null}
+          unit="bytes/s"
+          icon={<Radio aria-hidden="true" />}
+          isUnavailable={!statsCapabilities.canShowRates}
+          unavailableLabel={t("common.unavailable")}
+          className="min-h-28"
+          contentClassName="pt-4"
+        />
       </div>
 
-      {connection?.client_properties && (
-        <SectionCard title={t("connections.clientProperties")}>
-          <div className="text-sm">
-            <AmqpValue value={connection.client_properties} />
+      <div className="mt-8">
+        <SectionCard title={t("connections.properties")}>
+          <div className="space-y-6">
+          <div className="grid gap-4 rounded-2xl border border-border/60 bg-background/35 p-4 md:grid-cols-[1fr_auto_1fr] md:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("connections.peerEndpoint")}
+              </p>
+              <p className="mt-1 break-words font-mono text-sm font-medium">
+                {vm?.peerEndpoint || t("common.unavailable")}
+              </p>
+            </div>
+            <span className="hidden size-10 items-center justify-center rounded-full border border-primary/25 bg-primary/10 text-primary md:flex">
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </span>
+            <div className="md:text-right">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("connections.localEndpoint")}
+              </p>
+              <p className="mt-1 break-words font-mono text-sm font-medium">
+                {vm?.endpoint || t("common.unavailable")}
+              </p>
+            </div>
+          </div>
+
+          <DetailGrid
+            unavailableLabel={t("common.unavailable")}
+            className="lg:grid-cols-3"
+            items={[
+              { label: t("connections.node"), value: vm?.node, monospace: true },
+              { label: t("connections.connectedAt"), value: vm?.connectedAt?.toLocaleString() },
+              { label: t("connections.connectionType"), value: connection?.type },
+              { label: t("connections.authMechanism"), value: connection?.auth_mechanism },
+              { label: t("connections.frameMax"), value: connection?.frame_max },
+              { label: t("connections.channelMax"), value: connection?.channel_max },
+              { label: t("connections.ssl"), value: vm?.ssl ? "TLS" : null },
+              ...(connection?.ssl
+                ? [
+                    { label: t("connections.tlsProtocol"), value: connection.ssl_protocol },
+                    { label: t("connections.tlsCipher"), value: connection.ssl_cipher },
+                    { label: t("connections.tlsHash"), value: connection.ssl_hash },
+                  ]
+                : []),
+              ...(connection?.client_properties
+                ? [
+                { label: "product", value: clientPropertyText(connection.client_properties.product), monospace: true },
+                { label: "platform", value: clientPropertyText(connection.client_properties.platform), monospace: true },
+                { label: "version", value: clientPropertyText(connection.client_properties.version), monospace: true },
+                ...clientCapabilities(connection.client_properties.capabilities),
+                { label: "connection_name", value: clientPropertyText(connection.client_properties.connection_name), monospace: true },
+                  ]
+                : []),
+            ]}
+          />
           </div>
         </SectionCard>
+      </div>
+
+      {(!statsCapabilities.canShowRates || rateSeries.length > 0) && (
+        <div className="mt-8 rounded-2xl border border-border/70 bg-card p-5 shadow-sm">
+          <RateChart
+            title={t("connections.dataRates")}
+            unit=""
+            series={rateSeries}
+            selectedRange={range}
+            onRangeChange={setRange}
+            isAvailable={statsCapabilities.canShowRates}
+            availabilityReason={statsCapabilities.availabilityReason}
+            showDataTable={false}
+            chartClassName="h-72"
+          />
+        </div>
       )}
 
-      <SectionCard title={t("channels.title")}>
-        <div className="space-y-4">
+      {isAmqp10 ? (
+        <AsyncState
+          error={sessionsQuery.error}
+          isError={sessionsQuery.isError}
+          isPending={sessionsQuery.isPending}
+          onRetry={() => void sessionsQuery.refetch()}
+        >
+          <AmqpSessionList sessions={sessionsQuery.data ?? []} />
+        </AsyncState>
+      ) : (
+        <section className="mt-8 space-y-5">
+          <h2 className="px-1 text-lg font-semibold tracking-tight">
+            {t("channels.title")}
+          </h2>
+          <div className="space-y-5">
           <DataTable
             ariaLabel={t("connections.channelTableLabel")}
             columns={channelColumns}
@@ -263,8 +370,9 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
               onPageSizeChange={(pageSize) => updateSearch({ pageSize, page: 1 })}
             />
           )}
-        </div>
-      </SectionCard>
+          </div>
+        </section>
+      )}
       </AsyncState>
     </div>
   );

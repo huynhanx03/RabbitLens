@@ -12,7 +12,7 @@ COMPOSE_PROJECT_NAME ?= rabbitlens-demo
 COMPOSE = docker compose --project-name "$(COMPOSE_PROJECT_NAME)" \
 	--file "$(COMPOSE_FILE)" --file "$(STACK_COMPOSE_FILE)"
 
-.PHONY: help up down dev seed reset logs
+.PHONY: help up down dev seed smoke reset logs
 
 help: ## Show available commands.
 	@awk 'BEGIN {FS = ":.*## "; printf "RabbitLens Commands:\n\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -33,9 +33,14 @@ dev: ## Start frontend development server with HMR.
 	npm --prefix "$(WEBSITE_DIR)" run dev
 
 seed: ## Seed dummy messages to make the UI look lively.
-	RABBITMQ_MANAGEMENT_URL="http://127.0.0.1:15672" \
+	RABBITMQ_MANAGEMENT_URL="http://127.0.0.1:$${RABBITLENS_PORT:-8080}" \
 	RABBITMQ_ADMIN_USER="admin" RABBITMQ_ADMIN_PASSWORD="rabbitlens-demo" \
 	"$(DEMO_DIR)/seed-messages.sh"
+
+smoke: ## Verify RabbitLens against the running RabbitMQ demo stack.
+	RABBITMQ_MANAGEMENT_URL="http://127.0.0.1:$${RABBITLENS_PORT:-8080}" \
+	RABBITMQ_ADMIN_USER="admin" RABBITMQ_ADMIN_PASSWORD="rabbitlens-demo" \
+	"$(DEMO_DIR)/smoke-test.sh"
 
 logs: ## Follow logs for all services.
 	$(COMPOSE) logs -f

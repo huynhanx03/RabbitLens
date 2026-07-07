@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useRouteContext, Link } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useVhosts } from "@/domains/admin/vhosts/vhost-query";
 import { DataTable } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -20,6 +20,7 @@ import { PageToolbar } from "@/components/shared/page-toolbar";
 export function VhostListPage() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "/_authenticated/admin/vhosts/" });
+  const navigate = useNavigate({ from: "/admin/vhosts/" });
   const { data: vhosts, isPending, isError, error } = useVhosts(context.apiClient);
   const [filter, setFilter] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -39,13 +40,7 @@ export function VhostListPage() {
       accessorKey: "name",
       header: t("vhosts.name"),
       cell: ({ row }) => (
-        <Link 
-          to="/admin/vhosts/$name"
-          params={{ name: row.original.name }}
-          className="text-primary hover:underline font-medium"
-        >
-          {row.original.name}
-        </Link>
+        <span className="font-medium text-primary">{row.original.name}</span>
       ),
     },
     {
@@ -74,8 +69,17 @@ export function VhostListPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        {canManageVhosts && (
+      <PageToolbar
+        ariaLabel={t("vhosts.filter")}
+        primary={
+          <FilterBar
+            name={filter}
+            useRegex={false}
+            onSubmit={(name, _) => setFilter(name)}
+          />
+        }
+        secondary={
+          canManageVhosts ? (
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>{t("vhosts.addVhost")}</Button>
@@ -97,18 +101,22 @@ export function VhostListPage() {
               />
             </DialogContent>
           </Dialog>
-        )}
-      </div>
+          ) : null
+        }
+      />
 
-      <PageToolbar ariaLabel={t("vhosts.filter")} primary={
-        <FilterBar 
-          name={filter}
-          useRegex={false}
-          onSubmit={(name, _) => setFilter(name)}
-        />
-      } />
-
-      <DataTable ariaLabel={t("vhosts.title")} columns={columns} data={filteredVhosts} getRowId={(vhost) => vhost.name} />
+      <DataTable
+        ariaLabel={t("vhosts.title")}
+        columns={columns}
+        data={filteredVhosts}
+        getRowId={(vhost) => vhost.name}
+        onRowClick={(vhost) =>
+          navigate({
+            to: "/admin/vhosts/$name",
+            params: { name: vhost.name },
+          })
+        }
+      />
     </div>
   );
 }

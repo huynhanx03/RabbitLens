@@ -2,7 +2,6 @@ import { useRouteContext, Link, useParams } from "@tanstack/react-router";
 import { useVhost } from "@/domains/admin/vhosts/vhost-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DefinitionList, type DefinitionItem } from "@/components/shared/definition-list";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -10,12 +9,21 @@ import { VhostForm } from "./vhost-form";
 import { useCreateVhostMutation } from "./vhost-mutations";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { usePermissionDecision } from "@/auth/permissions/permission-gate";
-import { Trash2, Power } from "lucide-react";
+import {
+  ArrowLeft,
+  Cable,
+  ListTree,
+  Pencil,
+  Power,
+  Trash2,
+  Waypoints,
+} from "lucide-react";
 import { DeleteVhostDialog } from "./delete-vhost-dialog";
 import { RestartVhostDialog } from "./restart-vhost-dialog";
 import { AsyncState } from "@/components/shared/async-state";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
 import { useTranslation } from "react-i18next";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 
 export function VhostDetailPage() {
   const { t } = useTranslation();
@@ -34,34 +42,46 @@ export function VhostDetailPage() {
   if (isPending) return <Skeleton className="h-[400px] w-full" />;
   if (isError) return <AsyncState isError error={error} onRetry={() => undefined}><span /></AsyncState>;
 
-  const definitionItems: DefinitionItem[] = [
-    { label: "Description", value: vhost.description },
-    { 
-      label: "Tags", 
-      value: (
-        <div className="flex gap-1 flex-wrap">
-          {vhost.tags && vhost.tags.length > 0 ? (
-            vhost.tags.map((tag) => <Badge key={tag} variant="secondary">{tag}</Badge>)
-          ) : "-"}
-        </div>
-      )
-    },
-    { label: "Default Queue Type", value: vhost.default_queue_type },
-    { label: "Tracing", value: vhost.tracing ? "Yes" : "No" }
-  ];
-
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <DetailPageHeader title={name} description={t("vhosts.detailDescription")} />
-        {canManageVhosts && (
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => setIsRestartOpen(true)}>
-              <Power className="h-4 w-4 text-orange-500" />
-            </Button>
+      <DetailPageHeader
+        title={name}
+        description={vhost.description || t("vhosts.detailDescription")}
+        backAction={
+          <Button asChild variant="outline" size="icon" aria-label={t("common.back")}>
+            <Link to="/admin/vhosts">
+              <ArrowLeft aria-hidden="true" />
+            </Link>
+          </Button>
+        }
+        metadata={[
+          <span key="queue-type" className="inline-flex items-center gap-2">
+            <span>{t("vhosts.defaultQueueType")}</span>
+            <Badge variant="secondary">{vhost.default_queue_type}</Badge>
+          </span>,
+          <span key="tracing" className="inline-flex items-center gap-2">
+            <span>{t("vhosts.tracing")}</span>
+            <Badge variant={vhost.tracing ? "default" : "secondary"}>
+              {vhost.tracing ? t("common.yes") : t("common.no")}
+            </Badge>
+          </span>,
+          ...(vhost.tags ?? []).map((tag) => (
+            <Badge key={tag} variant="secondary">{tag}</Badge>
+          )),
+        ]}
+        actions={
+          canManageVhosts ? (
+            <>
+              <Button variant="outline" onClick={() => setIsRestartOpen(true)}>
+                <Power aria-hidden="true" className="rl-action-warning" />
+                {t("common.restart")}
+              </Button>
             <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline">Edit</Button>
+                  <Button variant="outline">
+                    <Pencil aria-hidden="true" />
+                    {t("common.edit")}
+                  </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -83,10 +103,16 @@ export function VhostDetailPage() {
               </DialogContent>
             </Dialog>
 
-            <Button variant="destructive" size="icon" onClick={() => setIsDeleteOpen(true)}>
-              <Trash2 className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className={destructiveIconButtonClassName}
+              onClick={() => setIsDeleteOpen(true)}
+                aria-label={t("common.delete")}
+            >
+                <Trash2 aria-hidden="true" />
             </Button>
-            
+
             <DeleteVhostDialog 
               name={name}
               open={isDeleteOpen}
@@ -100,41 +126,34 @@ export function VhostDetailPage() {
               onOpenChange={setIsRestartOpen}
               apiClient={context.apiClient}
             />
-          </div>
-        )}
-      </div>
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl border bg-card text-card-foreground shadow">
-          <div className="p-6">
-            <h3 className="font-semibold leading-none tracking-tight mb-4">Details</h3>
-            <DefinitionList items={definitionItems} unavailableLabel="-" />
-          </div>
-        </div>
-
-        <div className="rounded-xl border bg-card text-card-foreground shadow">
-          <div className="p-6">
-            <h3 className="font-semibold leading-none tracking-tight mb-4">Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/queues" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false, vhost: name }} className="text-primary hover:underline">
-                  View Queues
-                </Link>
-              </li>
-              <li>
-                <Link to="/exchanges" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false, vhost: name }} className="text-primary hover:underline">
-                  View Exchanges
-                </Link>
-              </li>
-              <li>
-                <Link to="/connections" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false }} className="text-primary hover:underline">
-                  View Connections
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <nav
+        aria-label={t("common.resources")}
+        className="flex flex-wrap items-center gap-3"
+      >
+        <Button asChild variant="outline">
+          <Link to="/queues" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false, vhost: name }}>
+            <ListTree aria-hidden="true" />
+            {t("nav.queues")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/exchanges" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false, vhost: name }}>
+            <Waypoints aria-hidden="true" />
+            {t("nav.exchanges")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/connections" search={{ page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false }}>
+            <Cable aria-hidden="true" />
+            {t("nav.connections")}
+          </Link>
+        </Button>
+      </nav>
     </div>
   );
 }

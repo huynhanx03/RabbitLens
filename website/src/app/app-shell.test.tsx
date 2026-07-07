@@ -2,7 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "@/test/render";
 import { AppShell } from "./app-shell";
-import { createRouter, createMemoryHistory, createRootRouteWithContext, createFileRoute, RouterProvider } from "@tanstack/react-router";
+import {
+  createRouter,
+  createMemoryHistory,
+  createRootRouteWithContext,
+  createFileRoute,
+  RouterProvider,
+} from "@tanstack/react-router";
 import { QueryClient } from "@tanstack/react-query";
 import { ManagementApiClient } from "@/api/management-api-client";
 import { server } from "@/test/server";
@@ -26,9 +32,11 @@ describe("AppShell", () => {
     const rootRoute = createRootRouteWithContext<RouterContext>()({
       component: AppShell,
     });
-    
+
     // add dummy child routes
-    const overviewRoute = (createFileRoute as any)("/")({ component: () => <div>OverviewPage</div> });
+    const overviewRoute = (createFileRoute as any)("/")({
+      component: () => <div>OverviewPage</div>,
+    });
     overviewRoute.update({ getParentRoute: () => rootRoute, path: "/" });
 
     const router = createRouter({
@@ -74,6 +82,12 @@ describe("AppShell", () => {
     expect(screen.getByRole("button", { name: "Go to…" })).toBeVisible();
     expect(screen.getByText("OverviewPage")).toBeVisible();
     expect(screen.getByRole("link", { name: "Virtual Hosts" })).toBeVisible();
+    expect(screen.getByRole("banner")).toHaveClass("rl-topbar");
+    expect(
+      screen
+        .getByRole("navigation", { name: "Primary navigation" })
+        .closest("[data-slot='sidebar']"),
+    ).toHaveClass("rl-sidebar");
   });
 
   it("hides admin navigation for monitoring role", async () => {
@@ -105,7 +119,7 @@ describe("AppShell", () => {
     server.use(
       http.get("http://localhost/api/extensions", () => {
         return HttpResponse.json([{ javascript_src: "federation.js" }]);
-      })
+      }),
     );
     setup(["administrator"]);
 
@@ -116,7 +130,7 @@ describe("AppShell", () => {
         { timeout: 3000 },
       ),
     ).toBeVisible();
-    
+
     // Wait for Federation link to appear
     await waitFor(() => {
       expect(

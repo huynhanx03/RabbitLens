@@ -25,4 +25,36 @@ describe("PaginationControls", () => {
     await user.click(screen.getByRole("button", { name: "Next page" }));
     expect(onPageChange).toHaveBeenCalledWith(2);
   });
+
+  it("uses the shared pagination surface", () => {
+    renderWithProviders(
+      <PaginationControls
+        page={2}
+        pageCount={4}
+        pageSize={100}
+        filteredCount={80}
+        totalCount={80}
+        onPageChange={vi.fn()}
+        onPageSizeChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
+      "rl-pagination",
+    );
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
+      "border-0",
+      "bg-transparent",
+      "shadow-none",
+    );
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
+      "px-0",
+      "py-1",
+    );
+    expect(screen.getByRole("combobox", { name: "Page size" })).toHaveClass(
+      "w-24",
+      "justify-center",
+      "text-center",
+    );
+  });
 });

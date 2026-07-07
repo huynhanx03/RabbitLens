@@ -1,19 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Outlet,
-  useLocation,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { Outlet, useLocation, useRouteContext } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AppSidebar } from "@/app/layout/app-sidebar";
 import { AppTopbar } from "@/app/layout/app-topbar";
 import { buildNavigation } from "@/app/navigation/navigation-registry";
 import { AppStatusAnnouncer } from "@/components/shared/app-status-announcer";
 import { ConnectivityBanner } from "@/components/shared/connectivity-banner";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 
@@ -24,9 +17,7 @@ export function AppShell() {
   const overviewQuery = useQuery(
     overviewQueryOptions(context.apiClient, () => true),
   );
-  const extensionsQuery = useQuery(
-    extensionsQueryOptions(context.apiClient),
-  );
+  const extensionsQuery = useQuery(extensionsQueryOptions(context.apiClient));
 
   if (overviewQuery.isPending || extensionsQuery.isPending) {
     return <div className="p-8 text-center">{t("common.loading")}</div>;
@@ -45,6 +36,14 @@ export function AppShell() {
     userTags,
     extensions: extensionsQuery.data,
   });
+  const currentItem = groups
+    .flatMap((group) => group.items)
+    .filter((item) =>
+      item.to === "/"
+        ? currentPath === "/"
+        : currentPath === item.to || currentPath.startsWith(`${item.to}/`),
+    )
+    .sort((left, right) => right.to.length - left.to.length)[0];
   return (
     <>
       <a
@@ -54,18 +53,21 @@ export function AppShell() {
         {t("accessibility.skipToMain")}
       </a>
       <SidebarProvider open>
-        <AppSidebar
-          groups={groups}
-          currentPath={currentPath}
-        />
-        <SidebarInset id="main-content" className="min-w-0 bg-background">
+        <AppSidebar groups={groups} currentPath={currentPath} />
+        <SidebarInset
+          id="main-content"
+          className="rl-app-shell min-w-0 bg-background"
+        >
           <AppTopbar
             groups={groups}
             userName={context.auth.user?.name ?? ""}
             onLogout={() => context.auth.logout()}
           />
           <ConnectivityBanner />
-          <div className="min-w-0 flex-1 bg-background px-(--page-gutter) py-5 md:py-6">
+          <div className="min-w-0 flex-1 px-(--page-gutter) py-5 md:py-6">
+            <h1 className="sr-only">
+              {currentItem ? t(currentItem.labelKey) : t("common.appName")}
+            </h1>
             <Outlet />
           </div>
         </SidebarInset>

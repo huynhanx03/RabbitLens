@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 
 import { DataTable } from "@/components/shared/data-table";
-import { SectionCard } from "@/components/shared/section-card";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { CreateBindingDialog, type BindingMode } from "./create-binding-dialog";
@@ -68,8 +67,9 @@ export function BindingList({ vhost, resourceName, mode }: BindingListProps) {
         : t("bindings.bindingsFromExchange");
 
   return (
-    <SectionCard title={title}>
-      <div className="mb-4 flex justify-end">
+    <section className="space-y-3" aria-label={title}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-base font-semibold tracking-tight">{title}</h2>
         <Button onClick={() => setCreateDialogOpen(true)} size="sm">
           {mode === "from-exchange" ? t("bindings.bindTo") : t("bindings.bindFrom")}
         </Button>
@@ -123,6 +123,6 @@ export function BindingList({ vhost, resourceName, mode }: BindingListProps) {
           }
         }}
       />
-    </SectionCard>
+    </section>
   );
 }

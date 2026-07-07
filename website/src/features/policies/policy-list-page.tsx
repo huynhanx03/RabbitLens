@@ -11,6 +11,7 @@ import { FilterBar } from "@/components/shared/filter-bar";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { PageToolbar } from "@/components/shared/page-toolbar";
 import { Button } from "@/components/ui/button";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +40,7 @@ export function PolicyListPage() {
   const deletePolicy = useDeletePolicyMutation(context.apiClient, false);
   const deleteOperatorPolicy = useDeletePolicyMutation(context.apiClient, true);
   const [filter, setFilter] = useState("");
+  const [selectedKind, setSelectedKind] = useState<PolicyKind>("standard");
   const [createKind, setCreateKind] = useState<PolicyKind | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<PolicyTarget | null>(null);
   const canManagePolicies =
@@ -79,10 +81,11 @@ export function PolicyListPage() {
             type="button"
             variant="ghost"
             size="icon"
+            className={destructiveIconButtonClassName}
             onClick={() => setDeleteTarget({ policy: row.original, kind })}
             aria-label={`${t("policies.deleteAction")} ${row.original.name}`}
           >
-            <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+            <Trash2 aria-hidden="true" className="size-4" />
           </Button>
         ) : null,
     },
@@ -103,14 +106,7 @@ export function PolicyListPage() {
   ) => {
     const rows = filterRows(query.data);
     return (
-      <div className="space-y-4">
-        {canManagePolicies ? (
-          <Button type="button" size="sm" onClick={() => setCreateKind(kind)}>
-            {kind === "operator"
-              ? t("policies.addOpPolicy")
-              : t("policies.addPolicy")}
-          </Button>
-        ) : null}
+      <div>
         <AsyncState
           isPending={query.isPending}
           isError={query.isError}
@@ -136,23 +132,40 @@ export function PolicyListPage() {
 
   return (
     <div className="space-y-4">
-      <PageToolbar
-        ariaLabel={t("policies.title")}
-        primary={
-          <FilterBar
-            name={filter}
-            useRegex={false}
-            onSubmit={(name) => setFilter(name)}
-          />
-        }
-      />
-      <Tabs defaultValue="standard">
-        <TabsList>
-          <TabsTrigger value="standard">{t("policies.title")}</TabsTrigger>
-          <TabsTrigger value="operator">
-            {t("policies.operatorPolicies")}
-          </TabsTrigger>
-        </TabsList>
+      <Tabs
+        value={selectedKind}
+        onValueChange={(value) => setSelectedKind(value as PolicyKind)}
+      >
+        <PageToolbar
+          ariaLabel={t("policies.title")}
+          primary={
+            <div className="flex min-w-0 flex-1 flex-col gap-3 xl:flex-row xl:items-center">
+              <FilterBar
+                name={filter}
+                useRegex={false}
+                onSubmit={(name) => setFilter(name)}
+              />
+              <TabsList className="shrink-0">
+                <TabsTrigger value="standard">{t("policies.title")}</TabsTrigger>
+                <TabsTrigger value="operator">
+                  {t("policies.operatorPolicies")}
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          }
+          secondary={
+            canManagePolicies ? (
+              <Button
+                type="button"
+                onClick={() => setCreateKind(selectedKind)}
+              >
+                {selectedKind === "operator"
+                  ? t("policies.addOpPolicy")
+                  : t("policies.addPolicy")}
+              </Button>
+            ) : null
+          }
+        />
         <TabsContent value="standard" className="mt-4">
           {renderTable("standard", policies, standardColumns)}
         </TabsContent>

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { consumerSchema } from "@/domains/consumers/consumer-schema";
 
 const rateDetailsSchema = z
   .object({
@@ -33,6 +34,9 @@ export const channelSchema = z
     acks_uncommitted: z.number().optional(),
     prefetch_count: z.number().optional(),
     global_prefetch_count: z.number().nullable().optional(),
+    pending_raft_commands: z.number().nullish(),
+    cached_segments: z.number().nullish(),
+    consumer_details: z.array(consumerSchema).optional(),
     message_stats: z
       .object({
         publish: z.number().optional(),

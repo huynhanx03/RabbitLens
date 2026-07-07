@@ -39,4 +39,20 @@ describe("channelSchema", () => {
     const parsed = channelSchema.parse(withExtra);
     expect((parsed as any).unknown_future_field).toBe("value");
   });
+
+  it("types consumer and Raft diagnostics", () => {
+    const parsed = channelSchema.parse({
+      name: "channel",
+      pending_raft_commands: 2,
+      cached_segments: 4,
+      consumer_details: [{
+        consumer_tag: "worker",
+        queue: { name: "orders", vhost: "/" },
+        prefetch_count: 50,
+      }],
+    });
+
+    expect(parsed.consumer_details?.[0]?.consumer_tag).toBe("worker");
+    expect(parsed.pending_raft_commands).toBe(2);
+  });
 });

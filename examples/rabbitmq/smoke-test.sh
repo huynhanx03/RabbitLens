@@ -326,20 +326,26 @@ queue_message_count() {
 }
 
 verify_seed_idempotence() {
-  local before
-  local after
+  local after_first_seed
+  local after_second_seed
+  local seed_attempt
 
-  before="$(queue_message_count)"
-  [[ -n "$before" ]] || fail 'could not read the idempotence queue count'
+  for seed_attempt in first second; do
+    RABBITMQ_MANAGEMENT_URL="$MANAGEMENT_URL" \
+      RABBITMQ_ADMIN_USER="$ADMIN_USER" \
+      RABBITMQ_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
+      "${SCRIPT_DIR}/seed-messages.sh" >/dev/null
 
-  RABBITMQ_MANAGEMENT_URL="$MANAGEMENT_URL" \
-    RABBITMQ_ADMIN_USER="$ADMIN_USER" \
-    RABBITMQ_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
-    "${SCRIPT_DIR}/seed-messages.sh" >/dev/null
+    if [[ "$seed_attempt" == "first" ]]; then
+      after_first_seed="$(queue_message_count)"
+      [[ -n "$after_first_seed" ]] \
+        || fail 'could not read the queue count after the first seed'
+    fi
+  done
 
-  after="$(queue_message_count)"
-  [[ "$before" == "$after" ]] \
-    || fail "normal seed changed orders.created from ${before} to ${after}"
+  after_second_seed="$(queue_message_count)"
+  [[ "$after_first_seed" == "$after_second_seed" ]] \
+    || fail "second seed changed orders.created from ${after_first_seed} to ${after_second_seed}"
   pass 'Normal message seeding is idempotent'
 }
 

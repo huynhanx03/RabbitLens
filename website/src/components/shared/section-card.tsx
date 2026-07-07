@@ -22,9 +22,9 @@ export function SectionCard({
   return (
     <section
       aria-labelledby={headingId}
-      className="rounded-xl border bg-card text-card-foreground shadow-sm"
+      className="rl-panel rl-section-panel overflow-hidden text-card-foreground"
     >
-      <div className="flex flex-col justify-between gap-4 border-b px-4 py-3 sm:flex-row sm:items-center">
+      <div className="rl-section-header flex flex-col justify-between gap-4 border-b px-4 py-3 sm:flex-row sm:items-center">
         <div>
           <h2 id={headingId} className="text-sm font-semibold leading-none">
             {title}
