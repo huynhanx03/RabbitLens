@@ -40,11 +40,11 @@ export function FilterBar({ name, useRegex, onSubmit }: FilterBarProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center"
+      className="flex flex-1 flex-col gap-2 border-0 bg-transparent p-0 shadow-none sm:flex-row sm:items-center sm:gap-3"
       role="search"
       aria-label={t("filters.searchLabel")}
     >
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full max-w-xl">
         <Search
           aria-hidden="true"
           className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"

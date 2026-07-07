@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import type { Binding } from "@/domains/bindings/binding-schema";
 import { AmqpValue } from "@/components/shared/amqp-value";
 import { Link } from "@tanstack/react-router";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 
 export function createBindingColumns(
   t: TFunction,
@@ -104,13 +105,14 @@ export function createBindingColumns(
         <Button
           variant="ghost"
           size="icon"
+          className={destructiveIconButtonClassName}
           onClick={(e) => {
             e.stopPropagation();
             onDelete(row.original);
           }}
           title={t("common.remove")}
         >
-          <Trash2 className="h-4 w-4 text-destructive" />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
     ),

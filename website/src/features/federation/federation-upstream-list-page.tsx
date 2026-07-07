@@ -11,6 +11,7 @@ import { JsonParameterForm } from "@/components/shared/json-parameter-form";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 import { redactFederationUris, type FederationUpstream } from "@/domains/extensions/federation/federation-upstream-api";
 import { federationUpstreamListQueryOptions, useDeleteFederationUpstream, useSaveFederationUpstream } from "@/domains/extensions/federation/federation-upstream-query";
 import { useVhosts } from "@/domains/admin/vhosts/vhost-query";
@@ -61,10 +62,11 @@ export function FederationUpstreamListPage() {
             type="button"
             variant="ghost"
             size="icon"
+            className={destructiveIconButtonClassName}
             onClick={() => setDeleteTarget(row.original)}
             aria-label={`${t("common.delete")} ${row.original.name}`}
           >
-            <Trash2 aria-hidden="true" className="text-destructive" />
+            <Trash2 aria-hidden="true" />
           </Button>
         </div>
       ),

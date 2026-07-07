@@ -11,6 +11,13 @@ COPY . .
 RUN npm run build
 
 FROM ${NGINX_IMAGE} AS runtime
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+ENV RABBITMQ_MANAGEMENT_SCHEME=http \
+    RABBITMQ_MANAGEMENT_HOST=rabbitmq \
+    RABBITMQ_MANAGEMENT_PORT=15672 \
+    RABBITLENS_DNS_RESOLVER=127.0.0.11 \
+    RABBITLENS_DNS_TTL=10s \
+    RABBITLENS_DNS_IPV6=off
+
+COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080

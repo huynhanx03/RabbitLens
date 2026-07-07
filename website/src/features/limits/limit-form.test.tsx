@@ -16,6 +16,9 @@ describe("LimitForm", () => {
       />,
     );
 
+    expect(screen.getByRole("form", { name: "Limit form" })).toHaveClass(
+      "rl-admin-form",
+    );
     await userEvent.clear(screen.getByLabelText("Value"));
     await userEvent.type(screen.getByLabelText("Value"), "25");
     await userEvent.click(

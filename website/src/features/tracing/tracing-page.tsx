@@ -11,6 +11,7 @@ import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { PageToolbar } from "@/components/shared/page-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -109,10 +110,11 @@ export function TracingPage() {
           <Button
             variant="ghost"
             size="icon-sm"
+            className={destructiveIconButtonClassName}
             aria-label={`${t("tracing.stopTrace")} ${row.original.name}`}
             onClick={() => setTraceToDelete({ node, vhost: row.original.vhost, name: row.original.name })}
           >
-            <Trash2 className="text-destructive" aria-hidden="true" />
+            <Trash2 aria-hidden="true" />
           </Button>
         ),
       },
@@ -149,10 +151,11 @@ export function TracingPage() {
             <Button
               variant="ghost"
               size="icon-sm"
+              className={destructiveIconButtonClassName}
               aria-label={`${t("tracing.deleteFile")} ${row.original.name}`}
               onClick={() => setFileToDelete(row.original)}
             >
-              <Trash2 className="text-destructive" aria-hidden="true" />
+              <Trash2 aria-hidden="true" />
             </Button>
           </div>
         ),

@@ -72,7 +72,12 @@ export function TraceForm({ vhosts, onSubmit, onCancel, isPending }: Props) {
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(submit)} noValidate>
+    <form
+      aria-label="Trace form"
+      className="rl-admin-form space-y-4"
+      onSubmit={handleSubmit(submit)}
+      noValidate
+    >
       <div className="space-y-2">
         <Label htmlFor="trace-vhost">{t("tracing.vhost")}</Label>
         <Select

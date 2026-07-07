@@ -20,6 +20,9 @@ describe("PolicyForm", () => {
     await waitFor(() =>
       expect(screen.getByLabelText("Virtual Host")).toBeInTheDocument(),
     );
+    expect(screen.getByRole("form", { name: "Policy form" })).toHaveClass(
+      "rl-admin-form",
+    );
     expect(screen.getByLabelText("Name")).toBeInTheDocument();
     expect(screen.getByLabelText("Pattern")).toBeInTheDocument();
     expect(screen.getByLabelText("Apply to")).toBeInTheDocument();

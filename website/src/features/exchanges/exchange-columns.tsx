@@ -15,8 +15,9 @@ export function createExchangeColumns(
       accessorKey: "name",
       header: t("exchanges.name"),
       enableSorting: true,
+      meta: { className: "min-w-60 max-w-[24rem]", variant: "code", wrap: "break" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-sm font-medium whitespace-nowrap">
+        <span className="font-mono text-sm font-medium">
           {getValue<string>()}
         </span>
       ),
@@ -29,6 +30,7 @@ export function createExchangeColumns(
     {
       accessorKey: "features",
       header: t("exchanges.features"),
+      meta: { wrap: "normal" },
       cell: ({ getValue }) => {
         const features = getValue<string[]>();
         if (features.length === 0) return null;
@@ -47,6 +49,7 @@ export function createExchangeColumns(
       accessorKey: "publishInRate",
       header: t("exchanges.publishInRate"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => {
         const val = getValue<number | null>();
         return <span className="tabular-nums">{val !== null ? val.toFixed(1) : "—"}</span>;
@@ -56,6 +59,7 @@ export function createExchangeColumns(
       accessorKey: "publishOutRate",
       header: t("exchanges.publishOutRate"),
       enableSorting: true,
+      meta: { align: "center", variant: "numeric" },
       cell: ({ getValue }) => {
         const val = getValue<number | null>();
         return <span className="tabular-nums">{val !== null ? val.toFixed(1) : "—"}</span>;

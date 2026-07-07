@@ -55,14 +55,18 @@ describe("QueueDetailPage", () => {
 
     await waitFor(() => {
       // Type
-      expect(screen.getAllByText("classic")).toHaveLength(2);
+      expect(screen.getByText("classic")).toBeVisible();
       // Node
-      expect(screen.getAllByText("rabbit@localhost")).toHaveLength(2);
+      expect(screen.getByText("rabbit@localhost")).toBeVisible();
       // Features
       expect(screen.getByText("D")).toBeInTheDocument();
       // State Badge
       expect(screen.getByText("running")).toBeInTheDocument();
     });
+
+    expect(screen.getByRole("region", { name: "Message inspector" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Load snapshot" })).toBeVisible();
+    expect(screen.queryByRole("table", { name: "Message activity" })).not.toBeInTheDocument();
 
     // Check message counts
     const readyCounts = screen.getAllByText("10"); // One could be the chart, one could be the stat block, we expect at least 1

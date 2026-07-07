@@ -57,7 +57,8 @@ export function LimitForm({
 
   return (
     <form
-      className="space-y-4"
+      aria-label="Limit form"
+      className="rl-admin-form space-y-4"
       onSubmit={handleSubmit((values) => onSubmit({ scope, ...values }))}
       noValidate
     >

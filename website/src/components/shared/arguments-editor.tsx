@@ -26,6 +26,7 @@ export function ArgumentsEditor({
   disabled,
 }: ArgumentsEditorProps) {
   const { t } = useTranslation();
+  const entries = Object.entries(value);
   const [newKey, setNewKey] = useState("");
   const [newValueType, setNewValueType] = useState<"string" | "number" | "boolean">("string");
   const [newValue, setNewValue] = useState("");
@@ -53,25 +54,106 @@ export function ArgumentsEditor({
   };
 
   return (
-    <div className="space-y-4">
-      {Object.entries(value).length > 0 && (
-        <div className="space-y-2 border rounded-md p-2">
-          {Object.entries(value).map(([k, v]) => (
-            <div key={k} className="flex items-center gap-2 text-sm">
-              <span className="font-mono bg-muted px-1.5 py-0.5 rounded flex-1">
+    <div className="space-y-4 rounded-2xl border border-border/60 bg-background/35 p-4">
+      <div className="rounded-xl border border-border/50 bg-background/30 p-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(10rem,1fr)_12rem_minmax(10rem,1fr)_auto] md:items-end">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("common.key")}
+            </Label>
+            <Input
+              value={newKey}
+              onChange={(e) => setNewKey(e.target.value)}
+              disabled={disabled}
+              placeholder="x-message-ttl"
+              className="h-11"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("common.type")}
+            </Label>
+            <Select
+              value={newValueType}
+              onValueChange={(v: "string" | "number" | "boolean") => setNewValueType(v)}
+              disabled={disabled}
+            >
+              <SelectTrigger className="h-11 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="string">{t("common.type")} String</SelectItem>
+                <SelectItem value="number">{t("common.type")} Number</SelectItem>
+                <SelectItem value="boolean">{t("common.type")} Boolean</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("common.value")}
+            </Label>
+            {newValueType === "boolean" ? (
+              <Select
+                value={newValue}
+                onValueChange={setNewValue}
+                disabled={disabled}
+              >
+                <SelectTrigger className="h-11 w-full">
+                  <SelectValue placeholder="Select..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">true</SelectItem>
+                  <SelectItem value="false">false</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                disabled={disabled}
+                type={newValueType === "number" ? "number" : "text"}
+                className="h-11"
+              />
+            )}
+          </div>
+
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={disabled || !newKey}
+            onClick={handleAdd}
+            className="h-11 rounded-full px-6"
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            {t("common.add")}
+          </Button>
+        </div>
+      </div>
+
+      {entries.length > 0 && (
+        <div className="space-y-2 rounded-xl border border-border/60 bg-card/50 p-3">
+          {entries.map(([k, v]) => (
+            <div
+              key={k}
+              className="grid gap-2 rounded-lg bg-background/50 p-2 text-sm sm:grid-cols-[minmax(8rem,1fr)_7rem_minmax(8rem,1fr)_auto] sm:items-center"
+            >
+              <span className="min-w-0 break-words rounded bg-muted px-2 py-1 font-mono">
                 {k}
               </span>
-              <span className="text-muted-foreground w-16 text-xs uppercase">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {typeof v}
               </span>
-              <span className="flex-1 truncate">{String(v)}</span>
+              <span className="min-w-0 break-words">{String(v)}</span>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6"
+                className="size-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 disabled={disabled}
                 onClick={() => handleRemove(k)}
+                aria-label={t("common.delete")}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -79,69 +161,6 @@ export function ArgumentsEditor({
           ))}
         </div>
       )}
-
-      <div className="flex items-end gap-2">
-        <div className="flex-1 space-y-1">
-          <Label className="text-xs">{t("common.key")}</Label>
-          <Input
-            value={newKey}
-            onChange={(e) => setNewKey(e.target.value)}
-            disabled={disabled}
-            placeholder="x-message-ttl"
-          />
-        </div>
-        <div className="w-28 space-y-1">
-          <Label className="text-xs">{t("common.type")}</Label>
-          <Select
-            value={newValueType}
-            onValueChange={(v: "string" | "number" | "boolean") => setNewValueType(v)}
-            disabled={disabled}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="string">{t("common.type")} String</SelectItem>
-              <SelectItem value="number">{t("common.type")} Number</SelectItem>
-              <SelectItem value="boolean">{t("common.type")} Boolean</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex-1 space-y-1">
-          <Label className="text-xs">{t("common.value")}</Label>
-          {newValueType === "boolean" ? (
-            <Select
-              value={newValue}
-              onValueChange={setNewValue}
-              disabled={disabled}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">true</SelectItem>
-                <SelectItem value="false">false</SelectItem>
-              </SelectContent>
-            </Select>
-          ) : (
-            <Input
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
-              disabled={disabled}
-              type={newValueType === "number" ? "number" : "text"}
-            />
-          )}
-        </div>
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={disabled || !newKey}
-          onClick={handleAdd}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          {t("common.add")}
-        </Button>
-      </div>
     </div>
   );
 }

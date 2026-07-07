@@ -8,7 +8,9 @@ import { AsyncState } from "@/components/shared/async-state";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { DataTable } from "@/components/shared/data-table";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
+import { PageToolbar } from "@/components/shared/page-toolbar";
 import { Button } from "@/components/ui/button";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -79,10 +81,11 @@ export function LimitListPage() {
             type="button"
             variant="ghost"
             size="icon"
+            className={destructiveIconButtonClassName}
             onClick={() => setLimitToClear(row.original)}
             aria-label={`${t("limits.clear")} ${row.original.name}`}
           >
-            <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+            <Trash2 aria-hidden="true" className="size-4" />
           </Button>
         ),
       },
@@ -92,7 +95,21 @@ export function LimitListPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <Tabs
+        value={scope}
+        onValueChange={(value) => setScope(value as LimitScope)}
+      >
+        <PageToolbar
+          ariaLabel={t("limits.title")}
+          primary={
+            <TabsList>
+              <TabsTrigger value="vhost">{t("limits.vhostLimits")}</TabsTrigger>
+              {isAdministrator ? (
+                <TabsTrigger value="user">{t("limits.userLimits")}</TabsTrigger>
+              ) : null}
+            </TabsList>
+          }
+          secondary={
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>{t("limits.setLimit")}</Button>
@@ -115,18 +132,8 @@ export function LimitListPage() {
               />
             </DialogContent>
           </Dialog>
-      </div>
-
-      <Tabs
-        value={scope}
-        onValueChange={(value) => setScope(value as LimitScope)}
-      >
-        <TabsList>
-          <TabsTrigger value="vhost">{t("limits.vhostLimits")}</TabsTrigger>
-          {isAdministrator ? (
-            <TabsTrigger value="user">{t("limits.userLimits")}</TabsTrigger>
-          ) : null}
-        </TabsList>
+          }
+        />
         <TabsContent value={scope} className="mt-4">
           <AsyncState
             isPending={activeQuery.isPending}

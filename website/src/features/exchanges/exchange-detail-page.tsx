@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
-import { DetailGrid } from "@/components/shared/detail-grid";
 import { SectionCard } from "@/components/shared/section-card";
 import { RateChart, type RateChartSeries } from "@/components/shared/rate-chart";
 import { AmqpValue } from "@/components/shared/amqp-value";
+import { Badge } from "@/components/ui/badge";
 
 import { getExchange } from "@/domains/exchanges/exchange-api";
 import { exchangeKeys, useDeleteExchangeMutation } from "@/domains/exchanges/exchange-query";
@@ -61,6 +61,7 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
   });
 
   const vm = exchange ? createExchangeViewModel(exchange) : null;
+  const featureBadges = vm?.features ?? [];
 
   const rateSeries = useMemo<RateChartSeries[]>(() => {
     if (!exchange?.message_stats?.publish_in_details?.samples && !exchange?.message_stats?.publish_out_details?.samples) {
@@ -70,15 +71,13 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
     if (exchange.message_stats.publish_in_details?.samples) {
       series.push({
         name: t("exchanges.publishInRate"),
-        data: exchange.message_stats.publish_in_details.samples.map(s => [s.timestamp, s.sample]),
-        color: "hsl(var(--chart-1))"
+        data: exchange.message_stats.publish_in_details.samples.map(s => [s.timestamp, s.sample])
       });
     }
     if (exchange.message_stats.publish_out_details?.samples) {
       series.push({
         name: t("exchanges.publishOutRate"),
-        data: exchange.message_stats.publish_out_details.samples.map(s => [s.timestamp, s.sample]),
-        color: "hsl(var(--chart-2))"
+        data: exchange.message_stats.publish_out_details.samples.map(s => [s.timestamp, s.sample])
       });
     }
     return series;
@@ -112,7 +111,27 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
         }
         title={displayName}
         description={t("exchanges.detailDescription")}
-        metadata={[vhost, vm?.type].filter(Boolean)}
+        metadata={[
+          vhost,
+          vm?.type ? (
+            <Badge
+              key="type"
+              variant="secondary"
+              className="h-7 border-primary/25 bg-primary/10 px-3 font-mono text-primary"
+            >
+              {vm.type}
+            </Badge>
+          ) : null,
+          ...featureBadges.map((feature) => (
+            <Badge
+              key={feature}
+              variant="outline"
+              className="h-7 border-emerald-500/30 bg-emerald-500/10 px-3 font-mono text-emerald-700 dark:text-emerald-300"
+            >
+              {feature}
+            </Badge>
+          )),
+        ].filter(Boolean)}
         actions={
           <>
             <Button onClick={() => setPublishDialogOpen(true)}>{t("exchanges.publishMessage")}</Button>
@@ -157,19 +176,8 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
 
       <MutationErrorAlert error={deleteExchange.error} />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <SectionCard title={t("exchanges.properties")}>
-          <DetailGrid
-            unavailableLabel={t("common.unavailable")}
-            items={[
-              { label: t("exchanges.type"), value: vm?.type },
-              { label: t("exchanges.vhost"), value: vm?.vhost, monospace: true },
-              { label: t("exchanges.features"), value: vm?.features?.join(", ") },
-            ]}
-          />
-        </SectionCard>
-
-        {(!statsCapabilities.canShowRates || rateSeries.length > 0) && (
+      {(!statsCapabilities.canShowRates || rateSeries.length > 0) && (
+        <div className="grid gap-4 md:grid-cols-2">
           <SectionCard title={t("exchanges.messageRates")}>
             <RateChart
               title={t("exchanges.messageRates")}
@@ -181,8 +189,8 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
               availabilityReason={statsCapabilities.availabilityReason}
             />
           </SectionCard>
-        )}
-      </div>
+        </div>
+      )}
 
       {exchange?.arguments && Object.keys(exchange.arguments).length > 0 && (
         <SectionCard title={t("exchanges.arguments")}>

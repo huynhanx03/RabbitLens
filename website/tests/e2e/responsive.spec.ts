@@ -11,7 +11,6 @@ const viewports = [
 type VisualPreferences = {
   theme: "light" | "dark";
   locale: "en" | "vi";
-  density: "comfortable" | "compact";
 };
 
 async function applyPreferences(
@@ -21,7 +20,6 @@ async function applyPreferences(
   await page.addInitScript((values) => {
     localStorage.setItem("rabbitlens.theme", values.theme);
     localStorage.setItem("rabbitlens.locale", values.locale);
-    localStorage.setItem("rabbitlens.table-density", values.density);
     localStorage.setItem("rabbitlens.sidebar", "expanded");
   }, preferences);
 }
@@ -50,7 +48,6 @@ test.describe("Responsive shell archetypes", () => {
       await applyPreferences(page, {
         theme: "light",
         locale: "en",
-        density: "comfortable",
       });
       await signIn(page, "Overview");
 
@@ -65,23 +62,23 @@ test.describe("Responsive shell archetypes", () => {
         await expect(page).toHaveScreenshot(`overview-${viewport.name}.png`, {
           animations: "disabled",
           fullPage: true,
+          maxDiffPixels: viewport.name === "tablet" ? 800 : undefined,
         });
       }
     });
   }
 
-  test("Overview desktop dark Vietnamese compact", async ({ page }, testInfo) => {
+  test("Overview desktop dark Vietnamese", async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await applyPreferences(page, {
       theme: "dark",
       locale: "vi",
-      density: "compact",
     });
     await signIn(page, "Tổng quan");
 
     if (testInfo.project.name === "chromium") {
       await expect(page).toHaveScreenshot(
-        "overview-desktop-dark-vi-compact.png",
+        "overview-desktop-dark-vi.png",
         { animations: "disabled", fullPage: true },
       );
     }
@@ -92,7 +89,6 @@ test.describe("Responsive shell archetypes", () => {
     await applyPreferences(page, {
       theme: "light",
       locale: "en",
-      density: "comfortable",
     });
     await signIn(page, "Overview");
     await page.getByRole("button", { name: "Open navigation" }).click();

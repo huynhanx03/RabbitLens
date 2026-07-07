@@ -71,7 +71,12 @@ describe("createApplication", () => {
     ).toBeInTheDocument();
     expect(fetcher).toHaveBeenCalledOnce();
     expect(fetcher.mock.calls[0]?.[0]).toEqual(
-      new URL("runtime-config.json", document.baseURI),
+      new URL("/runtime-config.json", window.location.origin),
     );
+    expect(screen.getByRole("link", { name: "Về đăng nhập" })).toHaveAttribute(
+      "href",
+      "/login",
+    );
+    expect(screen.getByRole("button", { name: "Tải lại trang" })).toBeInTheDocument();
   });
 });

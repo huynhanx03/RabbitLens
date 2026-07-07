@@ -1,7 +1,10 @@
 import { useLocation } from "@tanstack/react-router";
 import { LogOut, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { NavigationGroup } from "@/app/navigation/navigation-types";
+import type {
+  NavigationGroup,
+  NavigationItem,
+} from "@/app/navigation/navigation-types";
 import { LanguageToggle } from "@/components/shared/language-toggle";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -27,8 +30,14 @@ type AppTopbarProps = {
 function isActivePath(currentPath: string, destination: string): boolean {
   return destination === "/"
     ? currentPath === "/"
-    : currentPath === destination ||
-        currentPath.startsWith(`${destination}/`);
+    : currentPath === destination || currentPath.startsWith(`${destination}/`);
+}
+
+function isItemActive(currentPath: string, item: NavigationItem): boolean {
+  return (
+    isActivePath(currentPath, item.to) ||
+    Boolean(item.children?.some((child) => isActivePath(currentPath, child.to)))
+  );
 }
 
 function getInitials(userName: string): string {
@@ -41,35 +50,36 @@ function getInitials(userName: string): string {
     .toUpperCase();
 }
 
-export function AppTopbar({
-  groups,
-  userName,
-  onLogout,
-}: AppTopbarProps) {
+export function AppTopbar({ groups, userName, onLogout }: AppTopbarProps) {
   const { t } = useTranslation();
   const currentPath = useLocation({ select: (location) => location.pathname });
   const currentGroup = groups.find((group) =>
-    group.items.some((item) => isActivePath(currentPath, item.to)),
+    group.items.some((item) => isItemActive(currentPath, item)),
   );
   const currentItem = currentGroup?.items
-    .filter((item) => isActivePath(currentPath, item.to))
+    .filter((item) => isItemActive(currentPath, item))
     .sort((left, right) => right.to.length - left.to.length)[0];
   return (
-    <header className="sticky top-0 z-30 flex h-(--topbar-height) shrink-0 items-center gap-2 border-b bg-background/95 px-3 shadow-xs backdrop-blur supports-backdrop-filter:bg-background/80 md:px-4">
+    <header className="rl-topbar sticky top-0 z-30 flex h-(--topbar-height) shrink-0 items-center gap-2 border-b bg-background/90 px-3 shadow-xs backdrop-blur-xl supports-backdrop-filter:bg-background/75 md:px-4">
       <SidebarTrigger aria-label={t("nav.openMenu")} className="md:hidden" />
       <Separator orientation="vertical" className="mx-1 h-5 md:hidden" />
 
       <div className="hidden min-w-0 md:block">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           {currentGroup ? <span>{t(currentGroup.labelKey)}</span> : null}
-          {currentGroup && currentItem ? <span aria-hidden="true">/</span> : null}
+          {currentGroup && currentItem ? (
+            <span aria-hidden="true">/</span>
+          ) : null}
           <span className="truncate font-medium text-foreground">
             {currentItem ? t(currentItem.labelKey) : t("common.appName")}
           </span>
         </div>
       </div>
 
-      <div className="ml-auto flex min-w-0 items-center gap-1.5">
+      <div
+        data-testid="topbar-controls"
+        className="rl-topbar-controls ml-auto flex min-w-0 items-center gap-1.5"
+      >
         <CommandNavigation groups={groups} />
         <ThemeToggle />
         <LanguageToggle />
@@ -81,7 +91,7 @@ export function AppTopbar({
               variant="ghost"
               size="icon"
               aria-label={t("account.menu")}
-              className="rounded-full"
+              className="rounded-full ring-1 ring-border/70 transition-all hover:ring-primary/35"
             >
               <Avatar size="sm">
                 <AvatarFallback>{getInitials(userName)}</AvatarFallback>

@@ -1,0 +1,36 @@
+name: rabbitlens
+
+services:
+  rabbitlens:
+    image: ${RABBITLENS_IMAGE:-rabbitlens:local}
+    build:
+      context: ../website
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      RABBITMQ_MANAGEMENT_SCHEME: ${RABBITMQ_MANAGEMENT_SCHEME:-http}
+      RABBITMQ_MANAGEMENT_HOST: ${RABBITMQ_MANAGEMENT_HOST:-host.docker.internal}
+      RABBITMQ_MANAGEMENT_PORT: ${RABBITMQ_MANAGEMENT_PORT:-15672}
+      RABBITLENS_DNS_RESOLVER: ${RABBITLENS_DNS_RESOLVER:-127.0.0.11}
+      RABBITLENS_DNS_TTL: ${RABBITLENS_DNS_TTL:-10s}
+      RABBITLENS_DNS_IPV6: ${RABBITLENS_DNS_IPV6:-off}
+    ports:
+      - "${RABBITLENS_BIND_ADDRESS:-127.0.0.1}:${RABBITLENS_PORT:-8080}:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    read_only: true
+    tmpfs:
+      - /etc/nginx/conf.d:rw,noexec,nosuid,size=1m,mode=1777
+      - /tmp:rw,noexec,nosuid,size=16m
+      - /var/cache/nginx:rw,noexec,nosuid,size=16m
+      - /var/run:rw,noexec,nosuid,size=4m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 10s

@@ -12,8 +12,12 @@ vi.mock("@tanstack/react-router", async () => {
   );
   return {
     ...actual,
-    Link: ({ children, params }: { children: React.ReactNode; params: { name: string } }) => (
-      <a href={`/connections/${encodeURIComponent(params.name)}`}>{children}</a>
+    Link: ({
+      children,
+      params,
+      ...props
+    }: React.ComponentProps<"a"> & { params: { name: string } }) => (
+      <a href={`/connections/${encodeURIComponent(params.name)}`} {...props}>{children}</a>
     ),
   };
 });
@@ -57,7 +61,7 @@ describe("connection columns", () => {
     expect(screen.getByText("running")).toBeVisible();
   });
 
-  it("keeps close inside the row action menu", async () => {
+  it("renders force close as a direct trash action", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     renderWithProviders(
@@ -68,10 +72,37 @@ describe("connection columns", () => {
       />,
     );
 
-    await user.click(
-      screen.getByRole("button", { name: `connections.actionsFor ${row.name}` }),
+    expect(screen.queryByRole("button", { name: `connections.actionsFor ${row.name}` })).not.toBeInTheDocument();
+    expect(screen.queryByRole("menuitem", { name: "connections.forceClose" })).not.toBeInTheDocument();
+    const trashAction = screen.getByRole("button", { name: `connections.forceCloseFor ${row.name}` });
+    expect(trashAction).toHaveClass(
+      "border",
+      "border-transparent",
+      "hover:border-destructive/40",
+      "focus-visible:border-destructive/50",
     );
-    await user.click(screen.getByRole("menuitem", { name: "connections.forceClose" }));
+    await user.click(trashAction);
     expect(onClose).toHaveBeenCalledWith(row.name);
+  });
+
+  it("wraps long connection names and centers status metrics", () => {
+    renderWithProviders(
+      <DataTable
+        ariaLabel="Connections"
+        columns={createConnectionColumns(translate, vi.fn())}
+        data={[row]}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: row.name })).toHaveClass(
+      "whitespace-normal",
+      "break-all",
+    );
+    expect(screen.getByRole("columnheader", { name: "connections.state" })).toHaveClass(
+      "text-center",
+    );
+    expect(screen.getByRole("columnheader", { name: "connections.channels" })).toHaveClass(
+      "text-center",
+    );
   });
 });

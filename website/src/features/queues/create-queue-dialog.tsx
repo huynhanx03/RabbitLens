@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArgumentsEditor, type ArgumentValue } from "@/components/shared/arguments-editor";
+import { FormFieldRow } from "@/components/shared/form-field-row";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { useCreateQueueMutation } from "@/domains/queues/queue-query";
 import { useRouteContext } from "@tanstack/react-router";
@@ -99,97 +100,105 @@ export function CreateQueueDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("queues.createQueue")}</DialogTitle>
-          <DialogDescription>
-            {t("queues.createQueue")} <strong>{vhost}</strong>
+      <DialogContent className="max-h-[90vh] overflow-y-auto p-6 sm:max-w-3xl">
+        <DialogHeader className="space-y-2 pr-10">
+          <DialogTitle className="text-2xl font-semibold tracking-tight">{t("queues.createQueue")}</DialogTitle>
+          <DialogDescription className="text-base">
+            {t("queues.createQueueDescription", { vhost })}
           </DialogDescription>
         </DialogHeader>
 
         <MutationErrorAlert error={createMutation.error} />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t("queues.name")}</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/30 px-4 py-1">
+            <FormFieldRow
+              htmlFor="name"
+              label={t("queues.name")}
+              error={errors.name?.message}
+            >
               <Input
                 id="name"
                 {...register("name")}
                 disabled={createMutation.isPending}
               />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name.message}</p>
-              )}
-            </div>
+            </FormFieldRow>
 
-            <div className="space-y-2">
-              <Label htmlFor="node">{t("queues.node")} ({t("common.optional")})</Label>
+            <FormFieldRow
+              htmlFor="node"
+              label={`${t("queues.node")} (${t("common.optional")})`}
+            >
               <Input
                 id="node"
                 placeholder="e.g. rabbit@localhost"
                 {...register("node")}
                 disabled={createMutation.isPending}
               />
+            </FormFieldRow>
+
+            <div className="grid gap-4 py-4 md:grid-cols-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="type" className="text-sm font-semibold text-muted-foreground">
+                  {t("queues.type")}
+                </Label>
+                <Select
+                  disabled={createMutation.isPending}
+                  value={watch("type")}
+                  onValueChange={(val) => setValue("type", val as "classic" | "quorum" | "stream")}
+                >
+                  <SelectTrigger id="type" className="h-11 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="classic">{t("vhosts.classic")}</SelectItem>
+                    <SelectItem value="quorum">{t("vhosts.quorum")}</SelectItem>
+                    <SelectItem value="stream">{t("vhosts.stream")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="durable" className="text-sm font-semibold text-muted-foreground">
+                  {t("queues.durability")}
+                </Label>
+                <Select
+                  disabled={createMutation.isPending}
+                  value={watch("durable") ? "true" : "false"}
+                  onValueChange={(val) => setValue("durable", val === "true")}
+                >
+                  <SelectTrigger id="durable" className="h-11 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">{t("queues.durable")}</SelectItem>
+                    <SelectItem value="false">{t("queues.transient")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="auto_delete" className="text-sm font-semibold text-muted-foreground">
+                  {t("queues.autoDelete")}
+                </Label>
+                <Select
+                  disabled={createMutation.isPending}
+                  value={watch("auto_delete") ? "true" : "false"}
+                  onValueChange={(val) => setValue("auto_delete", val === "true")}
+                >
+                  <SelectTrigger id="auto_delete" className="h-11 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="false">{t("common.no")}</SelectItem>
+                    <SelectItem value="true">{t("common.yes")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-2">
-              <Label htmlFor="type">{t("queues.type")}</Label>
-              <Select
-                disabled={createMutation.isPending}
-                value={watch("type")}
-                onValueChange={(val) => setValue("type", val as "classic" | "quorum" | "stream")}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="classic">{t("vhosts.classic")}</SelectItem>
-                  <SelectItem value="quorum">{t("vhosts.quorum")}</SelectItem>
-                  <SelectItem value="stream">{t("vhosts.stream")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="durable">{t("queues.durability")}</Label>
-              <Select
-                disabled={createMutation.isPending}
-                value={watch("durable") ? "true" : "false"}
-                onValueChange={(val) => setValue("durable", val === "true")}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="true">{t("queues.durable")}</SelectItem>
-                  <SelectItem value="false">{t("queues.transient")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="auto_delete">{t("queues.autoDelete")}</Label>
-              <Select
-                disabled={createMutation.isPending}
-                value={watch("auto_delete") ? "true" : "false"}
-                onValueChange={(val) => setValue("auto_delete", val === "true")}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="false">{t("common.no")}</SelectItem>
-                  <SelectItem value="true">{t("common.yes")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("queues.arguments")}</Label>
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold">{t("queues.arguments")}</h3>
             <ArgumentsEditor
               value={(watch("arguments") || {}) as Record<string, ArgumentValue>}
               onChange={(val) => setValue("arguments", val)}
@@ -197,16 +206,17 @@ export function CreateQueueDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-end gap-3 border-t border-border/60 pt-5">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={createMutation.isPending}
+              className="h-11 rounded-full px-6"
             >
               {t("common.cancel")}
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending} className="h-11 rounded-full px-7">
               {createMutation.isPending ? t("common.loading") : t("common.add")}
             </Button>
           </div>

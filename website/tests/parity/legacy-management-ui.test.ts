@@ -26,6 +26,10 @@ function covered(overrides: Record<string, unknown> = {}) {
     implementationFiles: ["src/features/test-page.tsx"],
     compatibility:
       "Typed optional fields preserve compatibility with RabbitMQ Management API responses.",
+    category: "monitoring",
+    userGoal: "Review broker health and workload.",
+    legacyBehavior: "RabbitMQ Management exposes this flow in the legacy UI.",
+    rabbitLensCoverage: "RabbitLens renders the equivalent flow with typed API data.",
     capability: "read",
     evidence: ["tests/e2e/parity.spec.ts"],
     status: "covered",
@@ -116,6 +120,13 @@ describe("verifyManifest", () => {
     ["compatibility", "Missing compatibility for covered entry: overview"],
     ["routeModule", "Missing routeModule for covered entry: overview"],
     ["capability", "Missing capability for covered entry: overview"],
+    ["category", "Missing category for covered entry: overview"],
+    ["userGoal", "Missing userGoal for covered entry: overview"],
+    ["legacyBehavior", "Missing legacyBehavior for covered entry: overview"],
+    [
+      "rabbitLensCoverage",
+      "Missing rabbitLensCoverage for covered entry: overview",
+    ],
   ])("fails when %s is missing", (field, expectedError) => {
     const entry = covered();
     delete entry[field as keyof typeof entry];

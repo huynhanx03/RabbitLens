@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type ChartRange, CHART_RANGES } from "@/config/chart-ranges";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatisticsAvailability } from "./statistics-availability";
+import { cn } from "@/lib/utils";
 
 export type RateChartSeries = {
   name: string;
@@ -26,6 +27,9 @@ export type RateChartProps = {
   isAvailable?: boolean;
   /** The reason why data might be unavailable */
   availabilityReason?: string;
+  showDataTable?: boolean;
+  chartClassName?: string;
+  className?: string;
 };
 
 // Lazy-load the ECharts rendering implementation
@@ -39,12 +43,15 @@ export function RateChart({
   onRangeChange,
   isAvailable = true,
   availabilityReason,
+  showDataTable = true,
+  chartClassName,
+  className,
 }: RateChartProps) {
   const { t } = useTranslation();
   const [showTable, setShowTable] = useState(false);
 
   return (
-    <div className="space-y-2">
+    <div className={cn("space-y-4", className)}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <h4 className="text-sm font-medium">{title}</h4>
         <div className="flex flex-wrap items-center gap-1">
@@ -66,47 +73,53 @@ export function RateChart({
       {!isAvailable ? (
         <StatisticsAvailability reason={availabilityReason} />
       ) : (
-        <Suspense fallback={<Skeleton className="h-48 w-full" />}>
-          <EChartsRenderer series={series} unit={unit} />
+        <Suspense fallback={<Skeleton className={cn("h-48 w-full", chartClassName)} />}>
+          <EChartsRenderer
+            series={series}
+            unit={unit}
+            heightClassName={cn("h-48 w-full", chartClassName)}
+          />
         </Suspense>
       )}
 
-      <details
-        open={showTable}
-        onToggle={(e) => setShowTable((e.target as HTMLDetailsElement).open)}
-      >
-        <summary className="cursor-pointer text-xs text-muted-foreground">
-          {t("charts.dataTable")}
-        </summary>
-        <div className="overflow-auto max-h-48 mt-2">
-          <table className="w-full text-xs" role="table">
-            <thead>
-              <tr>
-                <th className="text-left px-2 py-1">{t("charts.time")}</th>
-                {series.map((s) => (
-                  <th key={s.name} className="text-right px-2 py-1">
-                    {s.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {series[0]?.data.map(([timestamp], i) => (
-                <tr key={timestamp} className="border-t border-border/50">
-                  <td className="px-2 py-1 tabular-nums">
-                    {new Date(timestamp).toLocaleTimeString()}
-                  </td>
+      {showDataTable ? (
+        <details
+          open={showTable}
+          onToggle={(e) => setShowTable((e.target as HTMLDetailsElement).open)}
+        >
+          <summary className="cursor-pointer text-xs text-muted-foreground">
+            {t("charts.dataTable")}
+          </summary>
+          <div className="overflow-auto max-h-48 mt-2">
+            <table className="w-full text-xs" role="table">
+              <thead>
+                <tr>
+                  <th className="text-left px-2 py-1">{t("charts.time")}</th>
                   {series.map((s) => (
-                    <td key={s.name} className="text-right px-2 py-1 tabular-nums">
-                      {s.data[i]?.[1]?.toFixed(1) ?? "—"}
-                    </td>
+                    <th key={s.name} className="text-right px-2 py-1">
+                      {s.name}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </details>
+              </thead>
+              <tbody>
+                {series[0]?.data.map(([timestamp], i) => (
+                  <tr key={timestamp} className="border-t border-border/50">
+                    <td className="px-2 py-1 tabular-nums">
+                      {new Date(timestamp).toLocaleTimeString()}
+                    </td>
+                    {series.map((s) => (
+                      <td key={s.name} className="text-right px-2 py-1 tabular-nums">
+                        {s.data[i]?.[1]?.toFixed(1) ?? "—"}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      ) : null}
     </div>
   );
 }

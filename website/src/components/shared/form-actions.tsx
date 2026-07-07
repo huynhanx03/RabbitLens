@@ -19,7 +19,10 @@ export function FormActions({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+    <div
+      data-testid="form-actions"
+      className="rl-form-actions flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
+    >
       <Button
         type="button"
         variant="outline"

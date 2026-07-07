@@ -26,6 +26,12 @@ const REQUIRED_COVERED_FIELDS = [
   "permission",
   "implementationFiles",
   "compatibility",
+  "routeModule",
+  "capability",
+  "category",
+  "userGoal",
+  "legacyBehavior",
+  "rabbitLensCoverage",
 ];
 
 export function verifyManifest(manifest, options = {}) {

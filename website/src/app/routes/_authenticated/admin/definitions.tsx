@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { DefinitionAdminPage } from "@/features/definitions/definition-admin-page";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/admin/definitions")({
-  component: DefinitionAdminPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/cluster" });
+  },
 });

@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArgumentsEditor, type ArgumentValue } from "@/components/shared/arguments-editor";
+import { FormFieldRow } from "@/components/shared/form-field-row";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { usePublishMessageMutation } from "@/domains/exchanges/exchange-query";
 import { useRouteContext } from "@tanstack/react-router";
@@ -113,10 +114,10 @@ export function PublishMessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("exchanges.publishMessage")}</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="max-h-[90vh] overflow-y-auto p-6 sm:max-w-3xl">
+        <DialogHeader className="space-y-2 pr-10">
+          <DialogTitle className="text-2xl font-semibold tracking-tight">{t("exchanges.publishMessage")}</DialogTitle>
+          <DialogDescription className="text-base">
             {t("exchanges.publishMessage")} <strong>{displayName}</strong>
           </DialogDescription>
         </DialogHeader>
@@ -128,28 +129,27 @@ export function PublishMessageDialog({
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="routing_key">{t("exchanges.routingKey")}</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/30 px-4 py-1">
+            <FormFieldRow
+              htmlFor="routing_key"
+              label={t("exchanges.routingKey")}
+              error={errors.routing_key?.message}
+            >
               <Input
                 id="routing_key"
                 {...register("routing_key")}
                 disabled={publishMutation.isPending || lockRoutingKey}
               />
-              {errors.routing_key && (
-                <p className="text-sm text-destructive">{errors.routing_key.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="payload_encoding">{t("exchanges.payloadEncoding")}</Label>
+            </FormFieldRow>
+
+            <FormFieldRow htmlFor="payload_encoding" label={t("exchanges.payloadEncoding")}>
               <Select
                 disabled={publishMutation.isPending}
                 value={watch("payload_encoding")}
                 onValueChange={(val) => setValue("payload_encoding", val as "string" | "base64")}
               >
-                <SelectTrigger>
+                <SelectTrigger id="payload_encoding" className="h-11 w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -157,21 +157,23 @@ export function PublishMessageDialog({
                   <SelectItem value="base64">Base64</SelectItem>
                 </SelectContent>
               </Select>
+            </FormFieldRow>
+
+            <div className="space-y-2 py-4">
+              <Label htmlFor="payload" className="text-sm font-semibold text-muted-foreground">
+                {t("exchanges.payload")}
+              </Label>
+              <Textarea
+                id="payload"
+                rows={5}
+                {...register("payload")}
+                disabled={publishMutation.isPending}
+              />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="payload">{t("exchanges.payload")}</Label>
-            <Textarea
-              id="payload"
-              rows={4}
-              {...register("payload")}
-              disabled={publishMutation.isPending}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("exchanges.headers")} & {t("exchanges.properties")}</Label>
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold">{t("exchanges.headers")} & {t("exchanges.properties")}</h3>
             <ArgumentsEditor
               value={(watch("properties") || {}) as Record<string, ArgumentValue>}
               onChange={(val) => setValue("properties", val)}
@@ -179,16 +181,17 @@ export function PublishMessageDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-end gap-3 border-t border-border/60 pt-5">
             <Button
               type="button"
               variant="outline"
               onClick={() => handleOpenChange(false)}
               disabled={publishMutation.isPending}
+              className="h-11 rounded-full px-6"
             >
               {t("common.cancel")}
             </Button>
-            <Button type="submit" disabled={publishMutation.isPending}>
+            <Button type="submit" disabled={publishMutation.isPending} className="h-11 rounded-full px-7">
               {publishMutation.isPending ? t("common.loading") : t("exchanges.publish")}
             </Button>
           </div>

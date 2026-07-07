@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
-import { ChevronLeft, Gauge, MessagesSquare, Radio, Users } from "lucide-react";
+import { CheckCheck, ChevronLeft, Gauge, MessagesSquare, Radio, Send, Users } from "lucide-react";
 import { AsyncState } from "@/components/shared/async-state";
 import { DetailGrid } from "@/components/shared/detail-grid";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
@@ -33,11 +33,13 @@ export function ChannelDetailPage({ name }: { name: string }) {
       />
       <AsyncState error={query.error} isError={query.isError} isFetching={!query.isPending && query.isFetching} isPending={query.isPending} onRetry={() => query.refetch()} notFoundAction={<Button variant="outline" onClick={() => navigate({ to: "/channels", search: { page: 1, pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize, name: "", useRegex: false, sortReverse: false } })}>{t("common.returnToList")}</Button>}>
         {channel ? <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
             <MetricCard title={t("channels.consumers")} value={channel.consumerCount} icon={<Users aria-hidden="true" />} />
             <MetricCard title={t("channels.unacknowledged")} value={channel.unacknowledged} icon={<MessagesSquare aria-hidden="true" />} status={channel.unacknowledged > 0 ? "warning" : "normal"} statusLabel={channel.unacknowledged > 0 ? t("channels.unacknowledgedPresent") : t("channels.noUnacknowledged")} />
             <MetricCard title={t("channels.prefetch")} value={channel.prefetchCount} icon={<Gauge aria-hidden="true" />} />
             <MetricCard title={t("channels.publishRate")} value={channel.publishRate} unit="msg/s" icon={<Radio aria-hidden="true" />} />
+            <MetricCard title={t("channels.deliverRate")} value={channel.deliverRate} unit="msg/s" icon={<Send aria-hidden="true" />} />
+            <MetricCard title={t("channels.ackRate")} value={channel.ackRate} unit="msg/s" icon={<CheckCheck aria-hidden="true" />} />
           </div>
           <SectionCard title={t("channels.properties")}>
             <DetailGrid unavailableLabel={t("common.unavailable")} items={[
@@ -52,7 +54,16 @@ export function ChannelDetailPage({ name }: { name: string }) {
               { label: t("channels.globalPrefetch"), value: channel.globalPrefetchCount },
             ]} />
           </SectionCard>
-          <SectionCard title={t("channels.messageRates")}><div className="grid gap-4 sm:grid-cols-3"><MetricCard title={t("channels.publishRate")} value={channel.publishRate} unit="msg/s" /><MetricCard title={t("channels.deliverRate")} value={channel.deliverRate} unit="msg/s" /><MetricCard title={t("channels.ackRate")} value={channel.ackRate} unit="msg/s" /></div></SectionCard>
+          <SectionCard
+            title={t("channels.messageRates")}
+            description={t("channels.messageRatesDescription")}
+          >
+            <div className="grid gap-4 sm:grid-cols-3">
+              <MetricCard title={t("channels.publishRate")} value={channel.publishRate} unit="msg/s" icon={<Radio aria-hidden="true" />} />
+              <MetricCard title={t("channels.deliverRate")} value={channel.deliverRate} unit="msg/s" icon={<Send aria-hidden="true" />} />
+              <MetricCard title={t("channels.ackRate")} value={channel.ackRate} unit="msg/s" icon={<CheckCheck aria-hidden="true" />} />
+            </div>
+          </SectionCard>
           {(query.data?.pending_raft_commands != null || query.data?.cached_segments != null) ? (
             <SectionCard title={t("channels.protocolDiagnostics")}>
               <DetailGrid unavailableLabel={t("common.unavailable")} items={[

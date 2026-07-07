@@ -1,16 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "@tanstack/react-router";
-import { LockKeyhole, MoreHorizontal } from "lucide-react";
+import { LockKeyhole, Trash2 } from "lucide-react";
 import type { ConnectionViewModel } from "@/domains/connections/connection-view-model";
 import { StatusBadge, type StatusVariant } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
+import { destructiveIconButtonClassName } from "@/lib/utils";
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -38,6 +33,7 @@ export function createConnectionColumns(
       accessorKey: "name",
       header: t("connections.name"),
       enableSorting: true,
+      meta: { className: "min-w-72 max-w-[28rem]", variant: "code", wrap: "break" },
       cell: ({ getValue }) => {
         const name = getValue<string>();
         return (
@@ -51,7 +47,7 @@ export function createConnectionColumns(
               useRegex: false,
               sortReverse: false,
             }}
-            className="block max-w-80 truncate font-mono text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="block max-w-[28rem] whitespace-normal break-all font-mono text-sm font-medium leading-relaxed text-primary underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title={name}
           >
             {name}
@@ -73,9 +69,14 @@ export function createConnectionColumns(
       accessorKey: "state",
       header: t("connections.state"),
       enableSorting: true,
+      meta: { align: "center", variant: "status" },
       cell: ({ getValue }) => {
         const state = getValue<string>();
-        return <StatusBadge variant={stateToVariant(state)}>{state}</StatusBadge>;
+        return (
+          <span className="flex justify-center">
+            <StatusBadge variant={stateToVariant(state)}>{state}</StatusBadge>
+          </span>
+        );
       },
     },
     {
@@ -88,15 +89,15 @@ export function createConnectionColumns(
       accessorKey: "channels",
       header: t("connections.channels"),
       enableSorting: true,
-      meta: { className: "hidden md:table-cell" },
+      meta: { align: "center", className: "hidden md:table-cell", variant: "numeric" },
       cell: ({ getValue }) => (
-        <span className="tabular-nums">{getValue<number>()}</span>
+        <span className="block text-center tabular-nums">{getValue<number>()}</span>
       ),
     },
     {
       accessorKey: "ssl",
       header: t("connections.ssl"),
-      meta: { className: "hidden md:table-cell" },
+      meta: { align: "center", className: "hidden md:table-cell" },
       cell: ({ getValue }) =>
         getValue<boolean>() ? (
           <span
@@ -119,7 +120,7 @@ export function createConnectionColumns(
       accessorKey: "peerEndpoint",
       header: t("connections.peerAddress"),
       enableSorting: false,
-      meta: { className: "hidden lg:table-cell" },
+      meta: { className: "hidden lg:table-cell", variant: "code" },
       cell: ({ getValue }) => (
         <span className="font-mono text-sm">{getValue<string>()}</span>
       ),
@@ -128,36 +129,28 @@ export function createConnectionColumns(
       accessorKey: "node",
       header: t("connections.node"),
       enableSorting: true,
-      meta: { className: "hidden xl:table-cell" },
+      meta: { className: "hidden xl:table-cell", variant: "code" },
     },
     {
       id: "actions",
       header: () => <span className="sr-only">{t("common.actions")}</span>,
       enableSorting: false,
+      meta: { align: "center", variant: "actions" },
       cell: ({ row }) => {
         const name = row.original.name;
         return (
-          <div className="flex justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={t("connections.actionsFor", { name })}
-                >
-                  <MoreHorizontal aria-hidden="true" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  variant="destructive"
-                  onSelect={() => onClose(name)}
-                >
-                  {t("connections.forceClose")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className={destructiveIconButtonClassName}
+              aria-label={t("connections.forceCloseFor", { name })}
+              title={t("connections.forceClose")}
+              onClick={() => onClose(name)}
+            >
+              <Trash2 aria-hidden="true" />
+            </Button>
           </div>
         );
       },

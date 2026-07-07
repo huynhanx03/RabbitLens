@@ -75,6 +75,12 @@ describe("OverviewPage", () => {
     expect(screen.getByText("Ready messages")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
     expect(screen.getByText("Running nodes")).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Workload health" }),
+    ).toBeVisible();
+    expect(screen.getByTestId("overview-workload-health-grid")).toHaveClass(
+      "xl:grid-cols-6",
+    );
     expect(screen.getAllByText("1")).toHaveLength(2);
   });
 

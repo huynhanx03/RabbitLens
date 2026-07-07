@@ -8,15 +8,17 @@ import { DataTable } from "./data-table";
 type Row = { name: string; state: string };
 
 const columns: ColumnDef<Row>[] = [
-  { accessorKey: "name", header: "Name" },
+  { accessorKey: "name", header: "Name", meta: { variant: "code", wrap: "break" } },
   {
     accessorKey: "state",
     header: "State",
-    meta: { className: "hidden md:table-cell" },
+    meta: { align: "center", className: "hidden md:table-cell", variant: "status" },
+    enableSorting: true,
   },
   {
     id: "actions",
     header: "Actions",
+    meta: { align: "center", variant: "actions" },
     cell: () => <button type="button">Open menu</button>,
   },
 ];
@@ -32,10 +34,42 @@ describe("DataTable", () => {
     );
 
     expect(screen.getByRole("table", { name: "Connections" })).toBeVisible();
+    expect(
+      screen.getByRole("table", { name: "Connections" }).parentElement,
+    ).toHaveClass("rl-data-table");
+    expect(
+      screen.getByRole("table", { name: "Connections" }).parentElement,
+    ).toHaveClass("rounded-lg");
+    expect(
+      screen.getByRole("table", { name: "Connections" }).parentElement,
+    ).not.toHaveClass("rounded-xl");
+    expect(
+      screen.getByRole("table", { name: "Connections" }).parentElement,
+    ).not.toHaveClass("rounded-2xl");
     expect(screen.getAllByRole("rowgroup")[0]).toHaveClass("sticky");
     expect(screen.getByRole("columnheader", { name: "State" })).toHaveClass(
       "hidden",
       "md:table-cell",
+      "text-center",
+    );
+    expect(screen.getByRole("columnheader", { name: "Actions" })).toHaveClass(
+      "w-12",
+      "text-center",
+    );
+    expect(screen.getByRole("cell", { name: "client-1" })).toHaveClass(
+      "font-mono",
+      "whitespace-normal",
+      "break-all",
+    );
+    expect(screen.getByRole("cell", { name: "running" })).toHaveClass(
+      "text-center",
+    );
+    expect(screen.getByRole("row", { name: /client-1/i })).toHaveClass(
+      "rl-data-row",
+    );
+    expect(screen.getByRole("button", { name: /State/i })).toHaveClass(
+      "rl-sort-control",
+      "justify-center",
     );
   });
 
@@ -49,7 +83,9 @@ describe("DataTable", () => {
       />,
     );
 
-    expect(screen.getByText("No matching connections")).toBeVisible();
+    expect(screen.getByText("No matching connections").parentElement).toHaveClass(
+      "rl-table-empty",
+    );
   });
 
   it("does not activate the row from an interactive child", async () => {

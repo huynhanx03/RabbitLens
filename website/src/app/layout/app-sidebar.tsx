@@ -29,15 +29,12 @@ function isActivePath(currentPath: string, destination: string): boolean {
     : currentPath === destination || currentPath.startsWith(`${destination}/`);
 }
 
-export function AppSidebar({
-  groups,
-  currentPath,
-}: AppSidebarProps) {
+export function AppSidebar({ groups, currentPath }: AppSidebarProps) {
   const { t } = useTranslation();
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="offcanvas" className="rl-sidebar">
       <nav
         aria-label={t("accessibility.primaryNavigation")}
         className="flex min-h-0 flex-1 flex-col"
@@ -45,24 +42,31 @@ export function AppSidebar({
         <SidebarHeader className="h-(--topbar-height) justify-center border-b border-sidebar-border px-3">
           <Link
             to="/"
-            className="rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            className="rounded-xl outline-none transition-transform duration-200 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-sidebar-ring"
             aria-label={t("common.appName")}
           >
             <AppBrand />
           </Link>
         </SidebarHeader>
 
-        <SidebarContent className="gap-1 px-2 py-3">
+        <SidebarContent className="gap-3 px-2 py-3">
           {groups.map((group) => (
             <SidebarGroup key={group.id} className="p-0">
               <SidebarGroupLabel className="px-2 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                 {t(group.labelKey)}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="gap-1.5">
                   {group.items.map((item) => {
                     const label = t(item.labelKey);
-                    const active = isActivePath(currentPath, item.to);
+                    const childStates =
+                      item.children?.map((child) => ({
+                        child,
+                        active: isActivePath(currentPath, child.to),
+                      })) ?? [];
+                    const active = item.children?.length
+                      ? false
+                      : isActivePath(currentPath, item.to);
                     const Icon = item.icon;
 
                     return (
@@ -71,7 +75,7 @@ export function AppSidebar({
                           asChild
                           isActive={active}
                           tooltip={label}
-                          className="h-9 rounded-lg px-2.5 font-medium data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground data-active:shadow-sm"
+                          className="rl-sidebar-item h-9 rounded-xl px-2.5 font-medium"
                         >
                           <Link
                             to={item.to as never}
@@ -85,16 +89,20 @@ export function AppSidebar({
                           </Link>
                         </SidebarMenuButton>
                         {item.children?.length ? (
-                          <SidebarMenuSub>
-                            {item.children.map((child) => {
+                          <SidebarMenuSub className="my-1 gap-1.5">
+                            {childStates.map(({ child, active: childActive }) => {
                               const childLabel = t(child.labelKey);
-                              const childActive = isActivePath(currentPath, child.to);
                               return (
                                 <SidebarMenuSubItem key={child.id}>
-                                  <SidebarMenuSubButton asChild isActive={childActive}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={childActive}
+                                  >
                                     <Link
                                       to={child.to as never}
-                                      aria-current={childActive ? "page" : undefined}
+                                      aria-current={
+                                        childActive ? "page" : undefined
+                                      }
                                       onClick={() => {
                                         if (isMobile) setOpenMobile(false);
                                       }}
@@ -115,7 +123,6 @@ export function AppSidebar({
             </SidebarGroup>
           ))}
         </SidebarContent>
-
       </nav>
     </Sidebar>
   );

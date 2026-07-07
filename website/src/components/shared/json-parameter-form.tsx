@@ -85,7 +85,12 @@ export function JsonParameterForm({
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(submit)} noValidate>
+    <form
+      aria-label="JSON parameter form"
+      className="rl-admin-form space-y-4"
+      onSubmit={handleSubmit(submit)}
+      noValidate
+    >
       <Alert>
         <AlertTitle>{t("parameters.secretTitle")}</AlertTitle>
         <AlertDescription>{t("parameters.secretDescription")}</AlertDescription>

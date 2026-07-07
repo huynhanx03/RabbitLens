@@ -65,10 +65,11 @@ describe("ConnectionDetailPage", () => {
       { wrapper: createWrapper() },
     );
 
-    // Wait for connection properties
+    // Wait for header metadata and merged properties
     await waitFor(() => {
-      expect(screen.getAllByText("guest")).toHaveLength(2);
-      expect(screen.getAllByText("AMQP 0-9-1")).toHaveLength(2);
+      expect(screen.getByText("guest")).toBeInTheDocument();
+      expect(screen.getByText("AMQP 0-9-1")).toBeInTheDocument();
+      expect(screen.getByText("Properties")).toBeInTheDocument();
     });
 
     // Check channels table
@@ -127,7 +128,7 @@ describe("ConnectionDetailPage", () => {
       { wrapper: createWrapper() },
     );
 
-    expect(await screen.findByText("Network")).toBeVisible();
+    expect(await screen.findByText("Properties")).toBeVisible();
     expect(screen.getByText("127.0.0.1:5672")).toBeVisible();
     expect(screen.getByText("192.168.1.10:42356")).toBeVisible();
     expect(screen.getByText("PLAIN")).toBeVisible();

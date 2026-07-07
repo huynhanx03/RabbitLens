@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useRouteContext } from "@tanstack/react-router";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,11 +12,12 @@ import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { usePermissionDecision } from "@/auth/permissions/permission-gate";
 import { Upload, Download, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { SectionCard } from "@/components/shared/section-card";
 import { z } from "zod";
 
 export function DefinitionAdminPage() {
   const { t } = useTranslation();
-  const context = useRouteContext({ from: "/_authenticated/admin/definitions" });
+  const context = useRouteContext({ from: "__root__" });
   const { data: vhosts } = useVhosts(context.apiClient);
   
   const [exportVhost, setExportVhost] = useState<string>("all");
@@ -89,20 +89,22 @@ export function DefinitionAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("definitions.exportTitle")}</CardTitle>
-            <CardDescription>
-              {t("definitions.exportDescription")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <SectionCard title={t("definitions.title")}>
+        <div className="grid gap-0 lg:grid-cols-2 lg:divide-x lg:divide-border/60">
+          <section className="space-y-5 pb-6 lg:pb-0 lg:pr-8">
+            <div>
+              <h3 className="text-base font-semibold">
+                {t("definitions.exportTitle")}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("definitions.exportDescription")}
+              </p>
+            </div>
             <MutationErrorAlert error={exportError} />
             <div className="space-y-2">
               <Label>{t("definitions.vhostOptional")}</Label>
               <Select value={exportVhost} onValueChange={setExportVhost}>
-                <SelectTrigger>
+                <SelectTrigger className="h-11 w-full sm:max-w-72">
                   <SelectValue placeholder={t("definitions.selectVhost")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -120,25 +122,25 @@ export function DefinitionAdminPage() {
               <Download className="w-4 h-4 mr-2" />
               {isExporting ? t("definitions.exporting") : t("definitions.exportButton")}
             </Button>
-          </CardContent>
-        </Card>
+          </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("definitions.importTitle")}</CardTitle>
-            <CardDescription>
-              {t("definitions.importDescription")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleImport} className="space-y-4">
+          <section className="border-t pt-6 lg:border-t-0 lg:pl-8 lg:pt-0">
+            <div className="mb-5">
+              <h3 className="text-base font-semibold">
+                {t("definitions.importTitle")}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("definitions.importDescription")}
+              </p>
+            </div>
+            <form onSubmit={handleImport} className="space-y-5">
               <MutationErrorAlert error={importMutation.error} />
               <MutationErrorAlert error={fileError} />
               
               <div className="space-y-2">
                 <Label>{t("definitions.vhostOptional")}</Label>
                 <Select value={importVhost} onValueChange={setImportVhost}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-11 w-full sm:max-w-72">
                     <SelectValue placeholder={t("definitions.selectVhost")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,6 +161,7 @@ export function DefinitionAdminPage() {
                   id="importFile" 
                   type="file" 
                   accept=".json"
+                  className="h-11"
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
                 />
               </div>
@@ -168,12 +171,12 @@ export function DefinitionAdminPage() {
                 {importMutation.isPending ? t("definitions.importing") : t("definitions.importButton")}
               </Button>
               {importMutation.isSuccess && (
-                <p className="text-sm text-green-600 mt-2">{t("definitions.importSuccess")}</p>
+                <p className="mt-2 text-sm rl-action-success">{t("definitions.importSuccess")}</p>
               )}
             </form>
-          </CardContent>
-        </Card>
-      </div>
+          </section>
+        </div>
+      </SectionCard>
     </div>
   );
 }

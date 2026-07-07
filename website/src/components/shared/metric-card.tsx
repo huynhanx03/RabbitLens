@@ -17,6 +17,7 @@ interface MetricCardProps {
   icon?: ReactNode;
   description?: string;
   statusLabel?: string;
+  contentClassName?: string;
 }
 
 export function MetricCard({
@@ -31,12 +32,13 @@ export function MetricCard({
   icon,
   description,
   statusLabel,
+  contentClassName,
 }: MetricCardProps) {
   const statusColors = {
-    normal: "text-foreground",
-    warning: "text-amber-500 dark:text-amber-400",
-    critical: "text-destructive",
-    inactive: "text-muted-foreground",
+    normal: "rl-metric-value-normal",
+    warning: "rl-metric-value-warning",
+    critical: "rl-metric-value-critical",
+    inactive: "rl-metric-value-inactive",
   };
 
   return (
@@ -44,7 +46,7 @@ export function MetricCard({
       role="region"
       aria-label={title}
       className={cn(
-        "group overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md",
+        "rl-metric-card group overflow-hidden transition-all duration-200 hover:-translate-y-0.5",
         className,
       )}
     >
@@ -53,12 +55,12 @@ export function MetricCard({
           {title}
         </CardTitle>
         {icon ? (
-          <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary [&_svg]:size-4">
+          <span className="rl-icon-tile flex size-10 items-center justify-center rounded-xl text-primary [&_svg]:size-4">
             {icon}
           </span>
         ) : null}
       </CardHeader>
-      <CardContent>
+      <CardContent className={contentClassName}>
         {isUnavailable ? (
           <div className="text-2xl font-bold text-muted-foreground opacity-50">
             {unavailableLabel}
@@ -67,10 +69,12 @@ export function MetricCard({
           <Skeleton className="h-8 w-1/2" />
         ) : (
           <div className="flex items-baseline space-x-1">
-            <div className={cn("text-2xl font-bold", statusColors[status])}>
+            <div className={cn("rl-metric-value text-2xl font-bold", statusColors[status])}>
               {value ?? "—"}
             </div>
-            {statusLabel ? <span className="sr-only">{statusLabel}</span> : null}
+            {statusLabel ? (
+              <span className="sr-only">{statusLabel}</span>
+            ) : null}
             {unit && (
               <span className="text-xs text-muted-foreground font-medium">
                 {unit}

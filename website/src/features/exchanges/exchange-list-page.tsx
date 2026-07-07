@@ -6,6 +6,7 @@ import type { SortingState } from "@tanstack/react-table";
 
 import { DataTable } from "@/components/shared/data-table";
 import { FilterBar } from "@/components/shared/filter-bar";
+import { PageToolbar } from "@/components/shared/page-toolbar";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { Button } from "@/components/ui/button";
 import { createExchangeColumns } from "./exchange-columns";
@@ -59,54 +60,55 @@ export function ExchangeListPage({ search }: ExchangeListPageProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="flex-1">
+      <PageToolbar
+        ariaLabel={t("exchanges.title")}
+        primary={
           <FilterBar
             name={search.name}
             useRegex={search.useRegex}
             onSubmit={(name, useRegex) => updateSearch({ name, useRegex, page: 1 })}
           />
-        </div>
-        <Button onClick={() => setCreateDialogOpen(true)}>
-          {t("common.add")} Exchange
-        </Button>
-      </div>
+        }
+        secondary={
+          <Button onClick={() => setCreateDialogOpen(true)}>
+            {t("common.add")} Exchange
+          </Button>
+        }
+      />
 
       <CreateExchangeDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
-        vhost="%2F"
+        vhost="/"
       />
 
-      <div className="rounded-md border">
-        <DataTable
-          columns={columns}
-          data={rows}
-          isLoading={isLoading}
-          sorting={sorting}
-          columnVisibility={{
-            publishInRate: statsCapabilities.canShowRates,
-            publishOutRate: statsCapabilities.canShowRates,
-          }}
-          onSortingChange={(next) => {
-            const col = next[0];
-            if (col) {
-              updateSearch({ sort: col.id, sortReverse: col.desc, page: 1 });
-            } else {
-              updateSearch({ sort: undefined, sortReverse: false });
-            }
-          }}
-          onRowClick={(row) => {
-            const rawName = row.name === "(AMQP default)" ? "_default_" : row.name;
-            navigate({
-              to: "/exchanges/$vhost/$name",
-              params: { vhost: row.vhost, name: rawName },
-            });
-          }}
-          // Composite key since names can overlap across vhosts
-          getRowId={(row) => `${row.vhost}/${row.name}`}
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={rows}
+        isLoading={isLoading}
+        sorting={sorting}
+        columnVisibility={{
+          publishInRate: statsCapabilities.canShowRates,
+          publishOutRate: statsCapabilities.canShowRates,
+        }}
+        onSortingChange={(next) => {
+          const col = next[0];
+          if (col) {
+            updateSearch({ sort: col.id, sortReverse: col.desc, page: 1 });
+          } else {
+            updateSearch({ sort: undefined, sortReverse: false });
+          }
+        }}
+        onRowClick={(row) => {
+          const rawName = row.name === "(AMQP default)" ? "_default_" : row.name;
+          navigate({
+            to: "/exchanges/$vhost/$name",
+            params: { vhost: row.vhost, name: rawName },
+          });
+        }}
+        // Composite key since names can overlap across vhosts
+        getRowId={(row) => `${row.vhost}/${row.name}`}
+      />
 
       {data && (
         <PaginationControls

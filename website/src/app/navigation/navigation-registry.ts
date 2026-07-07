@@ -1,7 +1,6 @@
 import {
   Boxes,
   Cable,
-  FileJson,
   Flag,
   Gauge,
   GaugeCircle,
@@ -127,14 +126,14 @@ const administrationGroup: NavigationGroup = {
       labelKey: "cluster.title",
       to: "/admin/cluster",
       icon: Boxes,
-      keywords: ["cluster", "name", "statistics"],
-    },
-    {
-      id: "definitions",
-      labelKey: "definitions.title",
-      to: "/admin/definitions",
-      icon: FileJson,
-      keywords: ["definition", "import", "export"],
+      keywords: [
+        "cluster",
+        "name",
+        "statistics",
+        "definition",
+        "import",
+        "export",
+      ],
     },
   ],
 };

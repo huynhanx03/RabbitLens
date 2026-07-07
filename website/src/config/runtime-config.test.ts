@@ -22,7 +22,19 @@ describe("loadRuntimeConfig", () => {
     await expect(loadRuntimeConfig(fetcher)).resolves.toEqual(validConfig);
     expect(fetcher).toHaveBeenCalledOnce();
     expect(fetcher).toHaveBeenCalledWith(
-      new URL("runtime-config.json", document.baseURI),
+      new URL("/runtime-config.json", window.location.origin),
+      { cache: "no-store" },
+    );
+  });
+
+  it("loads runtime configuration from the app root on deep routes", async () => {
+    window.history.pushState({}, "", "/queues/%2Fdemo/orders.dead-letter");
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse(validConfig));
+
+    await expect(loadRuntimeConfig(fetcher)).resolves.toEqual(validConfig);
+
+    expect(fetcher).toHaveBeenCalledWith(
+      new URL("/runtime-config.json", window.location.origin),
       { cache: "no-store" },
     );
   });

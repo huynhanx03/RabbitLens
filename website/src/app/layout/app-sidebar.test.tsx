@@ -74,14 +74,17 @@ function renderSidebar(currentPath: string) {
 }
 
 describe("AppSidebar", () => {
-  it("renders grouped navigation and the active destination", async () => {
+  it("renders grouped navigation without selecting a parent that has children", async () => {
     renderSidebar("/connections");
 
     expect(await screen.findByText("Monitor")).toBeVisible();
     expect(screen.getByText("Topology")).toBeVisible();
     expect(
       screen.getByRole("link", { name: "Connections" }),
-    ).toHaveAttribute("aria-current", "page");
+    ).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Connections" })).toHaveClass(
+      "rl-sidebar-item",
+    );
   });
 
   it("keeps desktop navigation expanded without a collapse control", async () => {
@@ -96,11 +99,22 @@ describe("AppSidebar", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows child destinations while expanded", async () => {
+  it("selects only the active child destination", async () => {
     renderSidebar("/connections/streams");
     expect(
-      await screen.findByRole("link", { name: "Stream Connections" }),
+      await screen.findByRole("link", { name: "Connections" }),
+    ).not.toHaveAttribute("aria-current");
+    expect(
+      screen.getByRole("link", { name: "Stream Connections" }),
     ).toHaveAttribute("aria-current", "page");
+  });
+
+  it("does not preselect the first child at the parent destination", async () => {
+    renderSidebar("/connections");
+
+    expect(
+      await screen.findByRole("link", { name: "Stream Connections" }),
+    ).not.toHaveAttribute("aria-current");
   });
 
 });

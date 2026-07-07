@@ -10,7 +10,7 @@ const auditedFiles = [
   "src/features/connections/connection-detail-page.tsx",
   "src/features/exchanges/exchange-list-page.tsx",
   "src/features/queues/delete-queue-dialog.tsx",
-  "src/features/queues/get-messages-dialog.tsx",
+  "src/features/queues/message-inspector.tsx",
   "src/features/queues/queue-detail-page.tsx",
   "src/features/queues/queue-list-page.tsx",
 ] as const;
