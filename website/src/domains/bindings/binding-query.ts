@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
 import {
   createBinding,
   deleteBinding,
+  getQueueBindings,
   type CreateBindingRequest,
 } from "./binding-api";
 
@@ -15,6 +16,17 @@ export const bindingKeys = {
   queue: (vhost: string, queue: string) =>
     [...bindingKeys.all, "queue", vhost, queue] as const,
 };
+
+export function queueBindingsQueryOptions(
+  apiClient: ManagementApiClient,
+  vhost: string,
+  queue: string,
+) {
+  return queryOptions({
+    queryKey: bindingKeys.queue(vhost, queue),
+    queryFn: ({ signal }) => getQueueBindings(apiClient, vhost, queue, signal),
+  });
+}
 
 export function useCreateBindingMutation(apiClient: ManagementApiClient) {
   const queryClient = useQueryClient();

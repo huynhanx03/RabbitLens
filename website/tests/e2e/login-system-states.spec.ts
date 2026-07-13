@@ -120,9 +120,8 @@ test.describe("Login and system feedback", () => {
     await navigateTo(page, "Connections");
 
     await page
-      .getByRole("button", { name: `Actions for ${connection.name}` })
+      .getByRole("button", { name: `Force close ${connection.name}` })
       .click();
-    await page.getByRole("menuitem", { name: "Force close" }).click();
     const dialog = page.getByRole("alertdialog", {
       name: "Force close connection",
     });

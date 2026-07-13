@@ -117,6 +117,14 @@ seed_batch() {
     "$HEADER_PROPERTIES"
   publish "$DEMO_VHOST" 'demo.dlx' 'order.dead' \
     '{\"event\":\"order.dead_lettered\",\"order_id\":\"ORD-0999\",\"reason\":\"demo\"}'
+  publish "$DEMO_VHOST" 'pentest.response' 'scan.completed' \
+    '{\"event\":\"scan.completed\",\"scan_id\":\"SCAN-1001\",\"status\":\"completed\"}'
+  publish "$DEMO_VHOST" 'activity-log' 'activity.scan.completed' \
+    '{\"event\":\"activity.scan.completed\",\"actor\":\"rabbitlens-demo\"}'
+  publish "$DEMO_VHOST" 'pentest.logs' '' \
+    '{\"event\":\"pentest.log\",\"level\":\"info\",\"message\":\"demo scan log\"}'
+  publish "$DEMO_VHOST" 'pentest.tracking' 'scan.progress' \
+    '{\"event\":\"scan.progress\",\"scan_id\":\"SCAN-1001\",\"progress\":75}'
   publish "$UPSTREAM_VHOST" 'upstream.events' 'federated.notice' \
     '{\"event\":\"federated.notice\",\"source\":\"/upstream\",\"target\":\"/demo\"}'
   publish "$UPSTREAM_VHOST" 'upstream.events' 'shovel.demo' \

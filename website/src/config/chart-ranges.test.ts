@@ -32,11 +32,11 @@ describe("buildRangeQueryParams", () => {
     expect(params.get("msg_rates_incr")).toBe("5");
   });
 
-  it("builds queue range parameters with lengths", () => {
+  it("builds queue range parameters with lengths only", () => {
     const params = buildRangeQueryParams(range60s, QUEUE_RANGE_PREFIXES);
-    expect(params.get("data_rates_age")).toBe("60");
-    expect(params.get("msg_rates_age")).toBe("60");
     expect(params.get("lengths_age")).toBe("60");
     expect(params.get("lengths_incr")).toBe("5");
+    expect(params.has("data_rates_age")).toBe(false);
+    expect(params.has("msg_rates_age")).toBe(false);
   });
 });

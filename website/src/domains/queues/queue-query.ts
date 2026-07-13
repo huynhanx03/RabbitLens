@@ -1,8 +1,24 @@
 import type { ResourceListSearch } from "@/api/pagination-schema";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
-import { createQueue, deleteQueue, purgeQueue, getMessages, runQueueAction, type CreateQueueRequest, type GetMessagesRequest, type QueueAction } from "./queue-api";
+import {
+  createQueue,
+  deleteQueue,
+  getMessages,
+  getQueue,
+  purgeQueue,
+  runQueueAction,
+  type CreateQueueRequest,
+  type GetMessagesRequest,
+  type QueueAction,
+} from "./queue-api";
+import {
+  buildRangeQueryParams,
+  QUEUE_RANGE_PREFIXES,
+  type ChartRange,
+} from "@/config/chart-ranges";
+import { PRODUCT_DEFAULTS } from "@/config/defaults";
 
 export const queueKeys = {
   all: ["queues"] as const,
@@ -12,6 +28,31 @@ export const queueKeys = {
   detail: (vhost: string, name: string) =>
     [...queueKeys.all, "detail", vhost, name] as const,
 };
+
+export function queueDetailQueryOptions(
+  apiClient: ManagementApiClient,
+  vhost: string,
+  name: string,
+  range: ChartRange,
+) {
+  return queryOptions({
+    queryKey: [
+      ...queueKeys.detail(vhost, name),
+      "lengths",
+      range.ageSeconds,
+      range.incrementSeconds,
+    ] as const,
+    queryFn: ({ signal }) =>
+      getQueue(
+        apiClient,
+        vhost,
+        name,
+        buildRangeQueryParams(range, QUEUE_RANGE_PREFIXES),
+        signal,
+      ),
+    staleTime: PRODUCT_DEFAULTS.polling.nodeDetailsMs,
+  });
+}
 
 export function useCreateQueueMutation(apiClient: ManagementApiClient) {
   const queryClient = useQueryClient();
