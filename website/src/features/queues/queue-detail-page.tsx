@@ -1,57 +1,43 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
-import { AmqpValue } from "@/components/shared/amqp-value";
+import { DetailGrid } from "@/components/shared/detail-grid";
+import { MetricCard } from "@/components/shared/metric-card";
 import { SectionCard } from "@/components/shared/section-card";
 import { RateChart, type RateChartSeries } from "@/components/shared/rate-chart";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Badge } from "@/components/ui/badge";
+import { objectToStructuredEntries } from "@/components/shared/structured-key-value-utils";
 
-import {
-  queueDetailQueryOptions,
-  usePurgeQueueMutation,
-  useQueueActionMutation,
-} from "@/domains/queues/queue-query";
+import { getQueue } from "@/domains/queues/queue-api";
+import { queueKeys, usePurgeQueueMutation, useQueueActionMutation } from "@/domains/queues/queue-query";
 import type { QueueAction } from "@/domains/queues/queue-api";
 import { createQueueViewModel } from "./queue-view-model";
 import { DeleteQueueDialog } from "./delete-queue-dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
-import { CreateBindingDialog } from "../bindings/create-binding-dialog";
-import {
-  queueBindingsQueryOptions,
-  useDeleteBindingMutation,
-} from "@/domains/bindings/binding-query";
-import type { Binding } from "@/domains/bindings/binding-schema";
-import { exchangeConfigQueryOptions } from "@/domains/exchanges/exchange-query";
+import { BindingList } from "../bindings/binding-list";
 
 import { createPollingInterval } from "@/api/polling";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
-import { CHART_RANGES } from "@/config/chart-ranges";
-import { ChevronLeft, Trash2, Upload } from "lucide-react";
+import { CHART_RANGES, buildRangeQueryParams, QUEUE_RANGE_PREFIXES } from "@/config/chart-ranges";
+import { ChevronLeft, Inbox, PackageCheck, Send, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-capabilities";
+import { StatisticsAvailability } from "@/components/shared/statistics-availability";
 import { AsyncState } from "@/components/shared/async-state";
 import { ConsumerTable } from "@/features/consumers/consumer-table";
+import { QueueReplicationState } from "./queue-replication-state";
 import { PublishMessageDialog } from "@/features/exchanges/publish-message-dialog";
 import { getStreamQueuePublishers } from "@/domains/extensions/streams/stream-api";
 import { StreamPublisherTable } from "@/features/streams/stream-publisher-table";
 import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
 import { isExtensionInstalled } from "@/extensions/extension-registry";
 import { MoveMessagesDialog } from "./move-messages-dialog";
-import { QueueAdvancedSection } from "./queue-advanced-section";
-import { QueueConfigurationSection } from "./queue-configuration-section";
-import { QueueConsumerRoutes } from "./queue-consumer-routes";
-import { QueueLiveState } from "./queue-live-state";
-import {
-  createQueueTopologyConfig,
-  listExplicitSourceExchanges,
-  resolveExchangeLookupState,
-  type ExchangeLookupState,
-} from "./queue-topology-view-model";
+import { MessageInspector } from "./message-inspector";
 
 type QueueDetailPageProps = {
   vhost: string;
@@ -68,8 +54,6 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
   const [queueAction, setQueueAction] = useState<QueueAction | null>(null);
-  const [createBindingOpen, setCreateBindingOpen] = useState(false);
-  const [bindingToDelete, setBindingToDelete] = useState<Binding | null>(null);
 
   const extensionsQuery = useQuery(extensionsQueryOptions(context.apiClient));
   const tags = context.auth?.user?.tags ?? [];
@@ -88,64 +72,21 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
 
   const purgeMutation = usePurgeQueueMutation(context.apiClient);
   const queueActionMutation = useQueueActionMutation(context.apiClient);
-  const deleteBindingMutation = useDeleteBindingMutation(context.apiClient);
 
   const { data: queue } = useQuery({
-    ...queueDetailQueryOptions(context.apiClient, vhost, name, range),
+    queryKey: [...queueKeys.detail(vhost, name), range, statsCapabilities.canShowRates, statsCapabilities.canShowQueueTotals],
+    queryFn: ({ signal }) =>
+      getQueue(
+        context.apiClient,
+        vhost,
+        name,
+        statsCapabilities.canShowRates || statsCapabilities.canShowQueueTotals 
+          ? buildRangeQueryParams(range, QUEUE_RANGE_PREFIXES) 
+          : undefined,
+        signal,
+      ),
     refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
-
-  const bindingsQuery = useQuery({
-    ...queueBindingsQueryOptions(context.apiClient, vhost, name),
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.heavyListsMs,
-    ),
-  });
-
-  const explicitExchangeNames = useMemo(
-    () => listExplicitSourceExchanges(bindingsQuery.data ?? []),
-    [bindingsQuery.data],
-  );
-
-  const exchangeQueries = useQueries({
-    queries: explicitExchangeNames.map((exchangeName) =>
-      exchangeConfigQueryOptions(context.apiClient, vhost, exchangeName),
-    ),
-  });
-
-  const exchangeLookups = useMemo<Record<string, ExchangeLookupState>>(
-    () =>
-      Object.fromEntries(
-        explicitExchangeNames.map((exchangeName, index) => {
-          const query = exchangeQueries[index];
-          const state: ExchangeLookupState = resolveExchangeLookupState(
-            query?.data,
-            query?.isError ?? false,
-          );
-          return [exchangeName, state];
-        }),
-      ),
-    [exchangeQueries, explicitExchangeNames],
-  );
-
-  const topology = useMemo(
-    () =>
-      queue
-        ? createQueueTopologyConfig(
-            queue,
-            bindingsQuery.data ?? [],
-            exchangeLookups,
-          )
-        : null,
-    [bindingsQuery.data, exchangeLookups, queue],
-  );
-
-  const retryExchange = (exchangeName: string) => {
-    const index = explicitExchangeNames.indexOf(exchangeName);
-    if (index >= 0) {
-      void exchangeQueries[index]?.refetch();
-    }
-  };
 
   const vm = queue ? createQueueViewModel(queue) : null;
   const streamPublishers = useQuery({
@@ -154,6 +95,30 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
     enabled: queue?.type === "stream",
     refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
+
+  const msgRateSeries = useMemo<RateChartSeries[]>(() => {
+    if (!queue?.message_stats) return [];
+    const series: RateChartSeries[] = [];
+    if (queue.message_stats.publish_details?.samples) {
+      series.push({
+        name: t("queues.publishRate"),
+        data: queue.message_stats.publish_details.samples.map((sample) => [sample.timestamp, sample.sample])
+      });
+    }
+    if (queue.message_stats.deliver_get_details?.samples) {
+      series.push({
+        name: t("queues.deliverRate"),
+        data: queue.message_stats.deliver_get_details.samples.map((sample) => [sample.timestamp, sample.sample])
+      });
+    }
+    if (queue.message_stats.ack_details?.samples) {
+      series.push({
+        name: t("queues.ackRate"),
+        data: queue.message_stats.ack_details.samples.map((sample) => [sample.timestamp, sample.sample])
+      });
+    }
+    return series;
+  }, [queue, t]);
 
   const msgCountSeries = useMemo<RateChartSeries[]>(() => {
     if (!queue?.messages_details?.samples && !queue?.messages_ready_details?.samples) return [];
@@ -334,94 +299,76 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
         name={name}
       />
 
-      <CreateBindingDialog
-        vhost={vhost}
-        resourceName={name}
-        mode="to-queue"
-        open={createBindingOpen}
-        onOpenChange={setCreateBindingOpen}
-      />
+      <div className="grid gap-4 md:grid-cols-2">
+        <SectionCard title={t("queues.properties")}>
+          <DetailGrid
+            unavailableLabel={t("common.unavailable")}
+            items={[
+              { label: t("queues.consumers"), value: vm?.consumers ?? 0 },
+              { label: t("policies.title"), value: queue?.policy },
+              { label: t("queues.operatorPolicy"), value: queue?.operator_policy },
+              { label: t("queues.consumerCapacity"), value: queue?.consumer_capacity ?? queue?.consumer_utilisation },
+              ...(queue?.effective_policy_definition
+                ? objectToStructuredEntries(queue.effective_policy_definition).map((entry) => ({
+                    label: entry.key,
+                    value: entry.value,
+                  }))
+                : []),
+            ]}
+          />
+        </SectionCard>
 
-      <ConfirmDialog
-        open={bindingToDelete !== null}
-        onOpenChange={(open) => {
-          if (!open) setBindingToDelete(null);
-        }}
-        title={t("bindings.removeBinding")}
-        description={
-          bindingToDelete ? (
-            <div>
-              {t("bindings.removeConfirm")} {" "}
-              <strong>{bindingToDelete.source}</strong> {t("bindings.and")} {" "}
-              <strong>{bindingToDelete.destination}</strong>?
-              <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 text-sm">
-                <dt className="text-muted-foreground">
-                  {t("bindings.routingKey")}
-                </dt>
-                <dd className="font-mono">
-                  {bindingToDelete.routing_key === ""
-                    ? '""'
-                    : bindingToDelete.routing_key}
-                </dd>
-                <dt className="text-muted-foreground">
-                  {t("bindings.arguments")}
-                </dt>
-                <dd>
-                  {Object.keys(bindingToDelete.arguments).length === 0 ? (
-                    <span className="font-mono">{"{}"}</span>
-                  ) : (
-                    <AmqpValue value={bindingToDelete.arguments} />
-                  )}
-                </dd>
-              </dl>
+        <SectionCard
+          title={t("queues.messageCounts")}
+          description={t("queues.messageCountsDescription")}
+        >
+          {!statsCapabilities.canShowQueueTotals ? (
+            <div className="mb-4">
+              <StatisticsAvailability reason={statsCapabilities.availabilityReason} />
             </div>
-          ) : null
-        }
-        confirmText={t("common.remove")}
-        variant="destructive"
-        isConfirming={deleteBindingMutation.isPending}
-        error={deleteBindingMutation.error}
-        onConfirm={() => {
-          if (!bindingToDelete) return;
-          deleteBindingMutation.mutate(
-            {
-              vhost,
-              exchange: bindingToDelete.source,
-              destinationType: "q",
-              destination: bindingToDelete.destination,
-              propertiesKey: bindingToDelete.properties_key,
-            },
-            { onSuccess: () => setBindingToDelete(null) },
-          );
-        }}
-      />
-
-      {queue && topology ? (
-        <>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-            <QueueConfigurationSection queue={queue} />
-            <QueueConsumerRoutes
-              topology={topology}
-              isPending={bindingsQuery.isPending}
-              isError={bindingsQuery.isError}
-              hasData={(bindingsQuery.data?.length ?? 0) > 0}
-              error={bindingsQuery.error}
-              onAddBinding={() => setCreateBindingOpen(true)}
-              onRemoveBinding={setBindingToDelete}
-              onRetryBindings={() => void bindingsQuery.refetch()}
-              onRetryExchange={retryExchange}
+          ) : null}
+          <div className="grid gap-3 sm:grid-cols-3">
+            <MetricCard
+              title={t("queues.ready")}
+              value={statsCapabilities.canShowQueueTotals ? (vm?.messagesReady ?? 0) : null}
+              icon={<Inbox aria-hidden="true" />}
+              isUnavailable={!statsCapabilities.canShowQueueTotals}
+              unavailableLabel={t("common.unavailable")}
+            />
+            <MetricCard
+              title={t("queues.unacked")}
+              value={statsCapabilities.canShowQueueTotals ? (vm?.messagesUnacked ?? 0) : null}
+              icon={<PackageCheck aria-hidden="true" />}
+              status={(vm?.messagesUnacked ?? 0) > 0 ? "warning" : "normal"}
+              isUnavailable={!statsCapabilities.canShowQueueTotals}
+              unavailableLabel={t("common.unavailable")}
+            />
+            <MetricCard
+              title={t("queues.total")}
+              value={statsCapabilities.canShowQueueTotals ? (vm?.messagesTotal ?? 0) : null}
+              icon={<Send aria-hidden="true" />}
+              isUnavailable={!statsCapabilities.canShowQueueTotals}
+              unavailableLabel={t("common.unavailable")}
             />
           </div>
+        </SectionCard>
 
-          <QueueLiveState
-            queue={queue}
-            canShowQueueTotals={statsCapabilities.canShowQueueTotals}
-            availabilityReason={statsCapabilities.availabilityReason}
-          />
-        </>
-      ) : null}
+        {(!statsCapabilities.canShowRates || msgRateSeries.length > 0) && (
+          <SectionCard title={t("queues.messageRates")}>
+            <RateChart
+              title={t("queues.messageRates")}
+              unit="msg/s"
+              series={msgRateSeries}
+              selectedRange={range}
+              onRangeChange={setRange}
+              isAvailable={statsCapabilities.canShowRates}
+              availabilityReason={statsCapabilities.availabilityReason}
+            />
+          </SectionCard>
+        )}
+      </div>
 
-      {(!statsCapabilities.canPollSamples || msgCountSeries.length > 0) && (
+      {(!statsCapabilities.canShowQueueTotals || msgCountSeries.length > 0) && (
         <section className="space-y-3" aria-label={t("queues.messageCountChart")}>
           <RateChart
             title={t("queues.messageCountChart")}
@@ -429,13 +376,26 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
             series={msgCountSeries}
             selectedRange={range}
             onRangeChange={setRange}
-            isAvailable={statsCapabilities.canPollSamples}
+            isAvailable={statsCapabilities.canShowQueueTotals}
             availabilityReason={statsCapabilities.availabilityReason}
             showDataTable={false}
             chartClassName="h-80"
           />
         </section>
       )}
+
+      <MessageInspector
+        vhost={vhost}
+        name={name}
+        tracingAvailable={canUseTracing}
+        onOpenTracing={() => navigate({ to: "/extensions/tracing" })}
+      />
+
+      {queue?.members?.length ? (
+        <SectionCard title={t("queues.replication")}>
+          <QueueReplicationState leader={queue.leader} members={queue.members} online={queue.online ?? []} />
+        </SectionCard>
+      ) : null}
 
       <section className="space-y-3" aria-label={t("queues.consumersDetail")}>
         <h2 className="text-base font-semibold tracking-tight">{t("queues.consumersDetail")}</h2>
@@ -450,15 +410,7 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
         </SectionCard>
       ) : null}
 
-      {queue ? (
-        <QueueAdvancedSection
-          queue={queue}
-          vhost={vhost}
-          name={name}
-          tracingAvailable={canUseTracing}
-          onOpenTracing={() => navigate({ to: "/extensions/tracing" })}
-        />
-      ) : null}
+      <BindingList vhost={vhost} resourceName={name} mode="to-queue" />
     </div>
   );
 }

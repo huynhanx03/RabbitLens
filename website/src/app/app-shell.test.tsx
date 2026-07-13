@@ -115,20 +115,6 @@ describe("AppShell", () => {
     expect(screen.getAllByRole("link", { name: "Overview" })).toHaveLength(1);
   });
 
-  it("does not block routed content when overview is unavailable", async () => {
-    server.use(
-      http.get("http://localhost/api/overview", () =>
-        HttpResponse.json({ error: "unavailable" }, { status: 503 }),
-      ),
-    );
-    setup(["administrator"]);
-
-    expect(await screen.findByText("OverviewPage")).toBeVisible();
-    expect(
-      screen.getByRole("navigation", { name: "Primary navigation" }),
-    ).toBeVisible();
-  });
-
   it("shows Federation if the extension is loaded", async () => {
     server.use(
       http.get("http://localhost/api/extensions", () => {

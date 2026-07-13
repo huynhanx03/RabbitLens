@@ -31,7 +31,7 @@ import { createChannelColumns } from "@/features/channels/channel-columns";
 
 import { createPollingInterval } from "@/api/polling";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
-import { CHART_RANGES } from "@/config/chart-ranges";
+import { CHART_RANGES, buildRangeQueryParams, CONNECTION_RANGE_PREFIXES } from "@/config/chart-ranges";
 import type { ResourceListSearch } from "@/api/pagination-schema";
 import { ArrowRight, ChevronLeft, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,10 @@ export function ConnectionDetailPage({ name, channelsSearch }: ConnectionDetailP
     connectionDetailQueryOptions(
       context.apiClient,
       name,
-      range,
+      [range, statsCapabilities.canShowRates],
+      statsCapabilities.canShowRates
+        ? buildRangeQueryParams(range, CONNECTION_RANGE_PREFIXES)
+        : undefined,
     ),
   );
   const connection = connectionQuery.data;

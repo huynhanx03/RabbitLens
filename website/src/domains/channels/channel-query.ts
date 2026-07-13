@@ -1,5 +1,5 @@
 import type { ResourceListSearch } from "@/api/pagination-schema";
-import { connectionKeys } from "@/domains/connections/connection-keys";
+import { connectionKeys } from "@/domains/connections/connection-query";
 import { queryOptions } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
 import { createPollingInterval } from "@/api/polling";
