@@ -8,22 +8,18 @@ import { AppStatusAnnouncer } from "@/components/shared/app-status-announcer";
 import { ConnectivityBanner } from "@/components/shared/connectivity-banner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
-import { overviewQueryOptions } from "@/domains/overview/overview-query";
 
 export function AppShell() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
   const currentPath = useLocation({ select: (location) => location.pathname });
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
   const extensionsQuery = useQuery(extensionsQueryOptions(context.apiClient));
 
-  if (overviewQuery.isPending || extensionsQuery.isPending) {
+  if (extensionsQuery.isPending) {
     return <div className="p-8 text-center">{t("common.loading")}</div>;
   }
 
-  if (overviewQuery.isError || extensionsQuery.isError) {
+  if (extensionsQuery.isError) {
     return (
       <div className="p-8 text-center text-destructive">
         {t("errors.unexpected")}

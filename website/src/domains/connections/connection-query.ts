@@ -6,19 +6,16 @@ import {
 import type { ManagementApiClient } from "@/api/management-api-client";
 import type { ResourceListSearch } from "@/api/pagination-schema";
 import { createPollingInterval } from "@/api/polling";
+import {
+  buildRangeQueryParams,
+  CONNECTION_RANGE_PREFIXES,
+  type ChartRange,
+} from "@/config/chart-ranges";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
 import { closeConnection, getConnection, getConnections } from "./connection-api";
+import { connectionKeys } from "./connection-keys";
 
-export const connectionKeys = {
-  all: ["connections"] as const,
-  lists: () => [...connectionKeys.all, "list"] as const,
-  list: (search: ResourceListSearch) =>
-    [...connectionKeys.lists(), search] as const,
-  detail: (name: string) =>
-    [...connectionKeys.all, "detail", name] as const,
-  children: (name: string, protocol: string) =>
-    [...connectionKeys.detail(name), "children", protocol] as const,
-};
+export { connectionKeys } from "./connection-keys";
 
 export function connectionListQueryOptions(
   client: ManagementApiClient,
@@ -37,11 +34,16 @@ export function connectionListQueryOptions(
 export function connectionDetailQueryOptions(
   client: ManagementApiClient,
   name: string,
-  rangeKey: unknown,
-  rangeParams?: URLSearchParams,
+  range: ChartRange,
 ) {
+  const rangeParams = buildRangeQueryParams(range, CONNECTION_RANGE_PREFIXES);
   return queryOptions({
-    queryKey: [...connectionKeys.detail(name), rangeKey],
+    queryKey: [
+      ...connectionKeys.detail(name),
+      "data-rates",
+      range.ageSeconds,
+      range.incrementSeconds,
+    ] as const,
     queryFn: ({ signal }) =>
       getConnection(client, name, rangeParams, signal),
     refetchInterval: createPollingInterval(

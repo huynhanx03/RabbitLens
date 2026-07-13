@@ -180,6 +180,10 @@
     {"name": "orders.quorum", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "quorum"}, "type": "quorum"},
     {"name": "audit.stream", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "stream"}, "type": "stream"},
     {"name": "shovel.received", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "pentest.response", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "activity-log", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "pentest.logs", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
+    {"name": "pentest.tracking", "vhost": "/demo", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
     {"name": "shovel.source", "vhost": "/upstream", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"},
     {"name": "restricted.queue", "vhost": "/restricted", "durable": true, "auto_delete": false, "arguments": {"x-queue-type": "classic"}, "type": "classic"}
   ],
@@ -190,6 +194,12 @@
     {"name": "demo.headers", "vhost": "/demo", "type": "headers", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
     {"name": "demo.dlx", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
     {"name": "federated.events", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "pentest.response", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "activity-log", "vhost": "/demo", "type": "fanout", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "pentest.logs", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "pentest.tracking", "vhost": "/demo", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "pentest.request", "vhost": "/demo", "type": "direct", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
+    {"name": "credit.request", "vhost": "/demo", "type": "direct", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
     {"name": "upstream.events", "vhost": "/upstream", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}},
     {"name": "restricted.events", "vhost": "/restricted", "type": "direct", "durable": true, "auto_delete": false, "internal": false, "arguments": {}}
   ],
@@ -204,6 +214,10 @@
     {"source": "demo.headers", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "", "arguments": {"x-match": "all", "format": "json", "priority": "high"}},
     {"source": "demo.dlx", "vhost": "/demo", "destination": "orders.dead-letter", "destination_type": "queue", "routing_key": "order.dead", "arguments": {}},
     {"source": "federated.events", "vhost": "/demo", "destination": "notifications.email", "destination_type": "queue", "routing_key": "federated.#", "arguments": {}},
+    {"source": "pentest.response", "vhost": "/demo", "destination": "pentest.response", "destination_type": "queue", "routing_key": "scan.#", "arguments": {}},
+    {"source": "activity-log", "vhost": "/demo", "destination": "activity-log", "destination_type": "queue", "routing_key": "activity.#", "arguments": {}},
+    {"source": "pentest.logs", "vhost": "/demo", "destination": "pentest.logs", "destination_type": "queue", "routing_key": "", "arguments": {}},
+    {"source": "pentest.tracking", "vhost": "/demo", "destination": "pentest.tracking", "destination_type": "queue", "routing_key": "#", "arguments": {}},
     {"source": "upstream.events", "vhost": "/upstream", "destination": "shovel.source", "destination_type": "queue", "routing_key": "shovel.#", "arguments": {}},
     {"source": "restricted.events", "vhost": "/restricted", "destination": "restricted.queue", "destination_type": "queue", "routing_key": "restricted.demo", "arguments": {}}
   ]

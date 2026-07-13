@@ -50,9 +50,5 @@ export const CONNECTION_RANGE_PREFIXES = ["data_rates"] as const;
 /** Channel detail range parameter prefixes */
 export const CHANNEL_RANGE_PREFIXES = ["data_rates", "msg_rates"] as const;
 
-/** Queue detail range parameter prefixes */
-export const QUEUE_RANGE_PREFIXES = [
-  "data_rates",
-  "msg_rates",
-  "lengths",
-] as const;
+/** Queue detail only retains backlog length history. */
+export const QUEUE_RANGE_PREFIXES = ["lengths"] as const;

@@ -9,8 +9,10 @@ import { RateChart, type RateChartSeries } from "@/components/shared/rate-chart"
 import { AmqpValue } from "@/components/shared/amqp-value";
 import { Badge } from "@/components/ui/badge";
 
-import { getExchange } from "@/domains/exchanges/exchange-api";
-import { exchangeKeys, useDeleteExchangeMutation } from "@/domains/exchanges/exchange-query";
+import {
+  exchangeDetailQueryOptions,
+  useDeleteExchangeMutation,
+} from "@/domains/exchanges/exchange-query";
 import { createExchangeViewModel } from "./exchange-view-model";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
@@ -18,9 +20,8 @@ import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { PublishMessageDialog } from "./publish-message-dialog";
 import { BindingList } from "../bindings/binding-list";
 
-import { createPollingInterval } from "@/api/polling";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
-import { CHART_RANGES, buildRangeQueryParams } from "@/config/chart-ranges";
+import { CHART_RANGES } from "@/config/chart-ranges";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
@@ -47,18 +48,9 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const deleteExchange = useDeleteExchangeMutation(context.apiClient);
 
-  const { data: exchange } = useQuery({
-    queryKey: [...exchangeKeys.detail(vhost, name), range, statsCapabilities.canShowRates],
-    queryFn: ({ signal }) =>
-      getExchange(
-        context.apiClient,
-        vhost,
-        name,
-        statsCapabilities.canShowRates ? buildRangeQueryParams(range, ["msg_rates"]) : undefined,
-        signal,
-      ),
-    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
-  });
+  const { data: exchange } = useQuery(
+    exchangeDetailQueryOptions(context.apiClient, vhost, name, range),
+  );
 
   const vm = exchange ? createExchangeViewModel(exchange) : null;
   const featureBadges = vm?.features ?? [];

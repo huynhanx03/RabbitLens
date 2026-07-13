@@ -292,6 +292,54 @@ verify_topology() {
   assert_body_contains "$API_BODY" '"name":"orders.created"' 'Classic queue is present'
   assert_body_contains "$API_BODY" '"name":"orders.quorum"' 'Quorum queue is present'
   assert_body_contains "$API_BODY" '"name":"audit.stream"' 'Stream queue is present'
+  assert_body_contains "$API_BODY" '"name":"pentest.response"' 'Pentest response queue is present'
+  assert_body_contains "$API_BODY" '"name":"activity-log"' 'Activity log queue is present'
+  assert_body_contains "$API_BODY" '"name":"pentest.logs"' 'Pentest logs queue is present'
+  assert_body_contains "$API_BODY" '"name":"pentest.tracking"' 'Pentest tracking queue is present'
+
+  assert_admin_endpoint "/api/queues/${DEMO_VHOST}/pentest.response/bindings" \
+    'Pentest response bindings are available'
+  assert_body_contains "$API_BODY" '"source":"pentest.response"' \
+    'Pentest response source exchange is correct'
+  assert_body_contains "$API_BODY" '"routing_key":"scan.#"' \
+    'Pentest response routing key is correct'
+
+  assert_admin_endpoint "/api/queues/${DEMO_VHOST}/activity-log/bindings" \
+    'Activity log bindings are available'
+  assert_body_contains "$API_BODY" '"source":"activity-log"' \
+    'Activity log source exchange is correct'
+  assert_admin_endpoint "/api/exchanges/${DEMO_VHOST}/activity-log" \
+    'Activity log exchange is available'
+  assert_body_contains "$API_BODY" '"type":"fanout"' \
+    'Activity log exchange is fanout'
+
+  assert_admin_endpoint "/api/exchanges/${DEMO_VHOST}/pentest.request" \
+    'Pentest request publisher exchange is available'
+  assert_body_contains "$API_BODY" '"type":"direct"' \
+    'Pentest request publisher exchange is direct'
+  assert_body_contains "$API_BODY" '"durable":true' \
+    'Pentest request publisher exchange is durable'
+
+  assert_admin_endpoint "/api/exchanges/${DEMO_VHOST}/credit.request" \
+    'Credit request publisher exchange is available'
+  assert_body_contains "$API_BODY" '"type":"direct"' \
+    'Credit request publisher exchange is direct'
+  assert_body_contains "$API_BODY" '"durable":true' \
+    'Credit request publisher exchange is durable'
+
+  assert_admin_endpoint "/api/queues/${DEMO_VHOST}/pentest.logs/bindings" \
+    'Pentest logs bindings are available'
+  assert_body_contains "$API_BODY" '"source":"pentest.logs"' \
+    'Pentest logs source exchange is correct'
+  assert_body_contains "$API_BODY" '"routing_key":""' \
+    'Pentest logs keeps an empty routing key'
+
+  assert_admin_endpoint "/api/queues/${DEMO_VHOST}/pentest.tracking/bindings" \
+    'Pentest tracking bindings are available'
+  assert_body_contains "$API_BODY" '"source":"pentest.tracking"' \
+    'Pentest tracking source exchange is correct'
+  assert_body_contains "$API_BODY" '"routing_key":"#"' \
+    'Pentest tracking wildcard routing key is correct'
 
   queue_types="$(compose exec -T rabbitmq \
     rabbitmqctl list_queues --quiet -p /demo name type)" \

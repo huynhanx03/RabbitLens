@@ -11,10 +11,13 @@ import { createBindingColumns } from "./binding-columns";
 import {
   getExchangeBindingsSource,
   getExchangeBindingsDestination,
-  getQueueBindings,
 } from "@/domains/bindings/binding-api";
 import type { Binding } from "@/domains/bindings/binding-schema";
-import { bindingKeys, useDeleteBindingMutation } from "@/domains/bindings/binding-query";
+import {
+  bindingKeys,
+  queueBindingsQueryOptions,
+  useDeleteBindingMutation,
+} from "@/domains/bindings/binding-query";
 import { createPollingInterval } from "@/api/polling";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
 
@@ -40,19 +43,27 @@ export function BindingList({ vhost, resourceName, mode }: BindingListProps) {
         ? bindingKeys.exchangeDestination(vhost, resourceName)
         : bindingKeys.exchangeSource(vhost, resourceName);
 
-  const { data, isLoading } = useQuery({
-    queryKey,
-    queryFn: ({ signal }) => {
-      if (mode === "to-queue") {
-        return getQueueBindings(context.apiClient, vhost, resourceName, signal);
-      } else if (mode === "to-exchange") {
-        return getExchangeBindingsDestination(context.apiClient, vhost, resourceName, signal);
-      } else {
-        return getExchangeBindingsSource(context.apiClient, vhost, resourceName, signal);
-      }
-    },
+  const queueQuery = useQuery({
+    ...queueBindingsQueryOptions(context.apiClient, vhost, resourceName),
+    enabled: mode === "to-queue",
     refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
   });
+
+  const exchangeQuery = useQuery({
+    queryKey,
+    queryFn: ({ signal }) => {
+      if (mode === "to-exchange") {
+        return getExchangeBindingsDestination(context.apiClient, vhost, resourceName, signal);
+      }
+      return getExchangeBindingsSource(context.apiClient, vhost, resourceName, signal);
+    },
+    enabled: mode !== "to-queue",
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
+  });
+
+  const data = mode === "to-queue" ? queueQuery.data : exchangeQuery.data;
+  const isLoading =
+    mode === "to-queue" ? queueQuery.isLoading : exchangeQuery.isLoading;
 
   const columns = useMemo(
     () => createBindingColumns(t, setBindingToDelete, mode),
