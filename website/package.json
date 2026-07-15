@@ -1,7 +1,7 @@
 {
   "name": "website",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,6 +16,8 @@
     "test:e2e": "playwright test",
     "test:performance": "playwright test tests/e2e/performance.spec.ts",
     "test:artifact-secrets": "node scripts/scan-test-artifacts.mjs",
+    "docker:publish": "node scripts/docker-publish.mjs",
+    "test:docker-publish": "node --test scripts/docker-publish.test.mjs",
     "check:bundle": "node scripts/verify-bundle-budget.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },

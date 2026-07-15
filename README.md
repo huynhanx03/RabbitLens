@@ -149,6 +149,54 @@ make reset
 
 `make down` stops the stack. `make reset` also removes demo volumes.
 
+## Run the published Docker image
+
+RabbitLens images are published to GitHub Container Registry. Pin a version in
+deployments so an update is always explicit and reversible:
+
+```bash
+docker pull ghcr.io/huynhanx03/rabbitlens:1.0.2
+
+docker run --detach \
+  --name rabbitlens \
+  --publish 8080:8080 \
+  --add-host host.docker.internal:host-gateway \
+  --env RABBITMQ_MANAGEMENT_HOST=host.docker.internal \
+  ghcr.io/huynhanx03/rabbitlens:1.0.2
+```
+
+Open `http://127.0.0.1:8080` and sign in with an existing RabbitMQ user. This
+example connects to RabbitMQ Management running on the Docker host. For a
+remote broker, replace `RABBITMQ_MANAGEMENT_HOST` with its reachable DNS name.
+If the GHCR package is private, authenticate first with `docker login ghcr.io`.
+
+Use `:latest` only for short-lived evaluation. Production deployments should
+pin a release tag such as `:1.0.2`. See [deploy/README.md](deploy/README.md)
+for Docker Compose, safe updates, rollbacks, and production target examples.
+
+## Publish a release image
+
+The image version comes from `website/package.json`. To publish the current
+version to GHCR for Linux AMD64 and ARM64:
+
+```bash
+gh auth token | docker login ghcr.io --username huynhanx03 --password-stdin
+npm --prefix website run docker:publish
+```
+
+Preview the exact Docker Buildx command without building or pushing:
+
+```bash
+npm --prefix website run docker:publish -- --dry-run
+```
+
+For the next release, update the package version first, then publish:
+
+```bash
+npm --prefix website version 1.0.3 --no-git-tag-version
+npm --prefix website run docker:publish
+```
+
 ## Demo accounts
 
 All demo users use the same password:
@@ -245,7 +293,8 @@ If RabbitMQ is already running, use the external deployment example:
 
 ```bash
 cp deploy/.env.example deploy/.env
-docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
+docker compose --env-file deploy/.env -f deploy/compose.yaml pull
+docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --no-build
 ```
 
 Then open:
