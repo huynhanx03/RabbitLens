@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # A manual rerun must rebuild the immutable tag, rather than whichever
           # branch happened to dispatch the workflow.
