@@ -16,6 +16,7 @@
     "test:e2e": "playwright test",
     "test:performance": "playwright test tests/e2e/performance.spec.ts",
     "test:artifact-secrets": "node scripts/scan-test-artifacts.mjs",
+    "audit": "npm audit --audit-level=high",
     "docker:publish": "node scripts/docker-publish.mjs",
     "test:docker-publish": "node --test scripts/docker-publish.test.mjs",
     "check:bundle": "node scripts/verify-bundle-budget.mjs",

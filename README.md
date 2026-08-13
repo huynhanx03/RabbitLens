@@ -1,11 +1,17 @@
 # RabbitLens
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=111827)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Management%20API-FF6600?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/docs/management)
 
 RabbitLens is a replacement web UI for RabbitMQ Management. It keeps the proven RabbitMQ Management HTTP API and replaces the legacy browser experience with a cleaner, faster, more operator-friendly interface.
+
+![RabbitLens overview on a RabbitMQ demo cluster](docs/assets/overview-demo.png)
+
+> The screenshot uses the reproducible demo stack. Try it locally with `make up`,
+> then open <http://127.0.0.1:8080> and sign in as `operator` with password
+> `rabbitlens-demo`.
 
 ## Why RabbitLens?
 
@@ -74,6 +80,17 @@ flowchart LR
 - Command-style navigation/search affordances.
 - Permission-aware navigation and actions.
 - Explicit destructive actions with safer visual treatment.
+
+## Compatibility and support
+
+RabbitLens is tested against RabbitMQ `4.3.2-management`. It talks only to the
+RabbitMQ Management HTTP API; it does not replace the broker or change its
+authorization model. Read the [compatibility matrix](docs/compatibility.md)
+before deploying against another RabbitMQ version or enabling optional plugins.
+
+For a production rollout, use a pinned RabbitLens image, take a RabbitMQ
+definitions export first, and validate the deployment with a non-administrator
+account. The [deployment guide](deploy/README.md) includes a rollback path.
 
 ## Tech stack
 
@@ -197,6 +214,10 @@ npm --prefix website version 1.0.3 --no-git-tag-version
 npm --prefix website run docker:publish
 ```
 
+Published releases include a source archive, checksums, an SPDX SBOM, and
+multi-architecture images. See [CHANGELOG.md](CHANGELOG.md) for release notes
+and [docs/releasing.md](docs/releasing.md) for the maintainer checklist.
+
 ## Demo accounts
 
 All demo users use the same password:
@@ -304,5 +325,16 @@ http://127.0.0.1:8080
 ```
 
 RabbitLens will serve the UI and proxy `/api` to the RabbitMQ Management API configured in `deploy/.env`.
+
+## Contributing and getting help
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+- Report bugs and propose features through the GitHub templates. Do not create
+  placeholder reports just to increase activity metrics.
+- Report security vulnerabilities privately through the process in
+  [SECURITY.md](SECURITY.md).
+- See [ROADMAP.md](ROADMAP.md) for planned work and
+  [docs/maintainer-metrics.md](docs/maintainer-metrics.md) for the transparent
+  project-health signals we track.
 
 See [deploy/README.md](deploy/README.md) for target examples and production notes.

@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a user-facing improvement grounded in a RabbitMQ operator workflow.
+title: "feature: "
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Operator problem
+      description: Explain the operational task and why the current Management UI or RabbitLens flow is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+    validations:
+      required: true
+  - type: input
+    id: rabbitmq-version
+    attributes:
+      label: RabbitMQ version and relevant plugin
+      placeholder: "4.3.2; rabbitmq_management"
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
