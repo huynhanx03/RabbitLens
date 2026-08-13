@@ -32,10 +32,10 @@ jobs:
 
     steps:
       - name: Checkout RabbitLens
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout RabbitMQ legacy management source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: rabbitmq/rabbitmq-server
           ref: ${{ env.RABBITMQ_SERVER_REF }}
@@ -84,7 +84,7 @@ jobs:
 
     steps:
       - name: Checkout RabbitLens
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
