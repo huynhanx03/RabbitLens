@@ -5,6 +5,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag to build and publish (for example, v1.0.2)
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +28,10 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          # A manual rerun must rebuild the immutable tag, rather than whichever
+          # branch happened to dispatch the workflow.
+          ref: ${{ inputs.release_tag || github.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -43,9 +52,12 @@ jobs:
         id: version
         shell: bash
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          TAG="${{ inputs.release_tag || github.ref_name }}"
+          case "$TAG" in v*) ;; *) echo "Release tag must start with v: $TAG" >&2; exit 1;; esac
+          VERSION="${TAG#v}"
           test "$VERSION" = "$(node -p "require('./website/package.json').version")"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -91,12 +103,12 @@ jobs:
             rabbitlens-${{ steps.version.outputs.version }}.spdx.json \
             SHA256SUMS
           )
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber "${ASSETS[@]}"
+          if gh release view "${{ steps.version.outputs.tag }}" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "${{ steps.version.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --clobber "${ASSETS[@]}"
           else
-            gh release create "$GITHUB_REF_NAME" \
+            gh release create "${{ steps.version.outputs.tag }}" \
               --repo "$GITHUB_REPOSITORY" \
-              --title "RabbitLens $GITHUB_REF_NAME" \
+              --title "RabbitLens ${{ steps.version.outputs.tag }}" \
               --generate-notes \
               "${ASSETS[@]}"
           fi
