@@ -86,10 +86,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "RabbitLens $GITHUB_REF_NAME" \
-            --generate-notes \
+          ASSETS=(
             rabbitlens-${{ steps.version.outputs.version }}-source.tar.gz \
             rabbitlens-${{ steps.version.outputs.version }}.spdx.json \
             SHA256SUMS
+          )
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber "${ASSETS[@]}"
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "RabbitLens $GITHUB_REF_NAME" \
+              --generate-notes \
+              "${ASSETS[@]}"
+          fi

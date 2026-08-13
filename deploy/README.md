@@ -57,8 +57,8 @@ docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --no-build ra
 ```
 
 Pin a release tag in production. `:latest` is useful only for short-lived
-evaluation. Published RabbitLens images are public; do not add registry
-credentials unless you use a private mirror.
+evaluation. If the GHCR package is private, authenticate with
+`docker login ghcr.io` before pulling.
 
 ## Local source build
 
