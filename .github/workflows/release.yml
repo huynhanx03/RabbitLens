@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          test "$VERSION" = "$(node -p \"require('./website/package.json').version\")"
+          test "$VERSION" = "$(node -p "require('./website/package.json').version")"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
