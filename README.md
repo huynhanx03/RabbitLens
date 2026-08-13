@@ -336,5 +336,7 @@ RabbitLens will serve the UI and proxy `/api` to the RabbitMQ Management API con
 - See [ROADMAP.md](ROADMAP.md) for planned work and
   [docs/maintainer-metrics.md](docs/maintainer-metrics.md) for the transparent
   project-health signals we track.
+- Use the [operator trial kit](docs/operator-trial-kit.md) to collect consented,
+  reproducible real-world feedback.
 
 See [deploy/README.md](deploy/README.md) for target examples and production notes.
