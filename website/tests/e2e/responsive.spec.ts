@@ -62,7 +62,10 @@ test.describe("Responsive shell archetypes", () => {
         await expect(page).toHaveScreenshot(`overview-${viewport.name}.png`, {
           animations: "disabled",
           fullPage: true,
-          maxDiffPixels: viewport.name === "tablet" ? 800 : undefined,
+          // Font rasterization can differ by a handful of pixels between
+          // GitHub's patched Chromium image and the pinned local container.
+          // Keep a tight tolerance while preserving meaningful visual diffs.
+          maxDiffPixels: viewport.name === "tablet" ? 800 : 100,
         });
       }
     });
@@ -79,7 +82,7 @@ test.describe("Responsive shell archetypes", () => {
     if (testInfo.project.name === "chromium") {
       await expect(page).toHaveScreenshot(
         "overview-desktop-dark-vi.png",
-        { animations: "disabled", fullPage: true },
+        { animations: "disabled", fullPage: true, maxDiffPixels: 100 },
       );
     }
   });
