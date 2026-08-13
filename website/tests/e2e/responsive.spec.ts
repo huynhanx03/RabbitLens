@@ -71,17 +71,17 @@ test.describe("Responsive shell archetypes", () => {
     });
   }
 
-  test("Overview desktop dark Vietnamese", async ({ page }, testInfo) => {
+  test("Overview desktop dark English", async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await applyPreferences(page, {
       theme: "dark",
-      locale: "vi",
+      locale: "en",
     });
-    await signIn(page, "Tổng quan");
+    await signIn(page, "Overview");
 
     if (testInfo.project.name === "chromium") {
       await expect(page).toHaveScreenshot(
-        "overview-desktop-dark-vi.png",
+        "overview-desktop-dark-en.png",
         { animations: "disabled", fullPage: true, maxDiffPixels: 100 },
       );
     }
