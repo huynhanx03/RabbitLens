@@ -10,6 +10,14 @@ Currently, only the latest release of RabbitLens receives security updates. We h
 
 If you discover a security vulnerability within RabbitLens, please **DO NOT** open a public issue. 
 
-Instead, please responsibly disclose it by contacting the core maintainers privately. We will acknowledge receipt of your vulnerability report as soon as possible and strive to send you regular updates about our progress.
+Instead, use [GitHub's private vulnerability reporting form](https://github.com/huynhanx03/RabbitLens/security/advisories/new).
+If the form is unavailable, contact the repository owner through their public
+[GitHub profile](https://github.com/huynhanx03) and include the subject
+`RabbitLens security report`. Do not include exploit details in a public issue,
+discussion, pull request, or commit.
+
+Please include affected version(s), reproduction steps, impact, and any
+suggested mitigation. We aim to acknowledge reports within 7 days and provide a
+status update at least every 14 days until resolution or closure.
 
 Thank you for helping keep RabbitLens secure!

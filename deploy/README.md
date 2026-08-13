@@ -56,9 +56,9 @@ docker compose --env-file deploy/.env -f deploy/compose.yaml pull rabbitlens
 docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --no-build rabbitlens
 ```
 
-Pin a release tag in production. `:latest` is useful only for evaluation. If
-the GHCR package is private, authenticate with `docker login ghcr.io` before
-pulling.
+Pin a release tag in production. `:latest` is useful only for short-lived
+evaluation. Published RabbitLens images are public; do not add registry
+credentials unless you use a private mirror.
 
 ## Local source build
 
