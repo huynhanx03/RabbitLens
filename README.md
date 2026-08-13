@@ -7,7 +7,7 @@
 
 RabbitLens is a replacement web UI for RabbitMQ Management. It keeps the proven RabbitMQ Management HTTP API and replaces the legacy browser experience with a cleaner, faster, more operator-friendly interface.
 
-![RabbitLens overview on a RabbitMQ demo cluster](docs/assets/overview-demo.png)
+![RabbitLens dark-mode overview on a RabbitMQ demo cluster](website/tests/e2e/responsive.spec.ts-snapshots/overview-desktop-dark-vi-chromium-linux.png)
 
 > The screenshot uses the reproducible demo stack. Try it locally with `make up`,
 > then open <http://127.0.0.1:8080> and sign in as `operator` with password
