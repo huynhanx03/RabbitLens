@@ -40,7 +40,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.80.0",
-    "react-i18next": "^17.0.8",
+    "react-i18next": "^17.0.11",
     "shadcn": "^4.12.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
