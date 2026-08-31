@@ -34,7 +34,7 @@
     "cmdk": "^1.1.1",
     "echarts": "^6.1.0",
     "i18next": "^26.3.6",
-    "lucide-react": "^1.21.0",
+    "lucide-react": "^1.31.0",
     "oidc-client-ts": "^3.5.0",
     "radix-ui": "^1.6.0",
     "react": "^19.2.7",
