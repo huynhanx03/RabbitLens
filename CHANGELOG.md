@@ -3,6 +3,22 @@
 All notable changes are documented here. RabbitLens follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-09-02
+
+### Added
+
+- A unified RabbitLens brand, centered login experience, and refined authenticated app shell.
+- Layered unit, API, component, route-flow, and browser end-to-end coverage, including changed-line coverage gating on pull requests.
+- Clear contribution, architecture, design-system, code-standard, and testing documentation for maintainers.
+
+### Changed
+
+- Refactored the frontend into clearer domain, query, and shared-component boundaries with improved reuse and consistency.
+- Split CI validation into focused jobs and streamlined Docker builds for reproducible AMD64 and ARM64 images.
+- Improved logout handling so in-flight API work is cleared and browsers do not show a native Basic Auth prompt.
+
+[1.1.0]: https://github.com/huynhanx03/RabbitLens/releases/tag/v1.1.0
+
 ## [1.0.2] - 2026-08-13
 
 ### Added

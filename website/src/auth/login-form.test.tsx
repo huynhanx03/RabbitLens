@@ -40,9 +40,7 @@ describe("LoginForm", () => {
     renderWithProviders(<TestWrapper />);
 
     expect(screen.getByRole("heading", { name: "Connect to RabbitMQ" })).toBeVisible();
-    expect(
-      screen.getByText("Sign in with a RabbitMQ Management user."),
-    ).toBeVisible();
+    expect(screen.getByText("Sign in with a RabbitMQ Management user.")).toBeVisible();
     expect(screen.queryByText("See RabbitMQ clearly.")).not.toBeInTheDocument();
     expect(
       screen.queryByText(
