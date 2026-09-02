@@ -2,17 +2,20 @@ import { z } from "zod";
 
 import { oauthConfigSchema } from "../auth/oauth/oauth-config";
 
-const apiBaseUrlSchema = z.string().min(1).refine((value) => {
-  if (value.startsWith("/") && !value.startsWith("//")) {
-    return true;
-  }
+const apiBaseUrlSchema = z
+  .string()
+  .min(1)
+  .refine((value) => {
+    if (value.startsWith("/") && !value.startsWith("//")) {
+      return true;
+    }
 
-  try {
-    return ["http:", "https:"].includes(new URL(value).protocol);
-  } catch {
-    return false;
-  }
-}, "apiBaseUrl must be an absolute path or HTTP(S) URL");
+    try {
+      return ["http:", "https:"].includes(new URL(value).protocol);
+    } catch {
+      return false;
+    }
+  }, "apiBaseUrl must be an absolute path or HTTP(S) URL");
 
 export const runtimeConfigSchema = z
   .object({

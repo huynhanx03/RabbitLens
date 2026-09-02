@@ -29,25 +29,40 @@ describe("LoginForm", () => {
   it("shows required field errors", async () => {
     const user = userEvent.setup();
     renderWithProviders(<TestWrapper />);
-    
+
     await user.click(screen.getByRole("button", { name: /sign in|đăng nhập/i }));
-    
+
     expect(await screen.findByText(/enter a username/i)).toBeInTheDocument();
     expect(await screen.findByText(/enter a password/i)).toBeInTheDocument();
+  });
+
+  it("keeps the sign-in screen focused on one concise message", () => {
+    renderWithProviders(<TestWrapper />);
+
+    expect(screen.getByRole("heading", { name: "Connect to RabbitMQ" })).toBeVisible();
+    expect(
+      screen.getByText("Sign in with a RabbitMQ Management user."),
+    ).toBeVisible();
+    expect(screen.queryByText("See RabbitMQ clearly.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Operate queues, exchanges, connections, users, policies, and extensions from one focused workspace.",
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it("authenticates successfully and clears password field", async () => {
     const user = userEvent.setup();
     renderWithProviders(<TestWrapper />);
-    
+
     await user.type(screen.getByLabelText(/username/i), "guest");
     await user.type(screen.getByLabelText(/^password$/i), "guest");
     await user.click(screen.getByRole("button", { name: /sign in|đăng nhập/i }));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId("auth-state")).toHaveTextContent("basic");
     });
-    
+
     expect(screen.getByLabelText(/^password$/i)).toHaveValue("");
     expect(localStorage.getItem("authorization")).toBeNull();
     expect(sessionStorage.getItem("authorization")).toBeNull();
@@ -56,11 +71,11 @@ describe("LoginForm", () => {
   it("shows 401 error on invalid credentials", async () => {
     const user = userEvent.setup();
     renderWithProviders(<TestWrapper />);
-    
+
     await user.type(screen.getByLabelText(/username/i), "guest");
     await user.type(screen.getByLabelText(/^password$/i), "invalid");
     await user.click(screen.getByRole("button", { name: /sign in|đăng nhập/i }));
-    
+
     expect(await screen.findByText(/rejected these credentials/i)).toBeInTheDocument();
     expect(screen.getByTestId("auth-state")).toHaveTextContent("anonymous");
   });

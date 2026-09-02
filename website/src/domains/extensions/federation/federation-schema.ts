@@ -1,19 +1,21 @@
 import * as z from "zod";
 
-export const federationLinkSchema = z.object({
-  vhost: z.string(),
-  id: z.string(),
-  node: z.string(),
-  upstream: z.string(),
-  exchange: z.string().optional(),
-  queue: z.string().optional(),
-  type: z.enum(["exchange", "queue"]).optional(),
-  status: z.enum(["running", "starting", "error", "stopped", "shutdown"]).or(z.string()),
-  local_connection: z.string().optional(),
-  uri: z.string(),
-  timestamp: z.string(),
-  error: z.string().optional(),
-}).catchall(z.unknown());
+export const federationLinkSchema = z
+  .object({
+    vhost: z.string(),
+    id: z.string(),
+    node: z.string(),
+    upstream: z.string(),
+    exchange: z.string().optional(),
+    queue: z.string().optional(),
+    type: z.enum(["exchange", "queue"]).optional(),
+    status: z.enum(["running", "starting", "error", "stopped", "shutdown"]).or(z.string()),
+    local_connection: z.string().optional(),
+    uri: z.string(),
+    timestamp: z.string(),
+    error: z.string().optional(),
+  })
+  .catchall(z.unknown());
 
 export type FederationLinkResponse = z.infer<typeof federationLinkSchema>;
 

@@ -15,10 +15,7 @@ export type NodeViewModel = NodeResponse & {
   processes: Utilization;
 };
 
-function createUtilization(
-  used: number | undefined,
-  limit: number | undefined,
-): Utilization {
+function createUtilization(used: number | undefined, limit: number | undefined): Utilization {
   const rawUsed = used ?? null;
   const rawLimit = limit ?? null;
 

@@ -3,9 +3,7 @@ import { createBasicAuthorization } from "./basic-auth";
 
 describe("createBasicAuthorization", () => {
   it("creates a standard Basic authorization value", () => {
-    expect(createBasicAuthorization("guest", "guest")).toBe(
-      "Basic Z3Vlc3Q6Z3Vlc3Q=",
-    );
+    expect(createBasicAuthorization("guest", "guest")).toBe("Basic Z3Vlc3Q6Z3Vlc3Q=");
   });
 
   it("encodes Unicode credentials as UTF-8", () => {

@@ -5,9 +5,7 @@ async function signInOnCurrentPage(page: Page) {
   await page.getByLabel("Username").fill("operator");
   await page.locator("#password").fill("secret");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(
-    page.getByRole("button", { name: "Go to…" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Go to…" })).toBeVisible();
 }
 
 async function signInAsAdministrator(page: Page) {
@@ -40,9 +38,7 @@ test.describe("Application shell redesign", () => {
     test.skip(testInfo.project.name.startsWith("Mobile"), "Desktop-only sidebar behavior");
     await signInAsAdministrator(page);
 
-    await expect(
-      page.getByRole("button", { name: "Collapse sidebar" }),
-    ).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Collapse sidebar" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Density" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Overview" })).toBeVisible();
     await expect(page.locator("html")).not.toHaveAttribute("data-density");
@@ -53,17 +49,14 @@ test.describe("Application shell redesign", () => {
 
     await page.keyboard.press("ControlOrMeta+K");
     await expect(page.getByRole("dialog")).toBeVisible();
-    await page
-      .getByPlaceholder("Search pages and actions…")
-      .fill("Connections");
+    await page.getByPlaceholder("Search pages and actions…").fill("Connections");
     await page.getByRole("option", { name: "Connections" }).click();
 
     await expect(page).toHaveURL(/\/connections/);
+    await expect(page.getByRole("table", { name: "RabbitMQ connections" })).toBeVisible();
   });
 
-  test("shell composition reuses Overview and Extensions queries", async ({
-    page,
-  }) => {
+  test("shell composition reuses Overview and Extensions queries", async ({ page }) => {
     const requestCounts = { overview: 0, extensions: 0 };
     page.on("request", (request) => {
       const pathname = new URL(request.url()).pathname;
@@ -81,13 +74,9 @@ test.describe("Application shell redesign", () => {
     await signInAsAdministrator(page);
 
     await page.getByRole("button", { name: "Open navigation" }).click();
-    await expect(
-      page.getByRole("navigation", { name: "Primary navigation" }),
-    ).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     const hasHorizontalOverflow = await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth >
-        document.documentElement.clientWidth,
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
     );
     expect(hasHorizontalOverflow).toBe(false);
   });

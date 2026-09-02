@@ -6,9 +6,7 @@ import { createAppI18n } from "@/i18n/i18n";
 import { I18nextProvider } from "react-i18next";
 import { AsyncState } from "./async-state";
 
-async function renderState(
-  props: Partial<React.ComponentProps<typeof AsyncState>> = {},
-) {
+async function renderState(props: Partial<React.ComponentProps<typeof AsyncState>> = {}) {
   const i18n = await createAppI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
@@ -79,7 +77,10 @@ describe("AsyncState", () => {
     });
 
     expect(screen.getByText("This resource no longer exists.")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Return to queues" })).toHaveAttribute("href", "/queues");
+    expect(screen.getByRole("link", { name: "Return to queues" })).toHaveAttribute(
+      "href",
+      "/queues",
+    );
   });
 
   it("renders contextual empty copy and action", async () => {

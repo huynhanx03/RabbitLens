@@ -1,342 +1,151 @@
-# RabbitLens
+<p align="center">
+  <img src="website/public/rabbitlens-mark.svg" width="88" alt="RabbitLens logo" />
+</p>
 
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=111827)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
-[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Management%20API-FF6600?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/docs/management)
+<h1 align="center">RabbitLens</h1>
 
-RabbitLens is a replacement web UI for RabbitMQ Management. It keeps the proven RabbitMQ Management HTTP API and replaces the legacy browser experience with a cleaner, faster, more operator-friendly interface.
+<p align="center">A focused, modern RabbitMQ Management UI.</p>
 
-![RabbitLens dark-mode overview on a RabbitMQ demo cluster](website/tests/e2e/responsive.spec.ts-snapshots/overview-desktop-dark-en-chromium-linux.png)
+<p align="center">
+  <a href="https://github.com/huynhanx03/RabbitLens/actions/workflows/rabbitlens.yml"><img src="https://github.com/huynhanx03/RabbitLens/actions/workflows/rabbitlens.yml/badge.svg" alt="CI" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2563eb" alt="Apache-2.0 license" /></a>
+  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=111827" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
+</p>
 
-> The screenshot uses the reproducible demo stack. Try it locally with `make up`,
-> then open <http://127.0.0.1:8080> and sign in as `operator` with password
-> `rabbitlens-demo`.
+<p align="center">
+  Monitor topology, operate safely, and manage RabbitMQ from one fast, accessible workspace.
+</p>
 
-## Why RabbitLens?
+![RabbitLens overview](assets/rabbitlens-overview.png)
 
-RabbitMQ Management already exposes a powerful operational API, but the legacy UI can feel dated when you are managing busy brokers, tracing messages, comparing policies, or jumping between queues, channels, exchanges, and users.
+RabbitLens is a replacement browser UI for RabbitMQ Management. It uses the proven
+RabbitMQ Management HTTP API while providing a more focused workflow for monitoring
+brokers, managing topology, and handling administrative work safely.
 
-RabbitLens focuses on:
+## Why RabbitLens
 
-- A polished dark/light interface that feels like a modern infrastructure product.
-- Operational parity with RabbitMQ Management, not a small dashboard subset.
-- Clearer read/write actions, safer destructive flows, and cleaner detail pages.
-- English and Vietnamese localization.
-- Direct use of RabbitMQ permissions, tags, and Management API capabilities.
-- A lightweight deployment model that can sit in front of RabbitMQ Management.
+RabbitMQ remains the source of truth for authentication, permissions, topology, and
+messages. RabbitLens is the operator workspace on top: modern, keyboard-accessible,
+localized in English and Vietnamese, and built for both day-to-day operations and
+production rollouts.
 
-## What RabbitLens is — and is not
+- Monitor cluster health, nodes, connections, channels, queues, exchanges, and rates.
+- Operate safely with permission-aware navigation and deliberate destructive actions.
+- Manage users, virtual hosts, policies, limits, feature flags, and definitions.
+- Use supported extension surfaces including federation, shovels, streams, tracing, and top.
+- Run a lightweight static frontend with an nginx `/api` proxy; RabbitLens stores no broker data.
 
-RabbitLens replaces the Management UI, not RabbitMQ itself.
+## Architecture
 
-```mermaid
-flowchart LR
-  Browser["Browser"] --> RabbitLens["RabbitLens SPA"]
-  RabbitLens --> Proxy["/api proxy"]
-  Proxy --> Management["RabbitMQ Management HTTP API"]
-  Management --> Broker["RabbitMQ broker"]
+```text
+Browser → RabbitLens SPA → /api proxy → RabbitMQ Management HTTP API → Broker
 ```
 
-- RabbitMQ still needs the `rabbitmq_management` backend plugin enabled.
-- RabbitLens uses the same Management API endpoints the legacy UI uses.
-- RabbitMQ remains the source of truth for authentication, authorization, permissions, users, virtual hosts, policies, queues, exchanges, bindings, and messages.
-- RabbitLens does not persist broker data or message payloads.
-
-## Features
-
-### Monitoring and topology
-
-- Overview with cluster health, workload health, message totals, and node status.
-- Nodes list and node detail pages.
-- Connections list/detail with metrics, channels, endpoints, AMQP capabilities, and force-close actions.
-- Channels list/detail with consumer and protocol diagnostics.
-- Exchanges list/detail, publish message, binding management, and remove actions.
-- Queues and streams list/detail with message counts, consumers, bindings, publish/get/move/purge/remove actions.
-- Message inspector for explicit payload snapshots from queues.
-
-### Administration
-
-- Users, user detail, tags, permissions, topic permissions, and limits.
-- Virtual hosts, metadata, scoped links, limits, and delete/edit flows.
-- Policies and operator policies.
-- Virtual host limits and user limits.
-- Feature flags and deprecated features.
-- Cluster settings and definition export/import.
-
-### Extensions
-
-- Federation status and upstreams.
-- Dynamic shovels and shovel status.
-- Stream connections and super streams.
-- Top processes and ETS tables.
-- Tracing, trace files, and trace cleanup.
-
-### Product experience
-
-- Dark, light, and system themes.
-- English and Vietnamese UI.
-- Reusable table, form, dialog, chart, badge, and detail components.
-- Command-style navigation/search affordances.
-- Permission-aware navigation and actions.
-- Explicit destructive actions with safer visual treatment.
-
-## Compatibility and support
-
-RabbitLens is tested against RabbitMQ `4.3.2-management`. It talks only to the
-RabbitMQ Management HTTP API; it does not replace the broker or change its
-authorization model. Read the [compatibility matrix](docs/compatibility.md)
-before deploying against another RabbitMQ version or enabling optional plugins.
-
-For a production rollout, use a pinned RabbitLens image, take a RabbitMQ
-definitions export first, and validate the deployment with a non-administrator
-account. The [deployment guide](deploy/README.md) includes a rollback path.
-
-## Tech stack
-
-RabbitLens is built as a modern frontend application:
-
-- React 19
-- TypeScript
-- Vite 8
-- Tailwind CSS 4
-- shadcn/Radix UI primitives
-- TanStack Router
-- TanStack Query
-- TanStack Table and Virtual
-- ECharts
-- i18next
-- Zod
-- Vitest
-- Playwright
-- Docker + nginx-unprivileged for the production image
+RabbitMQ must have the `rabbitmq_management` plugin enabled. RabbitLens does not
+replace RabbitMQ, bypass its authorization model, or persist message payloads.
 
 ## Quick start
 
-### Requirements
+The demo stack starts RabbitMQ and RabbitLens together:
 
-- Docker
-- Docker Compose
-- Node.js and npm, only needed for local frontend development
-
-### Start the full demo stack
-
-```bash
+```sh
 make up
 ```
 
-Open RabbitLens:
+Open <http://127.0.0.1:8080> and sign in with `admin` / `rabbitlens-demo`.
 
-```text
-http://127.0.0.1:8080
+Useful demo commands:
+
+```sh
+make seed    # Populate the demo broker with messages
+make smoke   # Verify the running demo stack
+make logs    # Follow service logs
+make down    # Stop the stack
 ```
 
-Default administrator account:
+## Deploy with an existing RabbitMQ
 
-```text
-Username: admin
-Password: rabbitlens-demo
-```
+RabbitLens can run independently and proxy to an existing Management API. Copy the
+example configuration, set the RabbitMQ host and a pinned image tag, then start it:
 
-The demo stack starts:
-
-- RabbitMQ `4.3.2-management`
-- RabbitMQ Management API behind RabbitLens
-- RabbitLens on `127.0.0.1:8080`
-- AMQP on `127.0.0.1:5672`
-- RabbitMQ Stream on `127.0.0.1:5552`
-- Prometheus metrics on `127.0.0.1:15692`
-
-In the RabbitLens demo stack, RabbitMQ Management UI is not exposed directly. RabbitLens serves the UI and proxies `/api` to the RabbitMQ Management backend inside Docker.
-
-### Seed sample traffic
-
-```bash
-make seed
-```
-
-This publishes demo messages and prepares useful topology for queues, exchanges, shovels, federation, streams, policies, and restricted permissions.
-
-### Stop or reset
-
-```bash
-make down
-make reset
-```
-
-`make down` stops the stack. `make reset` also removes demo volumes.
-
-## Run the published Docker image
-
-RabbitLens images are published to GitHub Container Registry. Pin a version in
-deployments so an update is always explicit and reversible:
-
-```bash
-docker pull ghcr.io/huynhanx03/rabbitlens:1.0.2
-
-docker run --detach \
-  --name rabbitlens \
-  --publish 8080:8080 \
-  --add-host host.docker.internal:host-gateway \
-  --env RABBITMQ_MANAGEMENT_HOST=host.docker.internal \
-  ghcr.io/huynhanx03/rabbitlens:1.0.2
-```
-
-Open `http://127.0.0.1:8080` and sign in with an existing RabbitMQ user. This
-example connects to RabbitMQ Management running on the Docker host. For a
-remote broker, replace `RABBITMQ_MANAGEMENT_HOST` with its reachable DNS name.
-If the GHCR package is private, authenticate first with `docker login ghcr.io`.
-
-Use `:latest` only for short-lived evaluation. Production deployments should
-pin a release tag such as `:1.0.2`. See [deploy/README.md](deploy/README.md)
-for Docker Compose, safe updates, rollbacks, and production target examples.
-
-## Publish a release image
-
-The image version comes from `website/package.json`. To publish the current
-version to GHCR for Linux AMD64 and ARM64:
-
-```bash
-gh auth token | docker login ghcr.io --username huynhanx03 --password-stdin
-npm --prefix website run docker:publish
-```
-
-Preview the exact Docker Buildx command without building or pushing:
-
-```bash
-npm --prefix website run docker:publish -- --dry-run
-```
-
-For the next release, update the package version first, then publish:
-
-```bash
-npm --prefix website version 1.0.3 --no-git-tag-version
-npm --prefix website run docker:publish
-```
-
-Published releases include a source archive, checksums, an SPDX SBOM, and
-multi-architecture images. See [CHANGELOG.md](CHANGELOG.md) for release notes
-and [docs/releasing.md](docs/releasing.md) for the maintainer checklist.
-
-## Demo accounts
-
-All demo users use the same password:
-
-```text
-rabbitlens-demo
-```
-
-| Username | Tags | Purpose |
-| --- | --- | --- |
-| `admin` | `administrator` | Full broker administration |
-| `monitor` | `monitoring` | Read-oriented monitoring account |
-| `policymaker` | `policymaker` | Policy-focused administration |
-| `operator` | `management` | General management user |
-| `readonly` | `management` | Read-only access to `/demo` resources |
-| `restricted` | `management` | Scoped access to `/restricted` |
-| `bridge` | none | Demo federation/shovel service user |
-
-Demo virtual hosts:
-
-- `/demo`
-- `/upstream`
-- `/restricted`
-
-## Common commands
-
-```bash
-make up       # Start RabbitMQ + RabbitLens
-make dev      # Start the Vite dev server
-make seed     # Publish demo messages and traffic
-make smoke    # Run demo RabbitMQ API smoke checks
-make logs     # Follow Docker logs
-make down     # Stop the demo stack
-make reset    # Stop and remove demo volumes
-```
-
-Frontend commands:
-
-```bash
-npm --prefix website run dev
-npm --prefix website run build
-npm --prefix website run lint
-npm --prefix website run typecheck
-npm --prefix website run test
-npm --prefix website run test:e2e
-npm --prefix website run check:bundle
-```
-
-## Local development
-
-Install frontend dependencies:
-
-```bash
-npm --prefix website ci
-```
-
-Start RabbitMQ and RabbitLens demo services:
-
-```bash
-make up
-```
-
-Start the local Vite development server:
-
-```bash
-make dev
-```
-
-During development, the app reads runtime configuration from:
-
-```text
-website/public/runtime-config.json
-```
-
-Default config:
-
-```json
-{
-  "apiBaseUrl": "/api",
-  "auth": {
-    "basic": true,
-    "oauth": null
-  },
-  "defaultLocale": "en",
-  "defaultTheme": "system"
-}
-```
-
-`apiBaseUrl` should point to the RabbitMQ Management API base path. In the Docker demo, nginx proxies `/api` to `rabbitmq:15672/api`.
-
-## Use with an existing RabbitMQ
-
-If RabbitMQ is already running, use the external deployment example:
-
-```bash
+```sh
 cp deploy/.env.example deploy/.env
 docker compose --env-file deploy/.env -f deploy/compose.yaml pull
 docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --no-build
 ```
 
-Then open:
+For Docker Desktop, `host.docker.internal` reaches a broker on the host machine.
+For a remote broker, set `RABBITMQ_MANAGEMENT_HOST` in `deploy/.env`. Put RabbitLens
+behind HTTPS in production and keep the raw RabbitMQ Management port private whenever
+possible. See [the deployment guide](deploy/README.md) for updates, rollback, and
+network examples.
 
-```text
-http://127.0.0.1:8080
+## Development
+
+Requirements: Node.js 22+, npm, Docker, and Docker Compose.
+
+```sh
+npm --prefix website ci
+make dev
 ```
 
-RabbitLens will serve the UI and proxy `/api` to the RabbitMQ Management API configured in `deploy/.env`.
+The Vite server uses the runtime configuration at
+[`website/public/runtime-config.json`](website/public/runtime-config.json). The demo
+stack is the easiest local Management API target; start it with `make up` before
+working through authenticated flows.
 
-## Contributing and getting help
+| Command                                  | Purpose                                                                     |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| `npm --prefix website run check`         | Format, lint, typecheck, ownership checks, unit tests, and production build |
+| `npm --prefix website run test:coverage` | Full production coverage report                                             |
+| `npm --prefix website run test:e2e`      | Playwright flows across Chromium, Firefox, WebKit, and mobile profiles      |
+| `npm --prefix website run check:bundle`  | Enforce initial and lazy-load bundle budgets                                |
+| `npm --prefix website run audit`         | Fail on high-severity dependency vulnerabilities                            |
 
-- Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
-- Report bugs and propose features through the GitHub templates. Do not create
-  placeholder reports just to increase activity metrics.
-- Report security vulnerabilities privately through the process in
-  [SECURITY.md](SECURITY.md).
-- See [ROADMAP.md](ROADMAP.md) for planned work and
-  [docs/maintainer-metrics.md](docs/maintainer-metrics.md) for the transparent
-  project-health signals we track.
-- Use the [operator trial kit](docs/operator-trial-kit.md) to collect consented,
-  reproducible real-world feedback.
+## Quality and CI
 
-See [deploy/README.md](deploy/README.md) for target examples and production notes.
+Every pull request runs a clear set of independent gates after validation:
+
+- **Validate** — formatting, linting, TypeScript, and production-test ownership.
+- **Test** — coverage for the files changed by the pull request; the gate is 85%.
+- **Build** — production build, bundle budgets, and dependency audit.
+- **Browser** — end-to-end, accessibility, responsive, performance, and artifact-secret tests.
+
+Parity against a pinned RabbitMQ Management UI source runs on `main` and on manual
+dispatches. This keeps pull requests quick without losing an authoritative
+compatibility check.
+
+## Security
+
+Browser users authenticate directly against RabbitMQ. Do not put RabbitMQ credentials
+or OAuth client secrets in the frontend runtime configuration. Report vulnerabilities
+privately through [GitHub Security Advisories](https://github.com/huynhanx03/RabbitLens/security/advisories/new);
+please do not open a public issue with exploit details. See [SECURITY.md](SECURITY.md)
+for the reporting process.
+
+## Compatibility
+
+RabbitLens is verified against RabbitMQ `4.3.2-management` and the Management HTTP
+API. For a production rollout, pin a RabbitLens release image, export RabbitMQ
+definitions first, and validate access with a non-administrator account before
+switching operators over.
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Code standards](docs/code-standards.md)
+- [Design system](docs/design-system.md)
+- [Testing strategy](docs/testing-strategy.md)
+- [Contributing](docs/contributing.md)
+
+## Contributing
+
+Issues and focused pull requests are welcome. Please use conventional commit messages,
+keep each change reviewable, add or update the relevant tests, and run
+`npm --prefix website run check` before opening a pull request. The complete workflow
+is in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+RabbitLens is licensed under [Apache-2.0](LICENSE).

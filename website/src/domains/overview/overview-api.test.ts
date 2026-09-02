@@ -10,9 +10,6 @@ describe("overview API", () => {
 
     await getOverview(client);
 
-    expect(client.request).toHaveBeenCalledWith(
-      "/overview",
-      expect.anything(),
-    );
+    expect(client.request).toHaveBeenCalledWith("/overview", expect.anything());
   });
 });

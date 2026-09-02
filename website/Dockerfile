@@ -1,12 +1,13 @@
 # syntax=docker/dockerfile:1.7
 
-ARG NODE_IMAGE=node:24.17.0-alpine3.23
+ARG NODE_IMAGE=node:24.17.0-bookworm-slim
 ARG NGINX_IMAGE=nginxinc/nginx-unprivileged:1.28.1-alpine
 
 FROM ${NODE_IMAGE} AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --include=optional --no-audit --fund=false
 COPY . .
 RUN npm run build
 

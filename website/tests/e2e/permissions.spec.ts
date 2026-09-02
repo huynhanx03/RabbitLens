@@ -9,7 +9,7 @@ test.describe("Permission Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await openAppNavigation(page);
     await expect(page.getByRole("link", { name: "Users" })).toBeVisible();
   });
@@ -20,7 +20,7 @@ test.describe("Permission Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await openAppNavigation(page);
     await expect(page.getByRole("link", { name: "Users" })).toBeHidden();
   });
@@ -38,9 +38,9 @@ test.describe("Permission Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await navigateTo(page, "Queues and Streams");
-    
+
     await expect(page.getByText("You do not have permission to view this data.")).toBeVisible();
   });
 });

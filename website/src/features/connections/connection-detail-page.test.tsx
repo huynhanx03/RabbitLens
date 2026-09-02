@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import userEvent from "@testing-library/user-event";
 import { ConnectionDetailPage } from "./connection-detail-page";
 import { mockConnection } from "@/test/fixtures/connections";
 import { mockPaginatedChannels } from "@/test/fixtures/channels";
@@ -10,17 +11,20 @@ const mockClient = {
   request: vi.fn(),
   requestVoid: vi.fn(),
 };
+const navigate = vi.fn();
 
 // Mock router context
 vi.mock("@tanstack/react-router", async () => {
   const actual = await vi.importActual("@tanstack/react-router");
   return {
     ...actual,
-    Link: ({ children, params }: { children: React.ReactNode; params: { name: string } }) => <a href={`/channels/${encodeURIComponent(params.name)}`}>{children}</a>,
+    Link: ({ children, params }: { children: React.ReactNode; params: { name: string } }) => (
+      <a href={`/channels/${encodeURIComponent(params.name)}`}>{children}</a>
+    ),
     useRouteContext: () => ({
       apiClient: mockClient,
     }),
-    useNavigate: () => vi.fn(),
+    useNavigate: () => navigate,
   };
 });
 
@@ -39,7 +43,7 @@ function createWrapper() {
 
 describe("ConnectionDetailPage", () => {
   beforeEach(() => {
-    mockClient.request.mockReset();
+    vi.clearAllMocks();
   });
 
   it("renders connection details and channels", async () => {
@@ -81,11 +85,20 @@ describe("ConnectionDetailPage", () => {
   it("loads sessions instead of channels for AMQP 1.0 connections", async () => {
     mockClient.request.mockImplementation((url: string) => {
       if (url.endsWith("/sessions")) {
-        return Promise.resolve([{
-          channel_number: 7,
-          incoming_links: [{ link_name: "publisher-link", target_address: "orders", credit: 20 }],
-          outgoing_links: [{ link_name: "consumer-link", source_address: "orders", queue_name: "orders", credit: 30 }],
-        }]);
+        return Promise.resolve([
+          {
+            channel_number: 7,
+            incoming_links: [{ link_name: "publisher-link", target_address: "orders", credit: 20 }],
+            outgoing_links: [
+              {
+                link_name: "consumer-link",
+                source_address: "orders",
+                queue_name: "orders",
+                credit: 30,
+              },
+            ],
+          },
+        ]);
       }
       if (url.includes("/channels")) {
         throw new Error("AMQP 1.0 must not request channels");
@@ -109,9 +122,9 @@ describe("ConnectionDetailPage", () => {
       expect.anything(),
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
-    expect(
-      mockClient.request.mock.calls.some(([url]) => String(url).includes("/channels")),
-    ).toBe(false);
+    expect(mockClient.request.mock.calls.some(([url]) => String(url).includes("/channels"))).toBe(
+      false,
+    );
   });
 
   it("shows operational network authentication and protocol limits", async () => {
@@ -134,5 +147,31 @@ describe("ConnectionDetailPage", () => {
     expect(screen.getByText("PLAIN")).toBeVisible();
     expect(screen.getByText("131072")).toBeVisible();
     expect(screen.getByText("2047")).toBeVisible();
+  });
+
+  it("confirms force-close and returns to the connection list after success", async () => {
+    const user = userEvent.setup();
+    mockClient.request.mockImplementation((url: string) => {
+      if (url.includes("/channels")) return Promise.resolve(mockPaginatedChannels);
+      return Promise.resolve(mockConnection);
+    });
+    mockClient.requestVoid.mockResolvedValueOnce(undefined);
+    const search = { page: 1, pageSize: 100, name: "", useRegex: false, sortReverse: false };
+    render(<ConnectionDetailPage name={mockConnection.name} channelsSearch={search} />, {
+      wrapper: createWrapper(),
+    });
+
+    await screen.findByText("Properties");
+    await user.click(screen.getByRole("button", { name: "Force close" }));
+    expect(screen.getByRole("alertdialog")).toHaveTextContent(mockConnection.name);
+    await user.click(screen.getByRole("button", { name: "Force close" }));
+
+    await waitFor(() =>
+      expect(mockClient.requestVoid).toHaveBeenCalledWith(
+        `/connections/${encodeURIComponent(mockConnection.name)}`,
+        expect.objectContaining({ method: "DELETE" }),
+      ),
+    );
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/connections", search }));
   });
 });

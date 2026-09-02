@@ -10,10 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Binding } from "@/domains/bindings/binding-schema";
 import { destructiveIconButtonClassName } from "@/lib/utils";
-import type {
-  QueueTopologyConfig,
-  QueueTopologyRoute,
-} from "./queue-topology-view-model";
+import type { QueueTopologyConfig, QueueTopologyRoute } from "./queue-topology-view-model";
 
 type QueueConsumerRoutesProps = {
   topology: QueueTopologyConfig;
@@ -108,15 +105,11 @@ export function QueueConsumerRoutes({
                   key={route.binding.properties_key}
                   className="rounded-lg border bg-background/50 p-3 text-sm"
                 >
-                  <span className="font-medium">
-                    {t("queues.defaultExchange")}
-                  </span>
+                  <span className="font-medium">{t("queues.defaultExchange")}</span>
                   <span className="mx-2 text-muted-foreground" aria-hidden="true">
                     →
                   </span>
-                  <span className="font-mono">
-                    {route.binding.routing_key}
-                  </span>
+                  <span className="font-mono">{route.binding.routing_key}</span>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {t("queues.systemBindingDescription")}
                   </p>
@@ -143,8 +136,7 @@ function ExplicitRoute({
 }) {
   const { t } = useTranslation();
   const exchange = route.exchange;
-  const routingKey =
-    route.binding.routing_key === "" ? '""' : route.binding.routing_key;
+  const routingKey = route.binding.routing_key === "" ? '""' : route.binding.routing_key;
   const bindingArguments = JSON.stringify(route.binding.arguments);
   const routeLabel = t("queues.consumerRouteAccessible", {
     exchange: route.binding.source,
@@ -175,9 +167,7 @@ function ExplicitRoute({
         {route.exchangeStatus === "available" && exchange ? (
           <div className="mt-2 space-y-2">
             <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">
-                {exchange.type ?? t("common.unavailable")}
-              </Badge>
+              <Badge variant="secondary">{exchange.type ?? t("common.unavailable")}</Badge>
               <Badge variant="outline">
                 {exchange.durable === undefined
                   ? t("common.unavailable")
@@ -187,16 +177,12 @@ function ExplicitRoute({
               </Badge>
             </div>
             <div className="text-xs text-muted-foreground">
-              <span className="mr-2 font-medium">
-                {t("bindings.arguments")}:
-              </span>
+              <span className="mr-2 font-medium">{t("bindings.arguments")}:</span>
               <ArgumentsValue value={exchange.arguments ?? {}} />
             </div>
           </div>
         ) : route.exchangeStatus === "loading" ? (
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("common.loading")}
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{t("common.loading")}</p>
         ) : (
           <div className="mt-2 space-y-2">
             <p className="text-xs text-destructive">
@@ -227,9 +213,7 @@ function ExplicitRoute({
         <span className="text-xs uppercase tracking-wide text-muted-foreground">
           {t("queues.name")}
         </span>
-        <span className="mt-1 block truncate font-mono font-medium">
-          {queueName}
-        </span>
+        <span className="mt-1 block truncate font-mono font-medium">{queueName}</span>
       </div>
 
       <Button

@@ -20,11 +20,7 @@ export interface ArgumentsEditorProps {
   disabled?: boolean;
 }
 
-export function ArgumentsEditor({
-  value,
-  onChange,
-  disabled,
-}: ArgumentsEditorProps) {
+export function ArgumentsEditor({ value, onChange, disabled }: ArgumentsEditorProps) {
   const { t } = useTranslation();
   const entries = Object.entries(value);
   const [newKey, setNewKey] = useState("");
@@ -33,7 +29,7 @@ export function ArgumentsEditor({
 
   const handleAdd = () => {
     if (!newKey) return;
-    
+
     let parsedValue: ArgumentValue = newValue;
     if (newValueType === "number") {
       parsedValue = Number(newValue);
@@ -58,10 +54,14 @@ export function ArgumentsEditor({
       <div className="rounded-xl border border-border/50 bg-background/30 p-4">
         <div className="grid gap-3 md:grid-cols-[minmax(10rem,1fr)_12rem_minmax(10rem,1fr)_auto] md:items-end">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="argument-key"
+              className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
               {t("common.key")}
             </Label>
             <Input
+              id="argument-key"
               value={newKey}
               onChange={(e) => setNewKey(e.target.value)}
               disabled={disabled}
@@ -71,7 +71,10 @@ export function ArgumentsEditor({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="argument-type"
+              className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
               {t("common.type")}
             </Label>
             <Select
@@ -79,7 +82,7 @@ export function ArgumentsEditor({
               onValueChange={(v: "string" | "number" | "boolean") => setNewValueType(v)}
               disabled={disabled}
             >
-              <SelectTrigger className="h-11 w-full">
+              <SelectTrigger id="argument-type" className="h-11 w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -91,16 +94,15 @@ export function ArgumentsEditor({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="argument-value"
+              className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
               {t("common.value")}
             </Label>
             {newValueType === "boolean" ? (
-              <Select
-                value={newValue}
-                onValueChange={setNewValue}
-                disabled={disabled}
-              >
-                <SelectTrigger className="h-11 w-full">
+              <Select value={newValue} onValueChange={setNewValue} disabled={disabled}>
+                <SelectTrigger id="argument-value" className="h-11 w-full">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -110,6 +112,7 @@ export function ArgumentsEditor({
               </Select>
             ) : (
               <Input
+                id="argument-value"
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
                 disabled={disabled}
@@ -139,9 +142,7 @@ export function ArgumentsEditor({
               key={k}
               className="grid gap-2 rounded-lg bg-background/50 p-2 text-sm sm:grid-cols-[minmax(8rem,1fr)_7rem_minmax(8rem,1fr)_auto] sm:items-center"
             >
-              <span className="min-w-0 break-words rounded bg-muted px-2 py-1 font-mono">
-                {k}
-              </span>
+              <span className="min-w-0 break-words rounded bg-muted px-2 py-1 font-mono">{k}</span>
               <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {typeof v}
               </span>

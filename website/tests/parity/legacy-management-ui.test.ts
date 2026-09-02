@@ -42,11 +42,7 @@ function covered(overrides: Record<string, unknown> = {}) {
 describe("verifyManifest", () => {
   it("passes valid manifest", () => {
     const manifest = [covered()];
-    const {
-      errors,
-      covered: coveredCount,
-      excluded,
-    } = verifyManifest(manifest, options);
+    const { errors, covered: coveredCount, excluded } = verifyManifest(manifest, options);
     expect(errors).toHaveLength(0);
     expect(coveredCount).toBe(1);
     expect(excluded).toBe(0);
@@ -72,29 +68,21 @@ describe("verifyManifest", () => {
   });
 
   it("fails on missing evidence for covered", () => {
-    const manifest = [
-      { sourceKey: "test", status: "covered", rabbitLensRoute: "/test" },
-    ];
+    const manifest = [{ sourceKey: "test", status: "covered", rabbitLensRoute: "/test" }];
     const { errors } = verifyManifest(manifest, options);
     expect(errors).toContain("Missing evidence for covered entry: test");
   });
 
   it("fails on missing route for covered", () => {
-    const manifest = [
-      { sourceKey: "test", status: "covered", evidence: ["test"] },
-    ];
+    const manifest = [{ sourceKey: "test", status: "covered", evidence: ["test"] }];
     const { errors } = verifyManifest(manifest, options);
     expect(errors).toContain("Missing rabbitLensRoute for covered entry: test");
   });
 
   it("fails on missing exclusion reason", () => {
-    const manifest = [
-      { sourceKey: "test", status: "checked-source-exclusion" },
-    ];
+    const manifest = [{ sourceKey: "test", status: "checked-source-exclusion" }];
     const { errors } = verifyManifest(manifest, options);
-    expect(errors).toContain(
-      "Missing exclusionReason for excluded entry: test",
-    );
+    expect(errors).toContain("Missing exclusionReason for excluded entry: test");
   });
 
   it("fails on invalid status", () => {
@@ -105,28 +93,19 @@ describe("verifyManifest", () => {
 
   it.each([
     ["sourceFile", "Missing sourceFile for covered entry: overview"],
-    [
-      "sourceRouteOrAction",
-      "Missing sourceRouteOrAction for covered entry: overview",
-    ],
+    ["sourceRouteOrAction", "Missing sourceRouteOrAction for covered entry: overview"],
     ["apiMethod", "Missing apiMethod for covered entry: overview"],
     ["apiPath", "Missing apiPath for covered entry: overview"],
     ["uiSurface", "Missing uiSurface for covered entry: overview"],
     ["permission", "Missing permission for covered entry: overview"],
-    [
-      "implementationFiles",
-      "Missing implementationFiles for covered entry: overview",
-    ],
+    ["implementationFiles", "Missing implementationFiles for covered entry: overview"],
     ["compatibility", "Missing compatibility for covered entry: overview"],
     ["routeModule", "Missing routeModule for covered entry: overview"],
     ["capability", "Missing capability for covered entry: overview"],
     ["category", "Missing category for covered entry: overview"],
     ["userGoal", "Missing userGoal for covered entry: overview"],
     ["legacyBehavior", "Missing legacyBehavior for covered entry: overview"],
-    [
-      "rabbitLensCoverage",
-      "Missing rabbitLensCoverage for covered entry: overview",
-    ],
+    ["rabbitLensCoverage", "Missing rabbitLensCoverage for covered entry: overview"],
   ])("fails when %s is missing", (field, expectedError) => {
     const entry = covered();
     delete entry[field as keyof typeof entry];
@@ -152,16 +131,13 @@ describe("verifyManifest", () => {
   });
 
   it("fails on invalid apiMethod", () => {
-    expect(
-      verifyManifest([covered({ apiMethod: "PATCH" })], options).errors,
-    ).toContain("Invalid apiMethod for covered entry: overview");
+    expect(verifyManifest([covered({ apiMethod: "PATCH" })], options).errors).toContain(
+      "Invalid apiMethod for covered entry: overview",
+    );
   });
 
   it("fails on duplicate route capability coverage", () => {
-    const manifest = [
-      covered({ sourceKey: "first" }),
-      covered({ sourceKey: "second" }),
-    ];
+    const manifest = [covered({ sourceKey: "first" }), covered({ sourceKey: "second" })];
 
     expect(verifyManifest(manifest, options).errors).toContain(
       "Duplicate route capability: /:read",

@@ -25,7 +25,10 @@ export function QueueReplicationState({ leader, members, online }: QueueReplicat
         {members.map((member) => {
           const isOnline = onlineSet.has(member);
           return (
-            <li key={member} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm">
+            <li
+              key={member}
+              className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
+            >
               <span className="truncate font-mono">{member}</span>
               <StatusBadge variant={isOnline ? "success" : "error"}>
                 {isOnline ? t("queues.online") : t("queues.offline")}

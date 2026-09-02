@@ -34,18 +34,18 @@ describe("DataTable", () => {
     );
 
     expect(screen.getByRole("table", { name: "Connections" })).toBeVisible();
-    expect(
-      screen.getByRole("table", { name: "Connections" }).parentElement,
-    ).toHaveClass("rl-data-table");
-    expect(
-      screen.getByRole("table", { name: "Connections" }).parentElement,
-    ).toHaveClass("rounded-lg");
-    expect(
-      screen.getByRole("table", { name: "Connections" }).parentElement,
-    ).not.toHaveClass("rounded-xl");
-    expect(
-      screen.getByRole("table", { name: "Connections" }).parentElement,
-    ).not.toHaveClass("rounded-2xl");
+    expect(screen.getByRole("table", { name: "Connections" }).parentElement).toHaveClass(
+      "rl-data-table",
+    );
+    expect(screen.getByRole("table", { name: "Connections" }).parentElement).toHaveClass(
+      "rounded-lg",
+    );
+    expect(screen.getByRole("table", { name: "Connections" }).parentElement).not.toHaveClass(
+      "rounded-xl",
+    );
+    expect(screen.getByRole("table", { name: "Connections" }).parentElement).not.toHaveClass(
+      "rounded-2xl",
+    );
     expect(screen.getAllByRole("rowgroup")[0]).toHaveClass("sticky");
     expect(screen.getByRole("columnheader", { name: "State" })).toHaveClass(
       "hidden",
@@ -61,12 +61,8 @@ describe("DataTable", () => {
       "whitespace-normal",
       "break-all",
     );
-    expect(screen.getByRole("cell", { name: "running" })).toHaveClass(
-      "text-center",
-    );
-    expect(screen.getByRole("row", { name: /client-1/i })).toHaveClass(
-      "rl-data-row",
-    );
+    expect(screen.getByRole("cell", { name: "running" })).toHaveClass("text-center");
+    expect(screen.getByRole("row", { name: /client-1/i })).toHaveClass("rl-data-row");
     expect(screen.getByRole("button", { name: /State/i })).toHaveClass(
       "rl-sort-control",
       "justify-center",
@@ -83,9 +79,7 @@ describe("DataTable", () => {
       />,
     );
 
-    expect(screen.getByText("No matching connections").parentElement).toHaveClass(
-      "rl-table-empty",
-    );
+    expect(screen.getByText("No matching connections").parentElement).toHaveClass("rl-table-empty");
   });
 
   it("does not activate the row from an interactive child", async () => {

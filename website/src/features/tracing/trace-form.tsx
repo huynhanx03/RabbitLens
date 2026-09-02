@@ -19,9 +19,7 @@ const formSchema = z.object({
   name: z.string().trim().min(1),
   format: z.enum(["text", "json"]),
   pattern: z.string().min(1),
-  maxPayloadBytes: z
-    .string()
-    .refine((value) => value === "" || /^\d+$/.test(value)),
+  maxPayloadBytes: z.string().refine((value) => value === "" || /^\d+$/.test(value)),
   username: z.string(),
   password: z.string(),
 });
@@ -90,7 +88,9 @@ export function TraceForm({ vhosts, onSubmit, onCancel, isPending }: Props) {
           </SelectTrigger>
           <SelectContent>
             {vhosts.map(({ name }) => (
-              <SelectItem key={name} value={name}>{name}</SelectItem>
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -98,7 +98,11 @@ export function TraceForm({ vhosts, onSubmit, onCancel, isPending }: Props) {
       <div className="space-y-2">
         <Label htmlFor="trace-name">{t("tracing.name")}</Label>
         <Input id="trace-name" {...register("name")} disabled={isPending} />
-        {errors.name ? <p role="alert" className="text-sm text-destructive">{t("common.required")}</p> : null}
+        {errors.name ? (
+          <p role="alert" className="text-sm text-destructive">
+            {t("common.required")}
+          </p>
+        ) : null}
       </div>
       <div className="space-y-2">
         <Label htmlFor="trace-format">{t("tracing.format")}</Label>
@@ -107,7 +111,9 @@ export function TraceForm({ vhosts, onSubmit, onCancel, isPending }: Props) {
           onValueChange={(value) => setValue("format", value as FormValues["format"])}
           disabled={isPending}
         >
-          <SelectTrigger id="trace-format" className="w-full"><SelectValue /></SelectTrigger>
+          <SelectTrigger id="trace-format" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="text">{t("tracing.text")}</SelectItem>
             <SelectItem value="json">{t("tracing.json")}</SelectItem>
@@ -120,17 +126,37 @@ export function TraceForm({ vhosts, onSubmit, onCancel, isPending }: Props) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="trace-max-payload">{t("tracing.maxPayloadBytes")}</Label>
-        <Input id="trace-max-payload" inputMode="numeric" {...register("maxPayloadBytes")} disabled={isPending} />
-        {errors.maxPayloadBytes ? <p role="alert" className="text-sm text-destructive">{t("tracing.invalidPayloadLimit")}</p> : null}
+        <Input
+          id="trace-max-payload"
+          inputMode="numeric"
+          {...register("maxPayloadBytes")}
+          disabled={isPending}
+        />
+        {errors.maxPayloadBytes ? (
+          <p role="alert" className="text-sm text-destructive">
+            {t("tracing.invalidPayloadLimit")}
+          </p>
+        ) : null}
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="trace-username">{t("tracing.username")}</Label>
-          <Input id="trace-username" autoComplete="off" {...register("username")} disabled={isPending} />
+          <Input
+            id="trace-username"
+            autoComplete="off"
+            {...register("username")}
+            disabled={isPending}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="trace-password">{t("tracing.password")}</Label>
-          <Input id="trace-password" type="password" autoComplete="new-password" {...register("password")} disabled={isPending} />
+          <Input
+            id="trace-password"
+            type="password"
+            autoComplete="new-password"
+            {...register("password")}
+            disabled={isPending}
+          />
         </div>
       </div>
       <p className="text-xs text-muted-foreground">{t("tracing.credentialsNotice")}</p>

@@ -31,22 +31,26 @@ export function OAuthProvider({
 
     // Handle restore
     auth.setRestoringOAuth();
-    manager.restore().then((user) => {
-      const currentAuth = authRef.current;
-      const restoreIsActive = currentAuth.session.type === "anonymous"
-        || currentAuth.session.type === "restoring_oauth";
-      if (!restoreIsActive) return;
-      if (user && user.access_token && !user.expired) {
-        currentAuth.setBearer(user.access_token);
-      } else {
-        currentAuth.logout();
-      }
-    }).catch(() => {
-      console.warn("Failed to restore OAuth session");
-      if (authRef.current.session.type === "restoring_oauth") {
-        authRef.current.logout();
-      }
-    });
+    manager
+      .restore()
+      .then((user) => {
+        const currentAuth = authRef.current;
+        const restoreIsActive =
+          currentAuth.session.type === "anonymous" ||
+          currentAuth.session.type === "restoring_oauth";
+        if (!restoreIsActive) return;
+        if (user && user.access_token && !user.expired) {
+          currentAuth.setBearer(user.access_token);
+        } else {
+          currentAuth.logout();
+        }
+      })
+      .catch(() => {
+        console.warn("Failed to restore OAuth session");
+        if (authRef.current.session.type === "restoring_oauth") {
+          authRef.current.logout();
+        }
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager, hasOAuth]);
 
@@ -74,15 +78,11 @@ export function OAuthProvider({
       },
       () => {
         console.warn("Silent OAuth renewal failed");
-      }
+      },
     );
 
     return unsubscribe;
   }, [manager, auth, hasOAuth]);
 
-  return (
-    <OAuthContext.Provider value={manager}>
-      {children}
-    </OAuthContext.Provider>
-  );
+  return <OAuthContext.Provider value={manager}>{children}</OAuthContext.Provider>;
 }

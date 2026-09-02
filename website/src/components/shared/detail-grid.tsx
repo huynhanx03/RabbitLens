@@ -14,18 +14,9 @@ type DetailGridProps = {
   className?: string;
 };
 
-export function DetailGrid({
-  items,
-  unavailableLabel = "—",
-  className,
-}: DetailGridProps) {
+export function DetailGrid({ items, unavailableLabel = "—", className }: DetailGridProps) {
   return (
-    <dl
-      className={cn(
-        "grid gap-x-6 gap-y-5 sm:grid-cols-2 xl:grid-cols-3",
-        className,
-      )}
-    >
+    <dl className={cn("grid gap-x-6 gap-y-5 sm:grid-cols-2 xl:grid-cols-3", className)}>
       {items.map((item, index) => (
         <div key={index} className={cn("min-w-0 space-y-1", item.className)}>
           <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

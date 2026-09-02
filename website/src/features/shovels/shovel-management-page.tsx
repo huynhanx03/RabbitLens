@@ -1,20 +1,14 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useRouteContext } from "@tanstack/react-router";
-import type { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useRouteContext } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { AsyncState } from "@/components/shared/async-state";
-import { ConfirmDialog } from "@/components/shared/confirm-dialog";
-import { DataTable } from "@/components/shared/data-table";
-import { JsonParameterForm } from "@/components/shared/json-parameter-form";
-import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { destructiveIconButtonClassName } from "@/lib/utils";
-import { redactShovelUris, type ShovelParameter } from "@/domains/extensions/shovels/shovel-parameter-api";
-import { shovelParameterListQueryOptions, useDeleteShovel, useSaveShovel } from "@/domains/extensions/shovels/shovel-parameter-query";
+import { ParameterManagementPage } from "@/components/shared/parameter-management-page";
 import { useVhosts } from "@/domains/admin/vhosts/vhost-query";
+import { redactShovelUris } from "@/domains/extensions/shovels/shovel-parameter-api";
+import {
+  shovelParameterListQueryOptions,
+  useDeleteShovel,
+  useSaveShovel,
+} from "@/domains/extensions/shovels/shovel-parameter-query";
 
 const DEFAULT_VALUE = {
   "src-uri": "amqp://source-host",
@@ -33,101 +27,29 @@ export function ShovelManagementPage() {
   const vhosts = useVhosts(context.apiClient);
   const save = useSaveShovel(context.apiClient);
   const remove = useDeleteShovel(context.apiClient);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<ShovelParameter | null>(null);
-
-  const columns: ColumnDef<ShovelParameter>[] = [
-    { accessorKey: "vhost", header: t("vhosts.title") },
-    { accessorKey: "name", header: t("common.name") },
-    {
-      id: "value",
-      header: t("common.value"),
-      cell: ({ row }) => (
-        <code className="block max-w-md truncate text-xs">
-          {JSON.stringify(redactShovelUris(row.original.value))}
-        </code>
-      ),
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <div className="flex justify-end gap-1">
-          <Button asChild variant="ghost" size="icon">
-            <Link
-              to="/extensions/shovels/management/$vhost/$name"
-              params={{ vhost: row.original.vhost, name: row.original.name }}
-              aria-label={`${t("common.edit")} ${row.original.name}`}
-            >
-              <Pencil aria-hidden="true" />
-            </Link>
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className={destructiveIconButtonClassName}
-            onClick={() => setDeleteTarget(row.original)}
-            aria-label={`${t("common.delete")} ${row.original.name}`}
-          >
-            <Trash2 aria-hidden="true" />
-          </Button>
-        </div>
-      ),
-    },
-  ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-          <Button type="button" onClick={() => setCreateOpen(true)}>
-            <Plus aria-hidden="true" />
-            {t("shovels.add")}
-          </Button>
-      </div>
-      <AsyncState
-        isPending={parameters.isPending}
-        isError={parameters.isError}
-        error={parameters.error}
-        onRetry={() => parameters.refetch()}
-        isEmpty={!parameters.isPending && parameters.data?.length === 0}
-        emptyTitle={t("shovels.empty")}
-      >
-        <DataTable
-          ariaLabel={t("shovels.management")}
-          columns={columns}
-          data={parameters.data ?? []}
-          getRowId={(row) => `${row.vhost}:${row.name}`}
-        />
-      </AsyncState>
-
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-xl">
-          <DialogHeader><DialogTitle>{t("shovels.add")}</DialogTitle></DialogHeader>
-          <MutationErrorAlert error={save.error} />
-          <JsonParameterForm
-            vhosts={vhosts.data?.map(({ name }) => name) ?? []}
-            initialValue={DEFAULT_VALUE}
-            isPending={save.isPending}
-            onCancel={() => setCreateOpen(false)}
-            onSubmit={(input) => save.mutate(input, { onSuccess: () => setCreateOpen(false) })}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <ConfirmDialog
-        open={deleteTarget !== null}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title={t("shovels.delete")}
-        description={t("shovels.deleteConfirm", { name: deleteTarget?.name })}
-        confirmText={t("common.delete")}
-        variant="destructive"
-        isConfirming={remove.isPending}
-        error={remove.error}
-        onConfirm={() => {
-          if (!deleteTarget) return;
-          remove.mutate(deleteTarget, { onSuccess: () => setDeleteTarget(null) });
-        }}
-      />
-    </div>
+    <ParameterManagementPage
+      addLabel={t("shovels.add")}
+      emptyTitle={t("shovels.empty")}
+      deleteTitle={t("shovels.delete")}
+      deleteDescription={(name) => t("shovels.deleteConfirm", { name })}
+      tableLabel={t("shovels.management")}
+      detailPath="/extensions/shovels/management/$vhost/$name"
+      defaultValue={DEFAULT_VALUE}
+      data={parameters.data}
+      isPending={parameters.isPending}
+      isError={parameters.isError}
+      error={parameters.error}
+      onRetry={() => parameters.refetch()}
+      vhosts={vhosts.data?.map(({ name }) => name) ?? []}
+      saveError={save.error}
+      isSaving={save.isPending}
+      onSave={(input, callbacks) => save.mutate(input, callbacks)}
+      deleteError={remove.error}
+      isDeleting={remove.isPending}
+      onDelete={(target, callbacks) => remove.mutate(target, callbacks)}
+      redactValue={redactShovelUris}
+    />
   );
 }

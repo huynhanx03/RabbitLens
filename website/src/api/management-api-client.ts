@@ -1,4 +1,3 @@
-import { z } from "zod";
 import type { AuthSession } from "@/auth/auth-session";
 import { ApiError, type ApiErrorKind } from "./api-error";
 
@@ -13,6 +12,15 @@ type ManagementApiClientOptions = {
 type ErrorDetails = {
   error?: unknown;
   reason?: unknown;
+};
+
+/**
+ * The transport only needs a parser contract. Keeping it structural prevents
+ * the root application client from taking a runtime dependency on Zod; each
+ * domain can still provide its Zod schema as before.
+ */
+type ResponseSchema<T> = {
+  safeParse(payload: unknown): { success: true; data: T } | { success: false; error: unknown };
 };
 
 function joinApiUrl(baseUrl: string, path: string): string {
@@ -87,10 +95,7 @@ function redact(value: string, authorization: string | null): string {
   return redacted;
 }
 
-async function getErrorMessage(
-  response: Response,
-  authorization: string | null,
-): Promise<string> {
+async function getErrorMessage(response: Response, authorization: string | null): Promise<string> {
   try {
     const details = (await response.json()) as ErrorDetails;
     const message =
@@ -125,23 +130,14 @@ export class ManagementApiClient {
     this.onUnauthorized = options.onUnauthorized;
   }
 
-  async request<T>(
-    path: string,
-    schema: z.ZodType<T>,
-    init: RequestInit = {},
-  ): Promise<T> {
+  async request<T>(path: string, schema: ResponseSchema<T>, init: RequestInit = {}): Promise<T> {
     const response = await this.execute(path, init);
     let payload: unknown;
 
     try {
       payload = await response.json();
     } catch {
-      throw new ApiError(
-        "compatibility",
-        response.status,
-        false,
-        "RabbitMQ returned invalid JSON",
-      );
+      throw new ApiError("compatibility", response.status, false, "RabbitMQ returned invalid JSON");
     }
 
     const result = schema.safeParse(payload);
@@ -193,22 +189,18 @@ export class ManagementApiClient {
     }, this.timeoutMs);
 
     try {
-      const response = await this.fetcher.call(
-        window,
-        joinApiUrl(this.baseUrl, path),
-        {
-          ...init,
-          headers,
-          signal: controller.signal,
-        },
-      );
+      const response = await this.fetcher.call(window, joinApiUrl(this.baseUrl, path), {
+        ...init,
+        headers,
+        signal: controller.signal,
+      });
 
       if (!response.ok) {
         const kind = getErrorKind(response.status);
         if (kind === "unauthorized") {
           this.onUnauthorized();
         }
-        
+
         let retryAfterMs: number | undefined;
         if (response.status === 429 || response.status === 503) {
           const retryAfter = response.headers.get("Retry-After");

@@ -66,10 +66,12 @@ describe("queueSchema", () => {
       operator_policy: "guardrails",
       effective_policy_definition: { "delivery-limit": 20 },
       consumer_capacity: 0.75,
-      consumer_details: [{
-        consumer_tag: "worker",
-        queue: { name: "orders", vhost: "/" },
-      }],
+      consumer_details: [
+        {
+          consumer_tag: "worker",
+          queue: { name: "orders", vhost: "/" },
+        },
+      ],
     });
 
     expect(parsed.members).toHaveLength(3);

@@ -41,9 +41,7 @@ const systemBinding: Binding = {
   properties_key: "my-queue",
 };
 
-function topology(
-  exchangeStatus: "available" | "unavailable" = "available",
-): QueueTopologyConfig {
+function topology(exchangeStatus: "available" | "unavailable" = "available"): QueueTopologyConfig {
   return {
     queue: mockQueue,
     explicitRoutes: [
@@ -93,9 +91,7 @@ describe("QueueConsumerRoutes", () => {
     expect(screen.getByText(/alternate:/)).toBeVisible();
     expect(screen.queryByText("(AMQP default)")).not.toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "System bindings (1)" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: "System bindings (1)" }));
     expect(screen.getByText("(AMQP default)")).toBeVisible();
 
     await userEvent.click(

@@ -20,7 +20,9 @@ describe("EtsTablesPage", () => {
         return Promise.resolve({
           node: "rabbit@node",
           row_count: 20,
-          ets_tables: [{ name: "rabbit_queue", owner: "<0.1.0>", memory: 1024, size: 2, type: "set" }],
+          ets_tables: [
+            { name: "rabbit_queue", owner: "<0.1.0>", memory: 1024, size: 2, type: "set" },
+          ],
         });
       }
       return Promise.reject(new Error(`Unexpected request: ${path}`));

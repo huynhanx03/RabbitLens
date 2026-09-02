@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { QueueDetailPage } from "./queue-detail-page";
@@ -12,13 +12,9 @@ const mockClient = {
 };
 
 vi.mock("@/components/shared/rate-chart", () => ({
-  RateChart: ({
-    title,
-    isAvailable,
-  }: {
-    title: string;
-    isAvailable: boolean;
-  }) => <div data-available={String(isAvailable)}>{title}</div>,
+  RateChart: ({ title, isAvailable }: { title: string; isAvailable: boolean }) => (
+    <div data-available={String(isAvailable)}>{title}</div>
+  ),
 }));
 
 vi.mock("@tanstack/react-router", async () => {
@@ -141,13 +137,7 @@ describe("QueueDetailPage", () => {
   it("renders topology-first configuration and keeps count history", async () => {
     mockQueueDetailRequests({ queue: queueWithHistory });
 
-    render(
-      <QueueDetailPage
-        vhost="/"
-        name="my-queue"
-      />,
-      { wrapper: createWrapper() },
-    );
+    render(<QueueDetailPage vhost="/" name="my-queue" />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getAllByText("classic").length).toBeGreaterThan(0);
@@ -164,9 +154,7 @@ describe("QueueDetailPage", () => {
     expect(screen.getByText(/x-max-priority:/)).toBeVisible();
     expect(screen.getByText("Message counts history")).toBeVisible();
     expect(screen.queryByText("Message rates history")).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("region", { name: "Message inspector" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Message inspector" })).not.toBeInTheDocument();
 
     const readyCounts = screen.getAllByText("10");
     expect(readyCounts.length).toBeGreaterThan(0);
@@ -175,12 +163,8 @@ describe("QueueDetailPage", () => {
     const totalCounts = screen.getAllByText("15");
     expect(totalCounts.length).toBeGreaterThan(0);
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Message diagnostics" }),
-    );
-    expect(
-      screen.getByRole("region", { name: "Message inspector" }),
-    ).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: "Message diagnostics" }));
+    expect(screen.getByRole("region", { name: "Message inspector" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Load snapshot" })).toBeVisible();
   });
 
@@ -228,5 +212,63 @@ describe("QueueDetailPage", () => {
     });
     render(<QueueDetailPage vhost="/" name="my-queue" />, { wrapper: createWrapper() });
     expect(await screen.findByRole("button", { name: "Synchronize mirrors" })).toBeVisible();
+  });
+
+  it("requires confirmation before purging all messages from the queue", async () => {
+    mockQueueDetailRequests();
+    mockClient.requestVoid.mockResolvedValue(undefined);
+    render(<QueueDetailPage vhost="/" name="my-queue" />, { wrapper: createWrapper() });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Purge" }));
+    expect(mockClient.requestVoid).not.toHaveBeenCalled();
+
+    const dialog = screen.getByRole("alertdialog", { name: "Purge" });
+    await userEvent.click(within(dialog).getByRole("button", { name: "Purge" }));
+
+    await waitFor(() =>
+      expect(mockClient.requestVoid).toHaveBeenCalledWith("/queues/%2F/my-queue/contents", {
+        method: "DELETE",
+      }),
+    );
+  });
+
+  it("runs mirror synchronization only after explicit confirmation", async () => {
+    mockQueueDetailRequests({
+      queue: {
+        ...mockQueue,
+        slave_nodes: ["rabbit@two"],
+        synchronised_slave_nodes: [],
+      },
+    });
+    mockClient.requestVoid.mockResolvedValue(undefined);
+    render(<QueueDetailPage vhost="/" name="my-queue" />, { wrapper: createWrapper() });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Synchronize mirrors" }));
+    const dialog = screen.getByRole("alertdialog", { name: "Synchronize mirrors" });
+    await userEvent.click(within(dialog).getByRole("button", { name: "Synchronize mirrors" }));
+
+    await waitFor(() =>
+      expect(mockClient.requestVoid).toHaveBeenCalledWith("/queues/%2F/my-queue/actions", {
+        method: "POST",
+        body: JSON.stringify({ action: "sync" }),
+      }),
+    );
+  });
+
+  it("confirms before cancelling an in-progress mirror synchronization", async () => {
+    mockQueueDetailRequests({ queue: { ...mockQueue, state: "syncing" } });
+    mockClient.requestVoid.mockResolvedValue(undefined);
+    render(<QueueDetailPage vhost="/" name="my-queue" />, { wrapper: createWrapper() });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Cancel synchronization" }));
+    const dialog = screen.getByRole("alertdialog", { name: "Cancel synchronization" });
+    await userEvent.click(within(dialog).getByRole("button", { name: "Cancel synchronization" }));
+
+    await waitFor(() =>
+      expect(mockClient.requestVoid).toHaveBeenCalledWith("/queues/%2F/my-queue/actions", {
+        method: "POST",
+        body: JSON.stringify({ action: "cancel_sync" }),
+      }),
+    );
   });
 });

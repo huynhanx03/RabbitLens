@@ -42,18 +42,10 @@ function tracePath(node: string, vhost: string, name: string) {
 }
 
 export function getTraces(client: ManagementApiClient, node: string) {
-  return client.request(
-    nodePath("/traces", node),
-    z.array(traceSchema),
-  );
+  return client.request(nodePath("/traces", node), z.array(traceSchema));
 }
 
-export function getTrace(
-  client: ManagementApiClient,
-  node: string,
-  vhost: string,
-  name: string,
-) {
+export function getTrace(client: ManagementApiClient, node: string, vhost: string, name: string) {
   return client.request(tracePath(node, vhost, name), traceSchema);
 }
 
@@ -80,21 +72,13 @@ export async function deleteTrace(
 }
 
 export function getTraceFiles(client: ManagementApiClient, node: string) {
-  return client.request(
-    nodePath("/trace-files", node),
-    z.array(traceFileSchema),
-  );
+  return client.request(nodePath("/trace-files", node), z.array(traceFileSchema));
 }
 
-export async function deleteTraceFile(
-  client: ManagementApiClient,
-  node: string,
-  name: string,
-) {
-  await client.requestVoid(
-    `${nodePath("/trace-files", node)}/${encodeURIComponent(name)}`,
-    { method: "DELETE" },
-  );
+export async function deleteTraceFile(client: ManagementApiClient, node: string, name: string) {
+  await client.requestVoid(`${nodePath("/trace-files", node)}/${encodeURIComponent(name)}`, {
+    method: "DELETE",
+  });
 }
 
 export function traceFilePath(node: string, name: string) {

@@ -29,7 +29,7 @@ function renderValue(value: unknown, depth: number): ReactNode {
   }
 
   if (typeof value === "string") {
-    return <>{escapeHtml(value)}</>;
+    return <>{value}</>;
   }
 
   if (Array.isArray(value)) {
@@ -59,7 +59,7 @@ function renderValue(value: unknown, depth: number): ReactNode {
       <span className="inline-flex flex-col gap-0.5 pl-2 border-l border-border">
         {entries.map(([key, val]) => (
           <span key={key}>
-            <span className="text-muted-foreground">{escapeHtml(key)}: </span>
+            <span className="text-muted-foreground">{key}: </span>
             {renderValue(val, depth + 1)}
           </span>
         ))}
@@ -85,12 +85,4 @@ function CollapsedJson({ value }: { value: unknown }) {
       </pre>
     </details>
   );
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

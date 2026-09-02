@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import * as z from "zod";
@@ -23,8 +24,15 @@ export interface VhostFormProps {
   onCancel?: () => void;
 }
 
-export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCancel }: VhostFormProps) {
+export function VhostForm({
+  initialValues,
+  onSubmit,
+  isLoading,
+  isUpdate,
+  onCancel,
+}: VhostFormProps) {
   const { t } = useTranslation();
+  const [tagsInput, setTagsInput] = useState(() => initialValues?.tags?.join(", ") ?? "");
 
   const form = useForm<VhostBody & { name: string }>({
     resolver: zodResolver(vhostBodySchema.extend({ name: z.string().min(1, "Name is required") })),
@@ -37,17 +45,22 @@ export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCanc
     },
   });
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
-  const tagsValue = watch("tags") || [];
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = form;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">{t("vhosts.name")}</Label>
-        <Input 
-          id="name" 
-          {...register("name")} 
-          disabled={isUpdate || isLoading} 
+        <Input
+          id="name"
+          {...register("name")}
+          disabled={isUpdate || isLoading}
           placeholder="Virtual host name"
         />
         {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
@@ -55,23 +68,27 @@ export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCanc
 
       <div className="space-y-2">
         <Label htmlFor="description">{t("vhosts.description")}</Label>
-        <Input 
-          id="description" 
-          {...register("description")} 
-          disabled={isLoading} 
+        <Input
+          id="description"
+          {...register("description")}
+          disabled={isLoading}
           placeholder="Description"
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="tags">{t("vhosts.tags")}</Label>
-        <Input 
-          id="tags" 
-          disabled={isLoading} 
-          value={tagsValue.join(", ")}
+        <Input
+          id="tags"
+          disabled={isLoading}
+          value={tagsInput}
           onChange={(e) => {
             const val = e.target.value;
-            const newTags = val.split(",").map(t => t.trim()).filter(t => t !== "");
+            setTagsInput(val);
+            const newTags = val
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t !== "");
             setValue("tags", newTags);
           }}
           placeholder="e.g. production, eu-west"
@@ -84,10 +101,7 @@ export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCanc
           disabled={isLoading}
           value={watch("default_queue_type")}
           onValueChange={(val) =>
-            setValue(
-              "default_queue_type",
-              val as NonNullable<VhostBody["default_queue_type"]>,
-            )
+            setValue("default_queue_type", val as NonNullable<VhostBody["default_queue_type"]>)
           }
         >
           <SelectTrigger>
@@ -102,8 +116,8 @@ export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCanc
       </div>
 
       <div className="flex items-center space-x-2">
-        <Checkbox 
-          id="tracing" 
+        <Checkbox
+          id="tracing"
           checked={watch("tracing")}
           onCheckedChange={(checked) => setValue("tracing", checked === true)}
           disabled={isLoading}
@@ -118,7 +132,7 @@ export function VhostForm({ initialValues, onSubmit, isLoading, isUpdate, onCanc
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? t("common.loading") : (isUpdate ? "Update Virtual Host" : "Add Virtual Host")}
+          {isLoading ? t("common.loading") : isUpdate ? "Update Virtual Host" : "Add Virtual Host"}
         </Button>
       </div>
     </form>

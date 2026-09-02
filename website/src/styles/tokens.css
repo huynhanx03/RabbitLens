@@ -46,6 +46,7 @@
   --color-status-warning: var(--status-warning);
   --color-status-critical: var(--status-critical);
   --color-status-info: var(--status-info);
+  --color-brand-lens: var(--brand-lens);
   --shadow-card: var(--elevation-card);
   --shadow-overlay: var(--elevation-overlay);
   --radius-sm: calc(var(--radius) * 0.67);
@@ -87,6 +88,7 @@
   --popover: #ffffff;
   --popover-foreground: var(--foreground);
   --primary: #7c3aed;
+  --brand-lens: #f59e0b;
   --primary-foreground: #ffffff;
   --secondary: #eef2ff;
   --secondary-foreground: #312e81;
@@ -133,8 +135,7 @@
   --status-unknown-fg: #475569;
   --status-unknown-border: #cbd5e1;
   --radius: 0.75rem;
-  --elevation-card:
-    0 1px 2px rgb(32 23 84 / 0.04), 0 12px 32px rgb(76 29 149 / 0.075);
+  --elevation-card: 0 1px 2px rgb(32 23 84 / 0.04), 0 12px 32px rgb(76 29 149 / 0.075);
   --elevation-overlay: 0 24px 72px rgb(32 23 84 / 0.18);
   --glass-border: color-mix(in oklch, var(--border), var(--primary) 12%);
   --glass-highlight: color-mix(in oklch, var(--primary), white 88%);
@@ -157,6 +158,7 @@
   --popover: var(--surface-elevated);
   --popover-foreground: var(--foreground);
   --primary: #a78bfa;
+  --brand-lens: #fbbf24;
   --primary-foreground: #120b2a;
   --secondary: rgba(124, 58, 237, 0.16);
   --secondary-foreground: #ddd6fe;
@@ -279,11 +281,7 @@
         color-mix(in oklch, var(--primary), transparent 86%) 0,
         transparent 14rem
       ),
-      linear-gradient(
-        180deg,
-        color-mix(in oklch, var(--sidebar), white 3%),
-        var(--sidebar)
-      );
+      linear-gradient(180deg, color-mix(in oklch, var(--sidebar), white 3%), var(--sidebar));
     box-shadow: 14px 0 36px rgb(15 23 42 / 0.045);
   }
 
@@ -347,11 +345,7 @@
   }
 
   .rl-panel:hover {
-    border-color: color-mix(
-      in oklch,
-      var(--border-interactive),
-      var(--primary) 24%
-    );
+    border-color: color-mix(in oklch, var(--border-interactive), var(--primary) 24%);
     box-shadow:
       var(--elevation-card),
       0 0 0 1px color-mix(in oklch, var(--primary), transparent 88%);
@@ -477,12 +471,11 @@
   }
 
   .rl-button[data-variant="default"] {
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in oklch, var(--primary), white 9%),
-        var(--primary)
-      );
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--primary), white 9%),
+      var(--primary)
+    );
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.16),
       0 10px 22px color-mix(in oklch, var(--primary), transparent 82%);

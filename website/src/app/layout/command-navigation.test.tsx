@@ -36,13 +36,9 @@ const groups: NavigationGroup[] = [
   },
 ];
 
-function renderCommandNavigation(
-  navigationGroups: NavigationGroup[] = groups,
-) {
+function renderCommandNavigation(navigationGroups: NavigationGroup[] = groups) {
   const rootRoute = createRootRoute({
-    component: () => (
-      <CommandNavigation groups={navigationGroups} />
-    ),
+    component: () => <CommandNavigation groups={navigationGroups} />,
   });
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
@@ -77,9 +73,7 @@ describe("CommandNavigation", () => {
     const user = userEvent.setup();
     renderCommandNavigation();
 
-    await user.click(
-      await screen.findByRole("button", { name: "Go to…" }),
-    );
+    await user.click(await screen.findByRole("button", { name: "Go to…" }));
 
     expect(screen.getByText("Connections")).toBeVisible();
     expect(screen.getByText("Stream Connections")).toBeVisible();
@@ -90,9 +84,7 @@ describe("CommandNavigation", () => {
     const user = userEvent.setup();
     const router = renderCommandNavigation();
 
-    await user.click(
-      await screen.findByRole("button", { name: "Go to…" }),
-    );
+    await user.click(await screen.findByRole("button", { name: "Go to…" }));
     await user.click(screen.getByText("Connections"));
 
     expect(router.state.location.pathname).toBe("/connections");

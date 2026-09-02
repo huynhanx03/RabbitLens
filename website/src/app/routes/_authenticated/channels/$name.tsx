@@ -5,7 +5,10 @@ import { channelDetailQueryOptions } from "@/domains/channels/channel-query";
 
 export const Route = createFileRoute("/_authenticated/channels/$name")({
   validateSearch: resourceListSearchSchema,
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(channelDetailQueryOptions(context.apiClient, params.name, "current")),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(
+      channelDetailQueryOptions(context.apiClient, params.name, "current"),
+    ),
   component: RouteComponent,
 });
 

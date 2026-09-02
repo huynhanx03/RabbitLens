@@ -21,10 +21,9 @@ describe("loadRuntimeConfig", () => {
 
     await expect(loadRuntimeConfig(fetcher)).resolves.toEqual(validConfig);
     expect(fetcher).toHaveBeenCalledOnce();
-    expect(fetcher).toHaveBeenCalledWith(
-      new URL("/runtime-config.json", window.location.origin),
-      { cache: "no-store" },
-    );
+    expect(fetcher).toHaveBeenCalledWith(new URL("/runtime-config.json", window.location.origin), {
+      cache: "no-store",
+    });
   });
 
   it("loads runtime configuration from the app root on deep routes", async () => {
@@ -33,10 +32,9 @@ describe("loadRuntimeConfig", () => {
 
     await expect(loadRuntimeConfig(fetcher)).resolves.toEqual(validConfig);
 
-    expect(fetcher).toHaveBeenCalledWith(
-      new URL("/runtime-config.json", window.location.origin),
-      { cache: "no-store" },
-    );
+    expect(fetcher).toHaveBeenCalledWith(new URL("/runtime-config.json", window.location.origin), {
+      cache: "no-store",
+    });
   });
 
   it("accepts public OAuth metadata without a client secret", async () => {
@@ -56,8 +54,8 @@ describe("loadRuntimeConfig", () => {
               resource: "rabbitmq",
               redirectUri: "https://rabbitlens.example.com/oauth/callback",
               logoutUri: "https://rabbitlens.example.com",
-            }
-          ]
+            },
+          ],
         },
       },
     };
@@ -67,23 +65,35 @@ describe("loadRuntimeConfig", () => {
   });
 
   it.each([
-    ["client secrets", { ...validConfig, auth: { basic: false, oauth: {
-      resources: [
-        {
-          id: "rabbitlens",
-          label: "My IdP",
-          authority: "https://identity.example.com",
-          clientId: "rabbitlens",
-          clientSecret: "must-not-be-public",
-          scopes: ["openid"],
-          redirectUri: "https://rabbitlens.example.com/oauth/callback",
-        }
-      ]
-    } } }],
+    [
+      "client secrets",
+      {
+        ...validConfig,
+        auth: {
+          basic: false,
+          oauth: {
+            resources: [
+              {
+                id: "rabbitlens",
+                label: "My IdP",
+                authority: "https://identity.example.com",
+                clientId: "rabbitlens",
+                clientSecret: "must-not-be-public",
+                scopes: ["openid"],
+                redirectUri: "https://rabbitlens.example.com/oauth/callback",
+              },
+            ],
+          },
+        },
+      },
+    ],
     ["unsupported locales", { ...validConfig, defaultLocale: "fr" }],
     ["protocol-relative API URLs", { ...validConfig, apiBaseUrl: "//attacker.example/api" }],
     ["non-HTTP API URLs", { ...validConfig, apiBaseUrl: "ftp://rabbitmq.example.com/api" }],
-    ["configuration without authentication", { ...validConfig, auth: { basic: false, oauth: null } }],
+    [
+      "configuration without authentication",
+      { ...validConfig, auth: { basic: false, oauth: null } },
+    ],
   ])("rejects %s", async (_caseName, config) => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse(config));
 
@@ -111,9 +121,7 @@ describe("loadRuntimeConfig", () => {
   });
 
   it("propagates network failures", async () => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockRejectedValue(new TypeError("Network unavailable"));
+    const fetcher = vi.fn<typeof fetch>().mockRejectedValue(new TypeError("Network unavailable"));
 
     await expect(loadRuntimeConfig(fetcher)).rejects.toThrow("Network unavailable");
   });

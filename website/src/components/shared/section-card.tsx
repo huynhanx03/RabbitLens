@@ -11,12 +11,7 @@ type SectionCardProps = PropsWithChildren<{
 /**
  * A collapsible section panel used in detail pages.
  */
-export function SectionCard({
-  title,
-  description,
-  action,
-  children,
-}: SectionCardProps) {
+export function SectionCard({ title, description, action, children }: SectionCardProps) {
   const headingId = useId();
 
   return (
@@ -29,9 +24,7 @@ export function SectionCard({
           <h2 id={headingId} className="text-sm font-semibold leading-none">
             {title}
           </h2>
-          {description && (
-            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
         </div>
         {action && <div>{action}</div>}
       </div>

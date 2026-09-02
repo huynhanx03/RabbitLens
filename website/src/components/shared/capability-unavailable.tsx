@@ -8,11 +8,12 @@ type CapabilityUnavailableProps = {
 
 export function CapabilityUnavailable({ reason }: CapabilityUnavailableProps) {
   const { t } = useTranslation();
-  const descriptionKey = reason === "not-installed"
-    ? "extensions.notEnabled"
-    : reason === "forbidden"
-      ? "extensions.accessDenied"
-      : "extensions.unavailableDesc";
+  const descriptionKey =
+    reason === "not-installed"
+      ? "extensions.notEnabled"
+      : reason === "forbidden"
+        ? "extensions.accessDenied"
+        : "extensions.unavailableDesc";
 
   return (
     <Alert variant={reason === "discovery-failed" ? "destructive" : "default"}>

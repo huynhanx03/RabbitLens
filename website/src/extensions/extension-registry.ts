@@ -12,8 +12,20 @@ export const extensionRegistry: ExtensionDescriptor[] = [
     icon: GitFork,
     keywords: ["federation", "upstream", "link"],
     children: [
-      { id: "federation-status", translationKey: "federation.statusTitle", route: "/extensions/federation/status", accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] }, keywords: ["link", "status"] },
-      { id: "federation-upstreams", translationKey: "federation.upstreams", route: "/extensions/federation/upstreams", accessPolicy: { requiredAnyTag: ["policymaker"] }, keywords: ["upstream", "parameter"] },
+      {
+        id: "federation-status",
+        translationKey: "federation.statusTitle",
+        route: "/extensions/federation/status",
+        accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] },
+        keywords: ["link", "status"],
+      },
+      {
+        id: "federation-upstreams",
+        translationKey: "federation.upstreams",
+        route: "/extensions/federation/upstreams",
+        accessPolicy: { requiredAnyTag: ["policymaker"] },
+        keywords: ["upstream", "parameter"],
+      },
     ],
   },
   {
@@ -26,8 +38,20 @@ export const extensionRegistry: ExtensionDescriptor[] = [
     icon: MoveRight,
     keywords: ["shovel", "move", "message"],
     children: [
-      { id: "shovel-status", translationKey: "shovels.statusTitle", route: "/extensions/shovels/status", accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] }, keywords: ["worker", "status"] },
-      { id: "shovel-management", translationKey: "shovels.management", route: "/extensions/shovels/management", accessPolicy: { requiredAnyTag: ["policymaker"] }, keywords: ["dynamic", "parameter"] },
+      {
+        id: "shovel-status",
+        translationKey: "shovels.statusTitle",
+        route: "/extensions/shovels/status",
+        accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] },
+        keywords: ["worker", "status"],
+      },
+      {
+        id: "shovel-management",
+        translationKey: "shovels.management",
+        route: "/extensions/shovels/management",
+        accessPolicy: { requiredAnyTag: ["policymaker"] },
+        keywords: ["dynamic", "parameter"],
+      },
     ],
   },
   {
@@ -40,8 +64,20 @@ export const extensionRegistry: ExtensionDescriptor[] = [
     icon: Waves,
     keywords: ["stream", "publisher", "consumer"],
     children: [
-      { id: "stream-connections", translationKey: "streams.connections", route: "/extensions/streams/connections", accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] }, keywords: ["connection", "publisher", "consumer"] },
-      { id: "stream-super-streams", translationKey: "streams.superStreams", route: "/extensions/streams/super-streams", accessPolicy: { requiredAnyTag: ["policymaker"] }, keywords: ["super stream", "partition"] },
+      {
+        id: "stream-connections",
+        translationKey: "streams.connections",
+        route: "/extensions/streams/connections",
+        accessPolicy: { requiredAnyTag: ["monitoring", "policymaker"] },
+        keywords: ["connection", "publisher", "consumer"],
+      },
+      {
+        id: "stream-super-streams",
+        translationKey: "streams.superStreams",
+        route: "/extensions/streams/super-streams",
+        accessPolicy: { requiredAnyTag: ["policymaker"] },
+        keywords: ["super stream", "partition"],
+      },
     ],
   },
   {
@@ -54,8 +90,20 @@ export const extensionRegistry: ExtensionDescriptor[] = [
     icon: Activity,
     keywords: ["top", "process", "ets"],
     children: [
-      { id: "top-processes", translationKey: "top.processes", route: "/extensions/top", accessPolicy: { requiredAnyTag: ["administrator"] }, keywords: ["process", "pid"] },
-      { id: "top-ets", translationKey: "top.etsTables", route: "/extensions/top/ets", accessPolicy: { requiredAnyTag: ["administrator"] }, keywords: ["ets", "table"] },
+      {
+        id: "top-processes",
+        translationKey: "top.processes",
+        route: "/extensions/top",
+        accessPolicy: { requiredAnyTag: ["administrator"] },
+        keywords: ["process", "pid"],
+      },
+      {
+        id: "top-ets",
+        translationKey: "top.etsTables",
+        route: "/extensions/top/ets",
+        accessPolicy: { requiredAnyTag: ["administrator"] },
+        keywords: ["ets", "table"],
+      },
     ],
   },
   {
@@ -68,7 +116,13 @@ export const extensionRegistry: ExtensionDescriptor[] = [
     icon: ScanLine,
     keywords: ["trace", "tracing", "log"],
     children: [
-      { id: "tracing-traces", translationKey: "tracing.traces", route: "/extensions/tracing", accessPolicy: { requiredAnyTag: ["administrator"] }, keywords: ["trace", "log", "file"] },
+      {
+        id: "tracing-traces",
+        translationKey: "tracing.traces",
+        route: "/extensions/tracing",
+        accessPolicy: { requiredAnyTag: ["administrator"] },
+        keywords: ["trace", "log", "file"],
+      },
     ],
   },
 ];
@@ -79,18 +133,19 @@ export function isExtensionInstalled(
   id: ExtensionId,
   availableMarkers: Array<{ javascript?: string; javascript_src?: string }>,
 ): boolean {
-  const descriptor = extensionRegistry.find(ext => ext.id === id);
+  const descriptor = extensionRegistry.find((ext) => ext.id === id);
   if (!descriptor) return false;
 
-  return availableMarkers.some(ext =>
-    ext.javascript === descriptor.marker || 
-    (ext.javascript_src && ext.javascript_src.includes(descriptor.marker))
+  return availableMarkers.some(
+    (ext) =>
+      ext.javascript === descriptor.marker ||
+      (ext.javascript_src && ext.javascript_src.includes(descriptor.marker)),
   );
 }
 
 export function getAvailableExtensionNavigation(
   availableMarkers: Array<{ javascript?: string; javascript_src?: string }>,
-  userTags: readonly string[]
+  userTags: readonly string[],
 ): ExtensionDescriptor[] {
   const user = { name: "navigation", tags: [...userTags] };
 

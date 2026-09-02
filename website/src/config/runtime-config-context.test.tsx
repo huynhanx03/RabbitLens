@@ -15,11 +15,7 @@ const config: RuntimeConfig = {
 describe("RuntimeConfigProvider", () => {
   it("provides one validated runtime configuration", () => {
     function Wrapper({ children }: PropsWithChildren) {
-      return (
-        <RuntimeConfigProvider config={config}>
-          {children}
-        </RuntimeConfigProvider>
-      );
+      return <RuntimeConfigProvider config={config}>{children}</RuntimeConfigProvider>;
     }
 
     const { result } = renderHook(() => useRuntimeConfig(), {
@@ -30,8 +26,6 @@ describe("RuntimeConfigProvider", () => {
   });
 
   it("fails clearly outside its provider", () => {
-    expect(() => renderHook(() => useRuntimeConfig())).toThrow(
-      "RuntimeConfigProvider is missing",
-    );
+    expect(() => renderHook(() => useRuntimeConfig())).toThrow("RuntimeConfigProvider is missing");
   });
 });

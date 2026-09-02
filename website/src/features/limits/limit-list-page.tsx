@@ -25,11 +25,7 @@ import {
   useSetLimitMutation,
   vhostLimitsQueryOptions,
 } from "@/domains/admin/limits/limit-query";
-import {
-  flattenLimits,
-  type LimitRow,
-  type LimitScope,
-} from "@/domains/admin/limits/limit-schema";
+import { flattenLimits, type LimitRow, type LimitScope } from "@/domains/admin/limits/limit-schema";
 import { useUsers } from "@/domains/admin/users/user-query";
 import { useVhosts } from "@/domains/admin/vhosts/vhost-query";
 import { LimitForm } from "./limit-form";
@@ -37,8 +33,7 @@ import { LimitForm } from "./limit-form";
 export function LimitListPage() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "/_authenticated/admin/limits/" });
-  const isAdministrator =
-    context.auth.user?.tags.includes("administrator") ?? false;
+  const isAdministrator = context.auth.user?.tags.includes("administrator") ?? false;
   const [scope, setScope] = useState<LimitScope>("vhost");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [limitToClear, setLimitToClear] = useState<LimitRow | null>(null);
@@ -95,10 +90,7 @@ export function LimitListPage() {
 
   return (
     <div className="space-y-4">
-      <Tabs
-        value={scope}
-        onValueChange={(value) => setScope(value as LimitScope)}
-      >
+      <Tabs value={scope} onValueChange={(value) => setScope(value as LimitScope)}>
         <PageToolbar
           ariaLabel={t("limits.title")}
           primary={
@@ -110,28 +102,28 @@ export function LimitListPage() {
             </TabsList>
           }
           secondary={
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button>{t("limits.setLimit")}</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t("limits.setLimit")}</DialogTitle>
-              </DialogHeader>
-              <MutationErrorAlert error={setMutation.error} />
-              <LimitForm
-                scope={scope}
-                owners={owners}
-                isPending={setMutation.isPending}
-                onCancel={() => setIsCreateOpen(false)}
-                onSubmit={(input) =>
-                  setMutation.mutate(input, {
-                    onSuccess: () => setIsCreateOpen(false),
-                  })
-                }
-              />
-            </DialogContent>
-          </Dialog>
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button>{t("limits.setLimit")}</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("limits.setLimit")}</DialogTitle>
+                </DialogHeader>
+                <MutationErrorAlert error={setMutation.error} />
+                <LimitForm
+                  scope={scope}
+                  owners={owners}
+                  isPending={setMutation.isPending}
+                  onCancel={() => setIsCreateOpen(false)}
+                  onSubmit={(input) =>
+                    setMutation.mutate(input, {
+                      onSuccess: () => setIsCreateOpen(false),
+                    })
+                  }
+                />
+              </DialogContent>
+            </Dialog>
           }
         />
         <TabsContent value={scope} className="mt-4">
@@ -144,11 +136,7 @@ export function LimitListPage() {
             emptyTitle={t("limits.empty")}
           >
             <DataTable
-              ariaLabel={
-                scope === "vhost"
-                  ? t("limits.vhostLimits")
-                  : t("limits.userLimits")
-              }
+              ariaLabel={scope === "vhost" ? t("limits.vhostLimits") : t("limits.userLimits")}
               columns={columns}
               data={rows}
               getRowId={(row) => `${row.scope}:${row.owner}:${row.name}`}

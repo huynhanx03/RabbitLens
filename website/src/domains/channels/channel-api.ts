@@ -33,7 +33,7 @@ export async function getConnectionChannels(
   // The safest way is to use a union schema, or if we know RabbitMQ >= 3.8.0 does pagination here:
   // Actually, rabbitmq-management pagination is usually applied globally to lists.
   // To be safe, we will assume it might be unpaginated and map it to paginated format if it's an array.
-  
+
   const flexibleSchema = z.union([
     paginatedChannelsSchema,
     z.array(channelSchema).transform((items) => ({

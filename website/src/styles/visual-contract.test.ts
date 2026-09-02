@@ -50,7 +50,6 @@ describe("visual system contract", () => {
     expect(tokens).toContain("background: transparent");
   });
 
-
   it("does not pass CSS variable expressions directly to chart renderers", () => {
     const invalidChartTokenExpression = "hsl" + "(var(--";
     const offenders = readSourceFiles(".")
@@ -76,6 +75,17 @@ describe("visual system contract", () => {
     const offenders = readSourceFiles("features")
       .filter(({ label }) => !label.endsWith(".test.tsx"))
       .filter(({ source }) => disallowedPaletteClass.test(source))
+      .map(({ label }) => label);
+
+    expect(offenders).toEqual([]);
+  });
+
+  it("keeps application and domain code free of raw color literals", () => {
+    const rawColorLiteral = /#[0-9a-f]{3,8}\b|\brgba?\(/i;
+    const offenders = ["app", "auth", "domains", "extensions"]
+      .flatMap((directory) => readSourceFiles(directory))
+      .filter(({ label }) => !label.endsWith(".test.ts") && !label.endsWith(".test.tsx"))
+      .filter(({ source }) => rawColorLiteral.test(source))
       .map(({ label }) => label);
 
     expect(offenders).toEqual([]);

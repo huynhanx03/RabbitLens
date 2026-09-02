@@ -11,10 +11,7 @@ const domainSources = import.meta.glob(
 ) as Record<string, string>;
 
 const legacyOverviewSources = import.meta.glob(
-  [
-    "../features/overview/overview-api.ts",
-    "../features/overview/overview-query.ts",
-  ],
+  ["../features/overview/overview-api.ts", "../features/overview/overview-query.ts"],
   { eager: true, query: "?raw", import: "default" },
 ) as Record<string, string>;
 
@@ -35,10 +32,19 @@ const apiHookSources = import.meta.glob("../api/hooks.ts", {
 }) as Record<string, string>;
 
 const uiOwnedDataSources = import.meta.glob(
+  ["../features/**/*-api.ts", "../features/**/*-query.ts", "../features/**/*-schema.ts"],
+  { eager: true, query: "?raw", import: "default" },
+) as Record<string, string>;
+
+const legacySharedEntitySources = import.meta.glob(
   [
-    "../features/**/*-api.ts",
-    "../features/**/*-query.ts",
-    "../features/**/*-schema.ts",
+    "../features/consumers/consumer-table.tsx",
+    "../features/channels/channel-columns.tsx",
+    "../features/streams/stream-publisher-table.tsx",
+    "../features/bindings/binding-columns.tsx",
+    "../features/bindings/binding-list.tsx",
+    "../features/bindings/create-binding-dialog.tsx",
+    "../features/exchanges/publish-message-dialog.tsx",
   ],
   { eager: true, query: "?raw", import: "default" },
 ) as Record<string, string>;
@@ -79,28 +85,58 @@ describe("data-domain boundaries", () => {
   });
 
   it("keeps shared UI independent from domain and transport clients", () => {
-    const sharedSources = import.meta.glob(
-      "../components/shared/*.{ts,tsx}",
-      {
-        eager: true,
-        query: "?raw",
-        import: "default",
-      },
-    ) as Record<string, string>;
+    const sharedSources = import.meta.glob("../components/shared/*.{ts,tsx}", {
+      eager: true,
+      query: "?raw",
+      import: "default",
+    }) as Record<string, string>;
 
     for (const [path, source] of Object.entries(sharedSources)) {
       expect(source, path).not.toMatch(/ManagementApiClient|@\/domains\//);
     }
   });
 
-  it("removes migrated global hooks and UI-owned Overview data files", () => {
-    expect(Object.values(apiHookSources).join("\n")).not.toMatch(
-      /useOverview|useExtensions/,
-    );
+  it("removes global resource hooks and UI-owned Overview data files", () => {
+    expect(Object.keys(apiHookSources)).toEqual([]);
     expect(Object.keys(legacyOverviewSources)).toEqual([]);
   });
 
   it("keeps transport, query, and response schemas out of UI features", () => {
     expect(Object.keys(uiOwnedDataSources)).toEqual([]);
+  });
+
+  it("keeps reusable entity presentation with its RabbitMQ domain", () => {
+    expect(Object.keys(legacySharedEntitySources)).toEqual([]);
+    expect(Object.keys(domainSources)).toEqual(
+      expect.arrayContaining(["./channels/channel-columns.tsx", "./connections/connection-api.ts"]),
+    );
+    expect(
+      Object.keys(
+        import.meta.glob(
+          [
+            "./consumers/consumer-table.tsx",
+            "./bindings/binding-columns.tsx",
+            "./bindings/binding-list.tsx",
+            "./bindings/create-binding-dialog.tsx",
+            "./exchanges/publish-message-dialog.tsx",
+            "./extensions/streams/stream-publisher-table.tsx",
+          ],
+          { eager: true },
+        ),
+      ),
+    ).toHaveLength(6);
+  });
+
+  it("keeps screen features independent from sibling features", () => {
+    const featureSources = import.meta.glob("../features/**/*.{ts,tsx}", {
+      eager: true,
+      query: "?raw",
+      import: "default",
+    }) as Record<string, string>;
+
+    for (const [file, source] of Object.entries(featureSources)) {
+      expect(source, file).not.toMatch(/from ["']@\/features\//);
+      expect(source, file).not.toMatch(/from ["']\.\.\//);
+    }
   });
 });

@@ -34,21 +34,13 @@ describe("QueueAdvancedSection", () => {
       />,
     );
 
-    expect(
-      screen.queryByRole("region", { name: "Message inspector" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Message inspector" })).not.toBeInTheDocument();
     expect(screen.queryByText("queue-policy")).not.toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Message diagnostics" }),
-    );
-    expect(
-      screen.getByRole("region", { name: "Message inspector" }),
-    ).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: "Message diagnostics" }));
+    expect(screen.getByRole("region", { name: "Message inspector" })).toBeVisible();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Policies and replication" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: "Policies and replication" }));
     expect(screen.getByText("queue-policy")).toBeVisible();
     expect(screen.getByText("guardrail")).toBeVisible();
     expect(screen.getByText(/max-length:/)).toBeVisible();

@@ -9,9 +9,7 @@ describe("createNodeViewModel", () => {
     [{ running: true, disk_free_alarm: true }, "alarm"],
     [{ running: true }, "healthy"],
   ] as const)("resolves node status priority for %j", (input, expected) => {
-    expect(
-      createNodeViewModel({ name: "rabbit@one", ...(input as any) }).status,
-    ).toBe(expected);
+    expect(createNodeViewModel({ name: "rabbit@one", ...(input as any) }).status).toBe(expected);
   });
 
   it("clamps utilization while preserving raw values", () => {

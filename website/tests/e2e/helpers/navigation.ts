@@ -15,11 +15,7 @@ export async function openAppNavigation(page: Page): Promise<void> {
   await navigation.waitFor({ state: "visible" });
 }
 
-export async function navigateTo(
-  page: Page,
-  name: string,
-  exact = true,
-): Promise<void> {
+export async function navigateTo(page: Page, name: string, exact = true): Promise<void> {
   await openAppNavigation(page);
   await page.getByRole("link", { name, exact }).click();
 }

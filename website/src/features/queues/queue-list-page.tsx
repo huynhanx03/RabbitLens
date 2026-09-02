@@ -31,9 +31,7 @@ export function QueueListPage({ search }: QueueListPageProps) {
   const navigate = useNavigate({ from: Route.fullPath });
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const statsMode = resolveStatisticsMode(overviewQuery.data);
   const statsCapabilities = getStatisticsSelectors(statsMode);
 
@@ -45,18 +43,13 @@ export function QueueListPage({ search }: QueueListPageProps) {
 
   const columns = useMemo(() => createQueueColumns(t), [t]);
 
-  const rows = useMemo<QueueViewModel[]>(
-    () => data?.items.map(createQueueViewModel) ?? [],
-    [data],
-  );
+  const rows = useMemo<QueueViewModel[]>(() => data?.items.map(createQueueViewModel) ?? [], [data]);
 
   const updateSearch = (updates: Partial<ResourceListSearch>) => {
     navigate({ search: (previous) => ({ ...previous, ...updates }) });
   };
 
-  const sorting: SortingState = search.sort
-    ? [{ id: search.sort, desc: search.sortReverse }]
-    : [];
+  const sorting: SortingState = search.sort ? [{ id: search.sort, desc: search.sortReverse }] : [];
 
   return (
     <div className="space-y-4">
@@ -70,17 +63,11 @@ export function QueueListPage({ search }: QueueListPageProps) {
           />
         }
         secondary={
-          <Button onClick={() => setCreateDialogOpen(true)}>
-            {t("common.add")} Queue
-          </Button>
+          <Button onClick={() => setCreateDialogOpen(true)}>{t("common.add")} Queue</Button>
         }
       />
 
-      <CreateQueueDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-        vhost="/"
-      />
+      <CreateQueueDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} vhost="/" />
 
       <DataTable
         columns={columns}

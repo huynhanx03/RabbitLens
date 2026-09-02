@@ -1,17 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  ThemeContext,
-  type ThemeContextValue,
-} from "@/app/providers/theme-context";
+import { ThemeContext, type ThemeContextValue } from "@/app/providers/theme-context";
 import { ThemeToggle } from "./theme-toggle";
 
 const setPreference = vi.fn();
 
-function renderThemeToggle(
-  overrides: Partial<ThemeContextValue> = {},
-) {
+function renderThemeToggle(overrides: Partial<ThemeContextValue> = {}) {
   const theme: ThemeContextValue = {
     preference: "dark",
     resolvedTheme: "dark",
@@ -38,13 +33,12 @@ describe("ThemeToggle", () => {
     expect(screen.getByTestId("theme-option-light-icon")).toBeInTheDocument();
     expect(screen.getByTestId("theme-option-dark-icon")).toBeInTheDocument();
     expect(screen.getByTestId("theme-option-system-icon")).toBeInTheDocument();
-    expect(
-      screen.getByRole("menuitemradio", { name: "Dark" }),
-    ).toHaveAttribute("aria-checked", "true");
-
-    await user.click(
-      screen.getByRole("menuitemradio", { name: "Light" }),
+    expect(screen.getByRole("menuitemradio", { name: "Dark" })).toHaveAttribute(
+      "aria-checked",
+      "true",
     );
+
+    await user.click(screen.getByRole("menuitemradio", { name: "Light" }));
     expect(setPreference).toHaveBeenCalledWith("light");
   });
 });

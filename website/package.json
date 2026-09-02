@@ -12,15 +12,20 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:pr-coverage": "node scripts/check-pr-coverage.mjs",
+    "check:test-ownership": "node scripts/verify-production-test-ownership.mjs",
     "test:parity": "node scripts/verify-parity.mjs",
     "test:e2e": "playwright test",
     "test:performance": "playwright test tests/e2e/performance.spec.ts",
     "test:artifact-secrets": "node scripts/scan-test-artifacts.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky ..",
     "audit": "npm audit --audit-level=high",
     "docker:publish": "node scripts/docker-publish.mjs",
     "test:docker-publish": "node --test scripts/docker-publish.test.mjs",
     "check:bundle": "node scripts/verify-bundle-budget.mjs",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:test-ownership && npm run test && npm run build"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -49,6 +54,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.3.1",
     "@tanstack/router-plugin": "^1.168.18",
@@ -61,12 +68,22 @@
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.9",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.4.1",
     "msw": "^2.14.6",
     "oxlint": "^1.69.0",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs}": [
+      "prettier --write",
+      "oxlint"
+    ],
+    "*.{json,css,md,yml,yaml}": "prettier --write"
   }
 }

@@ -9,11 +9,7 @@ const rabbitExtensionSchema = z.object({
 const emptyExtensionSchema = z.tuple([]);
 
 export const extensionSchema = z
-  .union([
-    normalizedExtensionSchema,
-    rabbitExtensionSchema,
-    emptyExtensionSchema,
-  ])
+  .union([normalizedExtensionSchema, rabbitExtensionSchema, emptyExtensionSchema])
   .transform((extension) => {
     if (Array.isArray(extension)) {
       return { javascript_src: "" };

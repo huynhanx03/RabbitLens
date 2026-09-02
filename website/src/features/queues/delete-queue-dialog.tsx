@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
+import { useResetOnClose } from "@/components/shared/use-reset-on-close";
 import { useDeleteQueueMutation } from "@/domains/queues/queue-query";
 import { useRouteContext, useNavigate } from "@tanstack/react-router";
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
@@ -33,24 +34,21 @@ export interface DeleteQueueDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeleteQueueDialog({
-  vhost,
-  name,
-  open,
-  onOpenChange,
-}: DeleteQueueDialogProps) {
+export function DeleteQueueDialog({ vhost, name, open, onOpenChange }: DeleteQueueDialogProps) {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
   const navigate = useNavigate({ from: Route.fullPath });
   const deleteMutation = useDeleteQueueMutation(context.apiClient);
 
-  const { handleSubmit, setValue, watch } = useForm<DeleteQueueFormValues>({
+  const { handleSubmit, reset, setValue, watch } = useForm<DeleteQueueFormValues>({
     resolver: zodResolver(deleteQueueSchema),
     defaultValues: {
       ifUnused: false,
       ifEmpty: false,
     },
   });
+
+  useResetOnClose(open, reset);
 
   const onSubmit = (data: DeleteQueueFormValues) => {
     deleteMutation.mutate(
@@ -76,7 +74,7 @@ export function DeleteQueueDialog({
             },
           });
         },
-      }
+      },
     );
   };
 
@@ -98,19 +96,23 @@ export function DeleteQueueDialog({
               <Checkbox
                 id="ifUnused"
                 checked={watch("ifUnused")}
-                onCheckedChange={(checked: boolean | "indeterminate") => setValue("ifUnused", !!checked)}
+                onCheckedChange={(checked: boolean | "indeterminate") =>
+                  setValue("ifUnused", !!checked)
+                }
                 disabled={deleteMutation.isPending}
               />
               <Label htmlFor="ifUnused" className="font-normal">
                 {t("queues.deleteIfUnused")}
               </Label>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="ifEmpty"
                 checked={watch("ifEmpty")}
-                onCheckedChange={(checked: boolean | "indeterminate") => setValue("ifEmpty", !!checked)}
+                onCheckedChange={(checked: boolean | "indeterminate") =>
+                  setValue("ifEmpty", !!checked)
+                }
                 disabled={deleteMutation.isPending}
               />
               <Label htmlFor="ifEmpty" className="font-normal">
@@ -128,11 +130,7 @@ export function DeleteQueueDialog({
             >
               {t("common.cancel")}
             </Button>
-            <Button
-              type="submit"
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-            >
+            <Button type="submit" variant="destructive" disabled={deleteMutation.isPending}>
               {deleteMutation.isPending ? t("common.loading") : t("common.remove")}
             </Button>
           </div>

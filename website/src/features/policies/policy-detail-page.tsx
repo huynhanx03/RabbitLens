@@ -15,21 +15,26 @@ export function PolicyDetailPage() {
   });
   const query = usePolicy(apiClient, vhost, name);
   const policy = query.data;
-  const items: DefinitionItem[] = policy ? [
-    { label: t("policies.vhost"), value: policy.vhost },
-    { label: t("policies.name"), value: policy.name },
-    { label: t("policies.pattern"), value: <code>{policy.pattern}</code> },
-    { label: t("policies.applyTo"), value: <Badge variant="outline">{policy["apply-to"]}</Badge> },
-    { label: t("policies.priority"), value: policy.priority },
-    {
-      label: t("policies.definition"),
-      value: (
-        <pre className="overflow-x-auto rounded-lg bg-muted p-3 text-sm">
-          {JSON.stringify(policy.definition, null, 2)}
-        </pre>
-      ),
-    },
-  ] : [];
+  const items: DefinitionItem[] = policy
+    ? [
+        { label: t("policies.vhost"), value: policy.vhost },
+        { label: t("policies.name"), value: policy.name },
+        { label: t("policies.pattern"), value: <code>{policy.pattern}</code> },
+        {
+          label: t("policies.applyTo"),
+          value: <Badge variant="outline">{policy["apply-to"]}</Badge>,
+        },
+        { label: t("policies.priority"), value: policy.priority },
+        {
+          label: t("policies.definition"),
+          value: (
+            <pre className="overflow-x-auto rounded-lg bg-muted p-3 text-sm">
+              {JSON.stringify(policy.definition, null, 2)}
+            </pre>
+          ),
+        },
+      ]
+    : [];
 
   return (
     <div className="space-y-4">

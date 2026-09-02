@@ -20,10 +20,18 @@ describe("ShovelStatusPage", () => {
     vi.clearAllMocks();
     client.request.mockImplementation((path: string) => {
       if (path === "/vhosts") return Promise.resolve([{ name: "/" }]);
-      if (path === "/shovels") return Promise.resolve([{
-        vhost: "/", name: "orders", node: "rabbit@node", type: "dynamic",
-        state: "running", src_uri: "amqp://user:secret@source", dest_uri: "amqp://target",
-      }]);
+      if (path === "/shovels")
+        return Promise.resolve([
+          {
+            vhost: "/",
+            name: "orders",
+            node: "rabbit@node",
+            type: "dynamic",
+            state: "running",
+            src_uri: "amqp://user:secret@source",
+            dest_uri: "amqp://target",
+          },
+        ]);
       return Promise.reject(new Error(`Unexpected request: ${path}`));
     });
     client.requestVoid.mockResolvedValue(undefined);

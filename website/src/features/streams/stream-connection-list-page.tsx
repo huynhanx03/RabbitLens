@@ -33,8 +33,7 @@ export function StreamConnectionListPage({ search }: Props) {
       {
         accessorKey: "name",
         header: t("common.name"),
-        cell: ({ row }) =>
-          row.original.client_properties?.connection_name ?? row.original.name,
+        cell: ({ row }) => row.original.client_properties?.connection_name ?? row.original.name,
       },
       { accessorKey: "user", header: t("connections.user") },
       {
@@ -69,9 +68,7 @@ export function StreamConnectionListPage({ search }: Props) {
         }
         secondary={
           <Button asChild variant="outline">
-            <Link to="/extensions/streams/super-streams">
-              {t("streams.superStreams")}
-            </Link>
+            <Link to="/extensions/streams/super-streams">{t("streams.superStreams")}</Link>
           </Button>
         }
       />

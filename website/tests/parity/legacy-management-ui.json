@@ -6,22 +6,15 @@
     "rabbitLensRoute": "/",
     "routeModule": "src/app/routes/_authenticated/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/dashboard-detail-redesign.spec.ts"
-    ],
+    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/overview",
     "uiSurface": "Page or detail section: overview",
     "permission": "monitoring or management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "monitoring",
     "userGoal": "Read page or detail section: overview using RabbitMQ Management API-compatible data.",
@@ -35,22 +28,15 @@
     "rabbitLensRoute": "/nodes",
     "routeModule": "src/app/routes/_authenticated/nodes/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/dashboard-detail-redesign.spec.ts"
-    ],
+    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/nodes, /api/nodes/{name}",
     "uiSurface": "Page or detail section: nodes",
     "permission": "monitoring or management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/nodes/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/nodes/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "monitoring",
     "userGoal": "Read page or detail section: nodes using RabbitMQ Management API-compatible data.",
@@ -64,14 +50,9 @@
     "rabbitLensRoute": "/connections",
     "routeModule": "src/app/routes/_authenticated/connections/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/connections-redesign.spec.ts"
-    ],
+    "evidence": ["tests/e2e/connections-redesign.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/connections",
@@ -94,14 +75,9 @@
     "rabbitLensRoute": "/channels",
     "routeModule": "src/app/routes/_authenticated/channels/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/dashboard-detail-redesign.spec.ts"
-    ],
+    "evidence": ["tests/e2e/dashboard-detail-redesign.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/channels",
@@ -124,22 +100,15 @@
     "rabbitLensRoute": "/exchanges",
     "routeModule": "src/app/routes/_authenticated/exchanges/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/exchanges",
     "uiSurface": "Page or detail section: exchanges",
     "permission": "monitoring or management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/exchanges/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/exchanges/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "topology",
     "userGoal": "Read page or detail section: exchanges using RabbitMQ Management API-compatible data.",
@@ -153,14 +122,9 @@
     "rabbitLensRoute": "/queues",
     "routeModule": "src/app/routes/_authenticated/queues/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
+    "requiredTags": ["monitoring", "management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/queues",
@@ -183,21 +147,15 @@
     "rabbitLensRoute": "/admin/users",
     "routeModule": "src/app/routes/_authenticated/admin/users/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
+    "requiredTags": ["administrator"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/users",
     "uiSurface": "Page or detail section: admin users",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/users/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/users/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin users using RabbitMQ Management API-compatible data.",
@@ -211,21 +169,15 @@
     "rabbitLensRoute": "/admin/vhosts",
     "routeModule": "src/app/routes/_authenticated/admin/vhosts/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
+    "requiredTags": ["administrator"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/vhosts",
     "uiSurface": "Page or detail section: admin vhosts",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/vhosts/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/vhosts/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin vhosts using RabbitMQ Management API-compatible data.",
@@ -239,21 +191,15 @@
     "rabbitLensRoute": "/admin/policies",
     "routeModule": "src/app/routes/_authenticated/admin/policies/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/policies, /api/operator-policies",
     "uiSurface": "Page or detail section: admin policies",
     "permission": "management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/policies/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/policies/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin policies using RabbitMQ Management API-compatible data.",
@@ -267,21 +213,15 @@
     "rabbitLensRoute": "/admin/limits",
     "routeModule": "src/app/routes/_authenticated/admin/limits/index.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/vhost-limits, /api/user-limits",
     "uiSurface": "Page or detail section: admin limits",
     "permission": "management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/limits/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/limits/index.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin limits using RabbitMQ Management API-compatible data.",
@@ -295,21 +235,15 @@
     "rabbitLensRoute": "/admin/feature-flags",
     "routeModule": "src/app/routes/_authenticated/admin/feature-flags.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
+    "requiredTags": ["administrator"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/feature-flags",
     "uiSurface": "Page or detail section: admin feature flags",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/feature-flags.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/feature-flags.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin feature flags using RabbitMQ Management API-compatible data.",
@@ -323,21 +257,15 @@
     "rabbitLensRoute": "/admin/deprecated-features",
     "routeModule": "src/app/routes/_authenticated/admin/deprecated-features.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
+    "requiredTags": ["administrator"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/deprecated-features",
     "uiSurface": "Page or detail section: admin deprecated features",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/deprecated-features.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/deprecated-features.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin deprecated features using RabbitMQ Management API-compatible data.",
@@ -351,21 +279,15 @@
     "rabbitLensRoute": "/admin/cluster",
     "routeModule": "src/app/routes/_authenticated/admin/cluster.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
+    "requiredTags": ["administrator"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/cluster-name",
     "uiSurface": "Page or detail section: admin cluster",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/admin/cluster.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/admin/cluster.tsx"],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "administration",
     "userGoal": "Read page or detail section: admin cluster using RabbitMQ Management API-compatible data.",
@@ -379,24 +301,15 @@
     "rabbitLensRoute": "/extensions/federation/status",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/status.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
-    "requiredExtensions": [
-      "federation"
-    ],
+    "requiredTags": ["monitoring", "management"],
+    "requiredExtensions": ["federation"],
     "apiMethod": "GET",
     "apiPath": "/api/federation-links",
     "uiSurface": "Page or detail section: federation status",
     "permission": "monitoring or management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/federation/status.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/federation/status.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: federation status using RabbitMQ Management API-compatible data.",
@@ -410,16 +323,10 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "read",
-    "evidence": [
-      "src/domains/extensions/federation/federation-upstream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "federation"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["federation"],
     "apiMethod": "GET",
     "apiPath": "/api/parameters/federation-upstream",
     "uiSurface": "Page or detail section: federation upstreams",
@@ -440,16 +347,10 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "create",
-    "evidence": [
-      "src/domains/extensions/federation/federation-upstream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "federation"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["federation"],
     "apiMethod": "PUT",
     "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
     "uiSurface": "Create form: federation upstream create",
@@ -470,16 +371,10 @@
     "rabbitLensRoute": "/extensions/federation/upstreams/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/$vhost.$name.tsx",
     "capability": "update",
-    "evidence": [
-      "src/domains/extensions/federation/federation-upstream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "federation"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["federation"],
     "apiMethod": "PUT",
     "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
     "uiSurface": "Edit form: federation upstream update",
@@ -500,16 +395,10 @@
     "rabbitLensRoute": "/extensions/federation/upstreams",
     "routeModule": "src/app/routes/_authenticated/extensions/federation/upstreams/index.tsx",
     "capability": "delete",
-    "evidence": [
-      "src/domains/extensions/federation/federation-upstream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/federation/federation-upstream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "federation"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["federation"],
     "apiMethod": "DELETE",
     "apiPath": "/api/parameters/federation-upstream/{vhost}/{name}",
     "uiSurface": "Delete control: federation upstream delete",
@@ -530,24 +419,15 @@
     "rabbitLensRoute": "/extensions/shovels/status",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/status.tsx",
     "capability": "read",
-    "evidence": [
-      "tests/e2e/parity.spec.ts"
-    ],
+    "evidence": ["tests/e2e/parity.spec.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["monitoring", "management"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "GET",
     "apiPath": "/api/shovels",
     "uiSurface": "Page or detail section: shovel status",
     "permission": "monitoring or management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/shovels/status.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/shovels/status.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: shovel status using RabbitMQ Management API-compatible data.",
@@ -561,16 +441,10 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "read",
-    "evidence": [
-      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "GET",
     "apiPath": "/api/parameters/shovel",
     "uiSurface": "Page or detail section: dynamic shovels",
@@ -591,16 +465,10 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "create",
-    "evidence": [
-      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "PUT",
     "apiPath": "/api/parameters/shovel/{vhost}/{name}",
     "uiSurface": "Create form: dynamic shovel create",
@@ -621,16 +489,10 @@
     "rabbitLensRoute": "/extensions/shovels/management/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/$vhost.$name.tsx",
     "capability": "update",
-    "evidence": [
-      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "PUT",
     "apiPath": "/api/parameters/shovel/{vhost}/{name}",
     "uiSurface": "Edit form: dynamic shovel update",
@@ -651,16 +513,10 @@
     "rabbitLensRoute": "/extensions/shovels/management",
     "routeModule": "src/app/routes/_authenticated/extensions/shovels/management/index.tsx",
     "capability": "delete",
-    "evidence": [
-      "src/domains/extensions/shovels/shovel-parameter-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/shovels/shovel-parameter-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "DELETE",
     "apiPath": "/api/parameters/shovel/{vhost}/{name}",
     "uiSurface": "Delete control: dynamic shovel delete",
@@ -681,17 +537,10 @@
     "rabbitLensRoute": "/extensions/streams/connections",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/connections/index.tsx",
     "capability": "read",
-    "evidence": [
-      "src/domains/extensions/streams/stream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring",
-      "management"
-    ],
-    "requiredExtensions": [
-      "streams"
-    ],
+    "requiredTags": ["monitoring", "management"],
+    "requiredExtensions": ["streams"],
     "apiMethod": "GET",
     "apiPath": "/api/stream/connections",
     "uiSurface": "Page or detail section: stream connections",
@@ -712,16 +561,10 @@
     "rabbitLensRoute": "/extensions/streams/connections/:vhost/:name",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/connections/$vhost.$name.tsx",
     "capability": "read",
-    "evidence": [
-      "src/domains/extensions/streams/stream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "monitoring"
-    ],
-    "requiredExtensions": [
-      "streams"
-    ],
+    "requiredTags": ["monitoring"],
+    "requiredExtensions": ["streams"],
     "apiMethod": "GET",
     "apiPath": "/api/stream/connections/{vhost}/{name}",
     "uiSurface": "Page or detail section: stream connection detail",
@@ -742,23 +585,15 @@
     "rabbitLensRoute": "/extensions/streams/super-streams",
     "routeModule": "src/app/routes/_authenticated/extensions/streams/super-streams.tsx",
     "capability": "create",
-    "evidence": [
-      "src/domains/extensions/streams/stream-api.test.ts"
-    ],
+    "evidence": ["src/domains/extensions/streams/stream-api.test.ts"],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
-    "requiredExtensions": [
-      "streams"
-    ],
+    "requiredTags": ["management"],
+    "requiredExtensions": ["streams"],
     "apiMethod": "PUT",
     "apiPath": "/api/stream/super-streams/{vhost}/{name}",
     "uiSurface": "Create form: super stream create",
     "permission": "management",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/streams/super-streams.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/streams/super-streams.tsx"],
     "compatibility": "Stream plugin surfaces are capability-gated and use the RabbitMQ stream management endpoint names.",
     "category": "plugin-extension",
     "userGoal": "Create create form: super stream create using RabbitMQ Management API-compatible data.",
@@ -777,19 +612,13 @@
       "src/domains/extensions/top/top-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "top"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["top"],
     "apiMethod": "GET",
     "apiPath": "/api/top/{node}",
     "uiSurface": "Page or detail section: top processes",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/top/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/top/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: top processes using RabbitMQ Management API-compatible data.",
@@ -808,19 +637,13 @@
       "src/domains/extensions/top/top-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "top"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["top"],
     "apiMethod": "GET",
     "apiPath": "/api/top/ets/{node}",
     "uiSurface": "Page or detail section: top ets tables",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/top/ets.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/top/ets.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: top ets tables using RabbitMQ Management API-compatible data.",
@@ -839,19 +662,13 @@
       "src/domains/extensions/top/top-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "top"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["top"],
     "apiMethod": "GET",
     "apiPath": "/api/top/process/{node}/{pid}",
     "uiSurface": "Page or detail section: top process detail",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/top/process/$pid.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/top/process/$pid.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: top process detail using RabbitMQ Management API-compatible data.",
@@ -870,19 +687,13 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "GET",
     "apiPath": "/api/traces",
     "uiSurface": "Page or detail section: tracing",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/tracing/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: tracing using RabbitMQ Management API-compatible data.",
@@ -901,12 +712,8 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "GET",
     "apiPath": "/api/traces/{vhost}/{name}",
     "uiSurface": "Page or detail section: tracing detail",
@@ -932,19 +739,13 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "PUT",
     "apiPath": "/api/traces/{vhost}/{name}",
     "uiSurface": "Create form: tracing create",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/tracing/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Create create form: tracing create using RabbitMQ Management API-compatible data.",
@@ -963,19 +764,13 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "DELETE",
     "apiPath": "/api/traces/{vhost}/{name}",
     "uiSurface": "Delete control: tracing delete",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/tracing/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Delete delete control: tracing delete using RabbitMQ Management API-compatible data.",
@@ -994,19 +789,13 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "GET",
     "apiPath": "/api/trace-files/{node}",
     "uiSurface": "Page or detail section: tracing files",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/tracing/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Read page or detail section: tracing files using RabbitMQ Management API-compatible data.",
@@ -1025,19 +814,13 @@
       "src/domains/extensions/tracing/tracing-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "administrator"
-    ],
-    "requiredExtensions": [
-      "tracing"
-    ],
+    "requiredTags": ["administrator"],
+    "requiredExtensions": ["tracing"],
     "apiMethod": "DELETE",
     "apiPath": "/api/trace-files/{node}/{name}",
     "uiSurface": "Delete control: tracing file delete",
     "permission": "administrator",
-    "implementationFiles": [
-      "src/app/routes/_authenticated/extensions/tracing/index.tsx"
-    ],
+    "implementationFiles": ["src/app/routes/_authenticated/extensions/tracing/index.tsx"],
     "compatibility": "Extension surfaces are hidden when the matching Management plugin marker is absent.",
     "category": "plugin-extension",
     "userGoal": "Delete delete control: tracing file delete using RabbitMQ Management API-compatible data.",
@@ -1056,9 +839,7 @@
       "src/features/connections/connection-detail-page.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/connections/{name}/sessions",
@@ -1085,12 +866,10 @@
     "capability": "read",
     "evidence": [
       "src/domains/consumers/consumer-schema.test.ts",
-      "src/features/consumers/consumer-table.test.tsx"
+      "src/domains/consumers/consumer-table.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/channels/{name}",
@@ -1099,13 +878,13 @@
     "implementationFiles": [
       "src/app/routes/_authenticated/channels/$name.tsx",
       "src/domains/consumers/consumer-schema.ts",
-      "src/features/consumers/consumer-table.tsx"
+      "src/domains/consumers/consumer-table.tsx"
     ],
     "compatibility": "RabbitMQ Management API fields are parsed conservatively so older and newer broker responses can omit optional diagnostics.",
     "category": "operations",
     "userGoal": "Read page or detail section: channel consumer details using RabbitMQ Management API-compatible data.",
     "legacyBehavior": "Legacy RabbitMQ Management exposes channel.consumer_details from ../rabbitmq-server/deps/rabbitmq_management/priv/www/js/tmpl/channel.ejs for this operation.",
-    "rabbitLensCoverage": "RabbitLens covers this with /channels/:name?section=consumers, GET /api/channels/{name}, and evidence in src/domains/consumers/consumer-schema.test.ts, src/features/consumers/consumer-table.test.tsx."
+    "rabbitLensCoverage": "RabbitLens covers this with /channels/:name?section=consumers, GET /api/channels/{name}, and evidence in src/domains/consumers/consumer-schema.test.ts, src/domains/consumers/consumer-table.test.tsx."
   },
   {
     "sourceKey": "queue-consumer-replication-details",
@@ -1119,9 +898,7 @@
       "src/domains/queues/queue-schema.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/queues/{vhost}/{name}",
@@ -1131,7 +908,7 @@
       "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
       "src/domains/queues/queue-schema.ts",
       "src/features/queues/queue-replication-state.tsx",
-      "src/features/consumers/consumer-table.tsx"
+      "src/domains/consumers/consumer-table.tsx"
     ],
     "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
     "category": "operations",
@@ -1151,9 +928,7 @@
       "src/domains/exchanges/exchange-api.test.ts"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "POST",
     "apiPath": "/api/exchanges/{vhost}/amq.default/publish",
@@ -1161,7 +936,7 @@
     "permission": "management",
     "implementationFiles": [
       "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
-      "src/features/exchanges/publish-message-dialog.tsx",
+      "src/domains/exchanges/publish-message-dialog.tsx",
       "src/domains/queues/queue-api.ts"
     ],
     "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
@@ -1182,9 +957,7 @@
       "src/features/queues/queue-detail-page.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
+    "requiredTags": ["management"],
     "requiredExtensions": [],
     "apiMethod": "POST",
     "apiPath": "/api/queues/{vhost}/{name}/actions",
@@ -1212,12 +985,8 @@
       "src/features/queues/move-messages-dialog.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "policymaker"
-    ],
-    "requiredExtensions": [
-      "shovel"
-    ],
+    "requiredTags": ["policymaker"],
+    "requiredExtensions": ["shovel"],
     "apiMethod": "PUT",
     "apiPath": "/api/parameters/shovel/{vhost}/{name}",
     "uiSurface": "Action control: queue move messages",
@@ -1245,12 +1014,8 @@
       "src/features/queues/queue-detail-page.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "management"
-    ],
-    "requiredExtensions": [
-      "streams"
-    ],
+    "requiredTags": ["management"],
+    "requiredExtensions": ["streams"],
     "apiMethod": "GET",
     "apiPath": "/api/stream/publishers/{vhost}/{queue}",
     "uiSurface": "Page or detail section: stream queue publishers",
@@ -1258,7 +1023,7 @@
     "implementationFiles": [
       "src/app/routes/_authenticated/queues/$vhost.$name.tsx",
       "src/domains/extensions/streams/stream-api.ts",
-      "src/features/streams/stream-publisher-table.tsx"
+      "src/domains/extensions/streams/stream-publisher-table.tsx"
     ],
     "compatibility": "Queue fields are parsed as typed optional RabbitMQ Management API fields to support mixed classic, quorum, and stream responses.",
     "category": "plugin-extension",
@@ -1278,9 +1043,7 @@
       "src/features/nodes/node-operational-diagnostics.test.tsx"
     ],
     "status": "covered",
-    "requiredTags": [
-      "monitoring"
-    ],
+    "requiredTags": ["monitoring"],
     "requiredExtensions": [],
     "apiMethod": "GET",
     "apiPath": "/api/nodes/{name}",

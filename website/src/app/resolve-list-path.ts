@@ -1,8 +1,4 @@
-const EXTENSIONS_WITH_STATUS_ROUTE = new Set([
-  "federation",
-  "shovels",
-  "streams",
-]);
+const EXTENSIONS_WITH_STATUS_ROUTE = new Set(["federation", "shovels", "streams"]);
 
 export function resolveListPath(pathname: string): string {
   const parts = pathname.split("/").filter(Boolean);

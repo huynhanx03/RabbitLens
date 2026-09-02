@@ -10,9 +10,9 @@ export function OAuthResourcePicker() {
   const manager = useOAuthManager();
   const { t } = useTranslation();
   const [isPending, setIsPending] = useState(false);
-  
+
   if (!config.auth.oauth) return null;
-  
+
   const resources = config.auth.oauth.resources;
 
   const handleLogin = async (resourceId: string) => {
@@ -28,9 +28,9 @@ export function OAuthResourcePicker() {
   return (
     <div className="flex flex-col gap-2">
       {resources.map((res) => (
-        <Button 
-          key={res.id} 
-          variant="outline" 
+        <Button
+          key={res.id}
+          variant="outline"
           onClick={() => handleLogin(res.id)}
           disabled={isPending}
           className="w-full"

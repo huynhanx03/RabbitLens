@@ -36,6 +36,10 @@ server {
     location /api/ {
         proxy_pass ${RABBITMQ_MANAGEMENT_SCHEME}://rabbitmq_management;
         proxy_http_version 1.1;
+        # RabbitMQ challenges unauthenticated API calls with HTTP Basic Auth.
+        # RabbitLens owns authentication in-app, so exposing that header makes
+        # browsers show a native credential dialog during an in-flight logout.
+        proxy_hide_header WWW-Authenticate;
         proxy_ssl_server_name on;
         proxy_set_header Connection "";
         proxy_set_header Host ${RABBITMQ_MANAGEMENT_HOST};

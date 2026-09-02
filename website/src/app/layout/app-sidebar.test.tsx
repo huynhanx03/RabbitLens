@@ -79,42 +79,34 @@ describe("AppSidebar", () => {
 
     expect(await screen.findByText("Monitor")).toBeVisible();
     expect(screen.getByText("Topology")).toBeVisible();
-    expect(
-      screen.getByRole("link", { name: "Connections" }),
-    ).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("link", { name: "Connections" })).toHaveClass(
-      "rl-sidebar-item",
-    );
+    expect(screen.getByRole("link", { name: "Connections" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Connections" })).toHaveClass("rl-sidebar-item");
   });
 
   it("keeps desktop navigation expanded without a collapse control", async () => {
     renderSidebar("/");
 
-    expect(
-      await screen.findByRole("link", { name: "Overview" }),
-    ).toBeVisible();
+    expect(await screen.findByRole("link", { name: "Overview" })).toBeVisible();
     expect(screen.getByText("Monitor")).toBeVisible();
-    expect(
-      screen.queryByRole("button", { name: "Collapse sidebar" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Collapse sidebar" })).not.toBeInTheDocument();
   });
 
   it("selects only the active child destination", async () => {
     renderSidebar("/connections/streams");
-    expect(
-      await screen.findByRole("link", { name: "Connections" }),
-    ).not.toHaveAttribute("aria-current");
-    expect(
-      screen.getByRole("link", { name: "Stream Connections" }),
-    ).toHaveAttribute("aria-current", "page");
+    expect(await screen.findByRole("link", { name: "Connections" })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByRole("link", { name: "Stream Connections" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   it("does not preselect the first child at the parent destination", async () => {
     renderSidebar("/connections");
 
-    expect(
-      await screen.findByRole("link", { name: "Stream Connections" }),
-    ).not.toHaveAttribute("aria-current");
+    expect(await screen.findByRole("link", { name: "Stream Connections" })).not.toHaveAttribute(
+      "aria-current",
+    );
   });
-
 });

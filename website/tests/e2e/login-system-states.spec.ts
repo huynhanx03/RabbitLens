@@ -27,9 +27,7 @@ test.describe("Login and system feedback", () => {
     await scenario({ role: "administrator", statsMode: "detailed-rates" });
   });
 
-  test("renders a mobile dark Vietnamese login with accessible controls", async ({
-    page,
-  }) => {
+  test("renders a mobile dark Vietnamese login with accessible controls", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.addInitScript(() => {
       localStorage.setItem("rabbitlens.theme", "dark");
@@ -39,17 +37,9 @@ test.describe("Login and system feedback", () => {
     await page.goto("/login");
 
     await expect(page.locator("html")).toHaveClass(/dark/);
-    await expect(
-      page.getByRole("heading", { name: "Kết nối RabbitMQ" }),
-    ).toBeVisible();
-    await expect(page.getByLabel("Tên người dùng")).toHaveAttribute(
-      "autocomplete",
-      "username",
-    );
-    await expect(page.locator("#password")).toHaveAttribute(
-      "autocomplete",
-      "current-password",
-    );
+    await expect(page.getByRole("heading", { name: "Kết nối RabbitMQ" })).toBeVisible();
+    await expect(page.getByLabel("Tên người dùng")).toHaveAttribute("autocomplete", "username");
+    await expect(page.locator("#password")).toHaveAttribute("autocomplete", "current-password");
     await page.getByRole("button", { name: "Hiện mật khẩu" }).click();
     await expect(page.locator("#password")).toHaveAttribute("type", "text");
 
@@ -57,16 +47,12 @@ test.describe("Login and system feedback", () => {
     expect(accessibility.violations).toEqual([]);
     expect(
       await page.evaluate(
-        () =>
-          document.documentElement.scrollWidth <=
-          document.documentElement.clientWidth,
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
       ),
     ).toBe(true);
   });
 
-  test("shows a specific invalid-credentials error and clears the password", async ({
-    page,
-  }) => {
+  test("shows a specific invalid-credentials error and clears the password", async ({ page }) => {
     await page.unroute("**/api/whoami");
     await page.route("**/api/whoami", (route) =>
       route.fulfill({ status: 401, json: { error: "not_authorised" } }),
@@ -77,9 +63,7 @@ test.describe("Login and system feedback", () => {
     await page.locator("#password").fill("wrong-password");
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByRole("alert")).toContainText(
-      "RabbitMQ rejected these credentials.",
-    );
+    await expect(page.getByRole("alert")).toContainText("RabbitMQ rejected these credentials.");
     await expect(page.locator("#password")).toHaveValue("");
   });
 
@@ -113,15 +97,11 @@ test.describe("Login and system feedback", () => {
         },
       }),
     );
-    await page.route("**/api/connections/**", (route) =>
-      route.fulfill({ status: 204 }),
-    );
+    await page.route("**/api/connections/**", (route) => route.fulfill({ status: 204 }));
     await signIn(page);
     await navigateTo(page, "Connections");
 
-    await page
-      .getByRole("button", { name: `Force close ${connection.name}` })
-      .click();
+    await page.getByRole("button", { name: `Force close ${connection.name}` }).click();
     const dialog = page.getByRole("alertdialog", {
       name: "Force close connection",
     });

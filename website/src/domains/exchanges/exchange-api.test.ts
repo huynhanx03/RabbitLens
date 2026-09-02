@@ -8,12 +8,23 @@ describe("exchange API", () => {
 
   it("builds the correct list URL with search params", async () => {
     const fetcher = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ items: [], filtered_count: 0, item_count: 0, page: 1, page_count: 0, page_size: 100, total_count: 0 }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      })
+      new Response(
+        JSON.stringify({
+          items: [],
+          filtered_count: 0,
+          item_count: 0,
+          page: 1,
+          page_count: 0,
+          page_size: 100,
+          total_count: 0,
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
-    
+
     const client = new ManagementApiClient({
       baseUrl: "http://localhost:15672/api",
       getSession,
@@ -32,7 +43,7 @@ describe("exchange API", () => {
 
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/exchanges?page=1&page_size=50&name=amq.",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -41,9 +52,9 @@ describe("exchange API", () => {
       new Response(JSON.stringify({ name: "my-exchange" }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     );
-    
+
     const client = new ManagementApiClient({
       baseUrl: "http://localhost:15672/api",
       getSession,
@@ -57,7 +68,7 @@ describe("exchange API", () => {
 
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/exchanges/%2Fmy-vhost/my%2Fexchange",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });

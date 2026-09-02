@@ -18,9 +18,7 @@ class MatchMediaMock {
       this.listeners.delete(listener);
     },
   );
-  private readonly listeners = new Set<
-    (event: MediaQueryListEvent) => void
-  >();
+  private readonly listeners = new Set<(event: MediaQueryListEvent) => void>();
 
   constructor(matches: boolean) {
     this.matches = matches;
@@ -35,16 +33,10 @@ class MatchMediaMock {
 
 function renderTheme(defaultPreference: ThemePreference, systemDark = false) {
   const media = new MatchMediaMock(systemDark);
-  vi.spyOn(window, "matchMedia").mockReturnValue(
-    media as unknown as MediaQueryList,
-  );
+  vi.spyOn(window, "matchMedia").mockReturnValue(media as unknown as MediaQueryList);
 
   function Wrapper({ children }: PropsWithChildren) {
-    return (
-      <ThemeProvider defaultPreference={defaultPreference}>
-        {children}
-      </ThemeProvider>
-    );
+    return <ThemeProvider defaultPreference={defaultPreference}>{children}</ThemeProvider>;
   }
 
   return {
@@ -98,9 +90,7 @@ describe("ThemeProvider", () => {
 
     act(() => hook.result.current.setPreference("light"));
 
-    expect(localStorage.getItem(PRODUCT_DEFAULTS.persistenceKeys.theme)).toBe(
-      "light",
-    );
+    expect(localStorage.getItem(PRODUCT_DEFAULTS.persistenceKeys.theme)).toBe("light");
     expect(document.documentElement).toHaveClass("light");
   });
 
@@ -119,9 +109,6 @@ describe("ThemeProvider", () => {
     expect(media.addEventListener).toHaveBeenCalledOnce();
     hook.unmount();
 
-    expect(media.removeEventListener).toHaveBeenCalledWith(
-      "change",
-      registeredListener,
-    );
+    expect(media.removeEventListener).toHaveBeenCalledWith("change", registeredListener);
   });
 });

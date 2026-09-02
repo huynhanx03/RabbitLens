@@ -1,10 +1,15 @@
 import type { ManagementApiClient } from "@/api/management-api-client";
-import { deprecatedFeatureSchema, type DeprecatedFeatureResponse } from "./deprecated-feature-schema";
+import {
+  deprecatedFeatureSchema,
+  type DeprecatedFeatureResponse,
+} from "./deprecated-feature-schema";
 import * as z from "zod";
 import { ApiError } from "@/api/api-error";
 
 export const deprecatedFeatureApi = {
-  getDeprecatedFeatures: async (client: ManagementApiClient): Promise<DeprecatedFeatureResponse[]> => {
+  getDeprecatedFeatures: async (
+    client: ManagementApiClient,
+  ): Promise<DeprecatedFeatureResponse[]> => {
     try {
       return await client.request("/deprecated-features", z.array(deprecatedFeatureSchema));
     } catch (error: unknown) {

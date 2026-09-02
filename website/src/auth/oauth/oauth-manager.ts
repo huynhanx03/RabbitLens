@@ -16,7 +16,7 @@ export interface OAuthAdapter {
     onUserUnloaded: () => void,
     onAccessTokenExpiring: () => void,
     onAccessTokenExpired: () => void,
-    onSilentRenewError: (err: Error) => void
+    onSilentRenewError: (err: Error) => void,
   ): () => void;
 }
 
@@ -47,14 +47,14 @@ export class OAuthManager implements OAuthAdapter {
     }
 
     const lib = await this.getOidcLib();
-    
+
     // figure out resource
     let res = this.config.resources[0];
     if (resourceId) {
-      const found = this.config.resources.find(r => r.id === resourceId);
+      const found = this.config.resources.find((r) => r.id === resourceId);
       if (found) res = found;
     } else if (this.config.defaultResourceId) {
-      const found = this.config.resources.find(r => r.id === this.config.defaultResourceId);
+      const found = this.config.resources.find((r) => r.id === this.config.defaultResourceId);
       if (found) res = found;
     }
 
@@ -69,8 +69,14 @@ export class OAuthManager implements OAuthAdapter {
       post_logout_redirect_uri: res.logoutUri,
       scope: res.scopes.join(" "),
       response_type: "code",
-      userStore: new lib.WebStorageStateStore({ store: window.sessionStorage, prefix: `rabbitlens_oidc_${res.id}_` }),
-      stateStore: new lib.WebStorageStateStore({ store: window.sessionStorage, prefix: `rabbitlens_oidc_${res.id}_state_` }),
+      userStore: new lib.WebStorageStateStore({
+        store: window.sessionStorage,
+        prefix: `rabbitlens_oidc_${res.id}_`,
+      }),
+      stateStore: new lib.WebStorageStateStore({
+        store: window.sessionStorage,
+        prefix: `rabbitlens_oidc_${res.id}_state_`,
+      }),
       automaticSilentRenew: !!res.silentRedirectUri,
       // Pass resource if provided (for resource indicators)
       extraQueryParams: res.resource ? { resource: res.resource } : undefined,
@@ -121,7 +127,7 @@ export class OAuthManager implements OAuthAdapter {
     onUserUnloaded: () => void,
     onAccessTokenExpiring: () => void,
     onAccessTokenExpired: () => void,
-    onSilentRenewError: (err: Error) => void
+    onSilentRenewError: (err: Error) => void,
   ): () => void {
     if (!this.userManager) return () => {};
 

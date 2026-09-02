@@ -31,9 +31,7 @@ export function ExchangeListPage({ search }: ExchangeListPageProps) {
   const navigate = useNavigate({ from: Route.fullPath });
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const statsMode = resolveStatisticsMode(overviewQuery.data);
   const statsCapabilities = getStatisticsSelectors(statsMode);
 
@@ -54,9 +52,7 @@ export function ExchangeListPage({ search }: ExchangeListPageProps) {
     navigate({ search: (previous) => ({ ...previous, ...updates }) });
   };
 
-  const sorting: SortingState = search.sort
-    ? [{ id: search.sort, desc: search.sortReverse }]
-    : [];
+  const sorting: SortingState = search.sort ? [{ id: search.sort, desc: search.sortReverse }] : [];
 
   return (
     <div className="space-y-4">
@@ -70,17 +66,11 @@ export function ExchangeListPage({ search }: ExchangeListPageProps) {
           />
         }
         secondary={
-          <Button onClick={() => setCreateDialogOpen(true)}>
-            {t("common.add")} Exchange
-          </Button>
+          <Button onClick={() => setCreateDialogOpen(true)}>{t("common.add")} Exchange</Button>
         }
       />
 
-      <CreateExchangeDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-        vhost="/"
-      />
+      <CreateExchangeDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} vhost="/" />
 
       <DataTable
         columns={columns}

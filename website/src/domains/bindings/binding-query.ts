@@ -13,8 +13,7 @@ export const bindingKeys = {
     [...bindingKeys.all, "exchange-source", vhost, exchange] as const,
   exchangeDestination: (vhost: string, exchange: string) =>
     [...bindingKeys.all, "exchange-destination", vhost, exchange] as const,
-  queue: (vhost: string, queue: string) =>
-    [...bindingKeys.all, "queue", vhost, queue] as const,
+  queue: (vhost: string, queue: string) => [...bindingKeys.all, "queue", vhost, queue] as const,
 };
 
 export function queueBindingsQueryOptions(
@@ -45,7 +44,7 @@ export function useCreateBindingMutation(apiClient: ManagementApiClient) {
         params.exchange,
         params.destinationType,
         params.destination,
-        params.request
+        params.request,
       );
     },
     onSuccess: () => {
@@ -71,7 +70,7 @@ export function useDeleteBindingMutation(apiClient: ManagementApiClient) {
         params.exchange,
         params.destinationType,
         params.destination,
-        params.propertiesKey
+        params.propertiesKey,
       );
     },
     onSuccess: () => {

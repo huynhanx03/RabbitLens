@@ -7,9 +7,8 @@ import { DataTable } from "@/components/shared/data-table";
 import { createConnectionColumns } from "./connection-columns";
 
 vi.mock("@tanstack/react-router", async () => {
-  const actual = await vi.importActual<typeof import("@tanstack/react-router")>(
-    "@tanstack/react-router",
-  );
+  const actual =
+    await vi.importActual<typeof import("@tanstack/react-router")>("@tanstack/react-router");
   return {
     ...actual,
     Link: ({
@@ -17,7 +16,9 @@ vi.mock("@tanstack/react-router", async () => {
       params,
       ...props
     }: React.ComponentProps<"a"> & { params: { name: string } }) => (
-      <a href={`/connections/${encodeURIComponent(params.name)}`} {...props}>{children}</a>
+      <a href={`/connections/${encodeURIComponent(params.name)}`} {...props}>
+        {children}
+      </a>
     ),
   };
 });
@@ -72,9 +73,15 @@ describe("connection columns", () => {
       />,
     );
 
-    expect(screen.queryByRole("button", { name: `connections.actionsFor ${row.name}` })).not.toBeInTheDocument();
-    expect(screen.queryByRole("menuitem", { name: "connections.forceClose" })).not.toBeInTheDocument();
-    const trashAction = screen.getByRole("button", { name: `connections.forceCloseFor ${row.name}` });
+    expect(
+      screen.queryByRole("button", { name: `connections.actionsFor ${row.name}` }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("menuitem", { name: "connections.forceClose" }),
+    ).not.toBeInTheDocument();
+    const trashAction = screen.getByRole("button", {
+      name: `connections.forceCloseFor ${row.name}`,
+    });
     expect(trashAction).toHaveClass(
       "border",
       "border-transparent",

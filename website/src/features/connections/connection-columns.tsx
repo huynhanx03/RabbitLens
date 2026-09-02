@@ -108,10 +108,7 @@ export function createConnectionColumns(
             <span className="text-xs font-medium">TLS</span>
           </span>
         ) : (
-          <span
-            aria-label={t("connections.tlsDisabled")}
-            className="text-muted-foreground"
-          >
+          <span aria-label={t("connections.tlsDisabled")} className="text-muted-foreground">
             —
           </span>
         ),
@@ -121,9 +118,7 @@ export function createConnectionColumns(
       header: t("connections.peerAddress"),
       enableSorting: false,
       meta: { className: "hidden lg:table-cell", variant: "code" },
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="font-mono text-sm">{getValue<string>()}</span>,
     },
     {
       accessorKey: "node",

@@ -61,7 +61,6 @@ export function useDeleteFederationUpstream(client: ManagementApiClient) {
   return useMutation({
     mutationFn: ({ vhost, name }: Omit<SaveInput, "value">) =>
       deleteFederationUpstream(client, vhost, name),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: federationUpstreamKeys.list() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: federationUpstreamKeys.list() }),
   });
 }

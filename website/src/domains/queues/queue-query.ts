@@ -23,10 +23,8 @@ import { PRODUCT_DEFAULTS } from "@/config/defaults";
 export const queueKeys = {
   all: ["queues"] as const,
   lists: () => [...queueKeys.all, "list"] as const,
-  list: (search: ResourceListSearch) =>
-    [...queueKeys.lists(), search] as const,
-  detail: (vhost: string, name: string) =>
-    [...queueKeys.all, "detail", vhost, name] as const,
+  list: (search: ResourceListSearch) => [...queueKeys.lists(), search] as const,
+  detail: (vhost: string, name: string) => [...queueKeys.all, "detail", vhost, name] as const,
 };
 
 export function queueDetailQueryOptions(
@@ -43,13 +41,7 @@ export function queueDetailQueryOptions(
       range.incrementSeconds,
     ] as const,
     queryFn: ({ signal }) =>
-      getQueue(
-        apiClient,
-        vhost,
-        name,
-        buildRangeQueryParams(range, QUEUE_RANGE_PREFIXES),
-        signal,
-      ),
+      getQueue(apiClient, vhost, name, buildRangeQueryParams(range, QUEUE_RANGE_PREFIXES), signal),
     staleTime: PRODUCT_DEFAULTS.polling.nodeDetailsMs,
   });
 }
@@ -71,7 +63,11 @@ export function useDeleteQueueMutation(apiClient: ManagementApiClient) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { vhost: string; name: string; options?: { ifUnused?: boolean; ifEmpty?: boolean } }) => {
+    mutationFn: async (params: {
+      vhost: string;
+      name: string;
+      options?: { ifUnused?: boolean; ifEmpty?: boolean };
+    }) => {
       await deleteQueue(apiClient, params.vhost, params.name, params.options);
     },
     onSuccess: () => {

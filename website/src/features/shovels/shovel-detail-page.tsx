@@ -5,7 +5,10 @@ import { AsyncState } from "@/components/shared/async-state";
 import { JsonParameterForm } from "@/components/shared/json-parameter-form";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
-import { shovelParameterDetailQueryOptions, useSaveShovel } from "@/domains/extensions/shovels/shovel-parameter-query";
+import {
+  shovelParameterDetailQueryOptions,
+  useSaveShovel,
+} from "@/domains/extensions/shovels/shovel-parameter-query";
 
 type Props = { vhost: string; name: string };
 

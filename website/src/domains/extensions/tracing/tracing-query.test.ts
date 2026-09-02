@@ -23,8 +23,12 @@ describe("Tracing queries", () => {
   });
 
   it("keys details by node, vhost, and name", () => {
-    expect(
-      traceDetailQueryOptions(client, "rabbit@node", "/", "audit").queryKey,
-    ).toEqual(["tracing", "trace", "rabbit@node", "/", "audit"]);
+    expect(traceDetailQueryOptions(client, "rabbit@node", "/", "audit").queryKey).toEqual([
+      "tracing",
+      "trace",
+      "rabbit@node",
+      "/",
+      "audit",
+    ]);
   });
 });

@@ -25,9 +25,7 @@ describe("shovel queries", () => {
   });
 
   function wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
 
   it("useShovels fetches shovels", async () => {

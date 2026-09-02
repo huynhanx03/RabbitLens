@@ -93,18 +93,14 @@ export function LimitForm({
         <Label htmlFor="limit-name">{t("limits.limit")}</Label>
         <Select
           value={watch("name")}
-          onValueChange={(value) =>
-            setValue("name", value as LimitFormValues["name"])
-          }
+          onValueChange={(value) => setValue("name", value as LimitFormValues["name"])}
           disabled={isPending}
         >
           <SelectTrigger id="limit-name" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="max-connections">
-              {t("limits.maxConnections")}
-            </SelectItem>
+            <SelectItem value="max-connections">{t("limits.maxConnections")}</SelectItem>
             <SelectItem value="max-queues">{t("limits.maxQueues")}</SelectItem>
           </SelectContent>
         </Select>

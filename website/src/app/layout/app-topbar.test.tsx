@@ -9,10 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { Cable } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
-import {
-  ThemeContext,
-  type ThemeContextValue,
-} from "@/app/providers/theme-context";
+import { ThemeContext, type ThemeContextValue } from "@/app/providers/theme-context";
 import type { NavigationGroup } from "@/app/navigation/navigation-types";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppTopbar } from "./app-topbar";
@@ -43,11 +40,7 @@ function renderTopbar(onLogout = vi.fn()) {
     component: () => (
       <ThemeContext.Provider value={theme}>
         <SidebarProvider>
-          <AppTopbar
-            groups={groups}
-            userName="guest"
-            onLogout={onLogout}
-          />
+          <AppTopbar groups={groups} userName="guest" onLogout={onLogout} />
         </SidebarProvider>
       </ThemeContext.Provider>
     ),
@@ -75,22 +68,16 @@ describe("AppTopbar", () => {
     expect(await screen.findByText("Connections")).toBeVisible();
     expect(screen.queryByText("rabbitlens-demo")).not.toBeInTheDocument();
     expect(screen.queryByText("RabbitMQ unreachable")).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "Density" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Density" })).not.toBeInTheDocument();
     expect(screen.getByRole("banner")).toHaveClass("rl-topbar");
-    expect(screen.getByTestId("topbar-controls")).toHaveClass(
-      "rl-topbar-controls",
-    );
+    expect(screen.getByTestId("topbar-controls")).toHaveClass("rl-topbar-controls");
   });
 
   it("exposes user identity and sign out from the account menu", async () => {
     const user = userEvent.setup();
     const onLogout = renderTopbar();
 
-    await user.click(
-      await screen.findByRole("button", { name: "Account menu" }),
-    );
+    await user.click(await screen.findByRole("button", { name: "Account menu" }));
     expect(screen.getByText("guest")).toBeVisible();
     await user.click(screen.getByRole("menuitem", { name: "Sign out" }));
 

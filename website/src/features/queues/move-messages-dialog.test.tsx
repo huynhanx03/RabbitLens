@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MoveMessagesDialog } from "./move-messages-dialog";
 
 const client = { requestVoid: vi.fn() };
@@ -10,16 +10,26 @@ vi.mock("@tanstack/react-router", async () => ({
   useRouteContext: () => ({ apiClient: client }),
 }));
 
-function renderDialog() {
+function renderDialog(open = true, onOpenChange = vi.fn()) {
   const queryClient = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MoveMessagesDialog open onOpenChange={vi.fn()} vhost="/" sourceQueue="orders" queueType="classic" />
+      <MoveMessagesDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        vhost="/"
+        sourceQueue="orders"
+        queueType="classic"
+      />
     </QueryClientProvider>,
   );
 }
 
 describe("MoveMessagesDialog", () => {
+  beforeEach(() => {
+    client.requestVoid.mockReset();
+  });
+
   it("rejects moving a queue into itself", async () => {
     renderDialog();
     await userEvent.type(screen.getByLabelText("Destination queue"), "orders");
@@ -37,5 +47,40 @@ describe("MoveMessagesDialog", () => {
       expect.stringMatching(/^\/parameters\/shovel\/%2F\/rabbitlens-move-orders-/),
       expect.objectContaining({ method: "PUT" }),
     );
+  });
+
+  it("clears its destination and validation error when its controlled dialog closes", async () => {
+    const onOpenChange = vi.fn();
+    const view = renderDialog(true, onOpenChange);
+
+    await userEvent.type(screen.getByLabelText("Destination queue"), "orders");
+    await userEvent.click(screen.getByRole("button", { name: "Move messages" }));
+    expect(screen.getByText("Choose a different destination queue.")).toBeVisible();
+
+    view.rerender(
+      <QueryClientProvider client={new QueryClient()}>
+        <MoveMessagesDialog
+          open={false}
+          onOpenChange={onOpenChange}
+          vhost="/"
+          sourceQueue="orders"
+          queueType="classic"
+        />
+      </QueryClientProvider>,
+    );
+    view.rerender(
+      <QueryClientProvider client={new QueryClient()}>
+        <MoveMessagesDialog
+          open
+          onOpenChange={onOpenChange}
+          vhost="/"
+          sourceQueue="orders"
+          queueType="classic"
+        />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByLabelText("Destination queue")).toHaveValue("");
+    expect(screen.queryByText("Choose a different destination queue.")).not.toBeInTheDocument();
   });
 });

@@ -8,7 +8,13 @@ import { PRODUCT_DEFAULTS } from "@/config/defaults";
 
 describe("Router Guards", () => {
   const queryClient = new QueryClient();
-  const apiClient = new ManagementApiClient({ baseUrl: "", getSession: () => ({ type: "anonymous" }), timeoutMs: 100, fetcher: vi.fn(), onUnauthorized: vi.fn() });
+  const apiClient = new ManagementApiClient({
+    baseUrl: "",
+    getSession: () => ({ type: "anonymous" }),
+    timeoutMs: 100,
+    fetcher: vi.fn(),
+    onUnauthorized: vi.fn(),
+  });
   const runtimeConfig = {
     apiBaseUrl: "",
     auth: { basic: true, oauth: null },
@@ -40,7 +46,7 @@ describe("Router Guards", () => {
     });
 
     renderWithProviders(<RouterProvider router={router} />);
-    
+
     // We wait for the router to finish resolving and redirecting
     // @ts-expect-error isReady is not in the type definition but works at runtime for test resolution
     await router.isReady;
@@ -73,7 +79,7 @@ describe("Router Guards", () => {
     });
 
     renderWithProviders(<RouterProvider router={router} />);
-    
+
     // @ts-expect-error isReady is not in the type definition but works at runtime
     await router.isReady;
     expect(router.state.location.pathname).toBe("/");

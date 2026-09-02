@@ -35,10 +35,7 @@ export function flattenLimits(
   limits: Array<VhostLimit | UserLimit>,
 ): LimitRow[] {
   return limits.flatMap((limit) => {
-    const owner =
-      scope === "vhost"
-        ? (limit as VhostLimit).vhost
-        : (limit as UserLimit).user;
+    const owner = scope === "vhost" ? (limit as VhostLimit).vhost : (limit as UserLimit).user;
     return Object.entries(limit.value).map(([name, value]) => ({
       scope,
       owner,

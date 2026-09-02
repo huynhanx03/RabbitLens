@@ -58,9 +58,7 @@ function getColumnClassName(meta?: TableColumnMeta) {
     text: "",
   }[meta?.variant ?? "text"];
 
-  return [alignClass, wrapClass, variantClass, meta?.className]
-    .filter(Boolean)
-    .join(" ");
+  return [alignClass, wrapClass, variantClass, meta?.className].filter(Boolean).join(" ");
 }
 
 function getSortControlClassName(align: TableColumnMeta["align"]) {
@@ -117,9 +115,7 @@ export function DataTable<TData, TValue>({
     onSortingChange: onSortingChange
       ? (updaterOrValue) => {
           const next =
-            typeof updaterOrValue === "function"
-              ? updaterOrValue(sorting ?? [])
-              : updaterOrValue;
+            typeof updaterOrValue === "function" ? updaterOrValue(sorting ?? []) : updaterOrValue;
           onSortingChange(next);
         }
       : undefined,
@@ -160,10 +156,7 @@ export function DataTable<TData, TValue>({
                       >
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                         {canSort && (
                           <span className="size-4 text-muted-foreground">
                             {sorted === "asc" ? (
@@ -185,10 +178,7 @@ export function DataTable<TData, TValue>({
                       >
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                       </span>
                     )}
                   </TableHead>
@@ -223,9 +213,7 @@ export function DataTable<TData, TValue>({
                     ? (event) => {
                         const target = event.target as HTMLElement;
                         if (
-                          target.closest(
-                            "button, a, input, select, textarea, [role='menuitem']",
-                          )
+                          target.closest("button, a, input, select, textarea, [role='menuitem']")
                         ) {
                           return;
                         }

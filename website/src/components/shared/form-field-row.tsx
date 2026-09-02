@@ -26,15 +26,12 @@ export function FormFieldRow({
     <div
       className={cn(
         "grid gap-2 py-3 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-center",
-        className
+        className,
       )}
     >
       <Label
         htmlFor={htmlFor}
-        className={cn(
-          "text-sm font-semibold text-muted-foreground sm:pt-0.5",
-          labelClassName
-        )}
+        className={cn("text-sm font-semibold text-muted-foreground sm:pt-0.5", labelClassName)}
       >
         {label}
       </Label>

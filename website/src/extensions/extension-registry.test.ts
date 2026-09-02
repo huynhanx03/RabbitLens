@@ -25,7 +25,7 @@ describe("Extension Registry", () => {
   });
 
   it("returns false if marker is missing", () => {
-    const markersWithoutTop = allMarkers.filter(m => m.javascript !== "top.js");
+    const markersWithoutTop = allMarkers.filter((m) => m.javascript !== "top.js");
     expect(isExtensionInstalled("top", markersWithoutTop)).toBe(false);
   });
 
@@ -34,13 +34,16 @@ describe("Extension Registry", () => {
     expect(navAdmin.length).toBe(extensionRegistry.length);
 
     const navMonitoring = getAvailableExtensionNavigation(allMarkers, monitoringTags);
-    expect(navMonitoring.map(n => n.id)).toEqual(["federation", "shovel", "streams"]);
+    expect(navMonitoring.map((n) => n.id)).toEqual(["federation", "shovel", "streams"]);
 
     const navNoTags = getAvailableExtensionNavigation(allMarkers, noTags);
     expect(navNoTags.length).toBe(0);
 
-    const navMissingPlugin = getAvailableExtensionNavigation([{ javascript: "federation.js" }], adminTags);
-    expect(navMissingPlugin.map(n => n.id)).toEqual(["federation"]);
+    const navMissingPlugin = getAvailableExtensionNavigation(
+      [{ javascript: "federation.js" }],
+      adminTags,
+    );
+    expect(navMissingPlugin.map((n) => n.id)).toEqual(["federation"]);
   });
 
   it("handles empty markers", () => {
@@ -50,9 +53,7 @@ describe("Extension Registry", () => {
 
   it("uses a real route as each extension navigation target", () => {
     expect(
-      Object.fromEntries(
-        extensionRegistry.map(({ id, routePrefix }) => [id, routePrefix]),
-      ),
+      Object.fromEntries(extensionRegistry.map(({ id, routePrefix }) => [id, routePrefix])),
     ).toEqual({
       federation: "/extensions/federation/status",
       shovel: "/extensions/shovels/status",
@@ -65,24 +66,12 @@ describe("Extension Registry", () => {
   it("owns the complete child navigation for multi-surface extensions", () => {
     expect(
       Object.fromEntries(
-        extensionRegistry.map(({ id, children }) => [
-          id,
-          children.map(({ route }) => route),
-        ]),
+        extensionRegistry.map(({ id, children }) => [id, children.map(({ route }) => route)]),
       ),
     ).toEqual({
-      federation: [
-        "/extensions/federation/status",
-        "/extensions/federation/upstreams",
-      ],
-      shovel: [
-        "/extensions/shovels/status",
-        "/extensions/shovels/management",
-      ],
-      streams: [
-        "/extensions/streams/connections",
-        "/extensions/streams/super-streams",
-      ],
+      federation: ["/extensions/federation/status", "/extensions/federation/upstreams"],
+      shovel: ["/extensions/shovels/status", "/extensions/shovels/management"],
+      streams: ["/extensions/streams/connections", "/extensions/streams/super-streams"],
       top: ["/extensions/top", "/extensions/top/ets"],
       tracing: ["/extensions/tracing"],
     });

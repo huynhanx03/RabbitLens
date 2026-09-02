@@ -23,9 +23,7 @@ describe("TraceDetailPage", () => {
       queue: { name: "amq.gen-trace", messages: 3 },
     });
 
-    renderWithProviders(
-      <TraceDetailPage node="rabbit@node" vhost="/" name="audit" />,
-    );
+    renderWithProviders(<TraceDetailPage node="rabbit@node" vhost="/" name="audit" />);
 
     await waitFor(() => expect(screen.getByText("publish.#")).toBeVisible());
     expect(screen.getByText("observer")).toBeVisible();

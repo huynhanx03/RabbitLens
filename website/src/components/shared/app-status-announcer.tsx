@@ -40,12 +40,7 @@ export function AppStatusAnnouncer() {
   }, [announce, auth.session.type, t]);
 
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
-      className="sr-only"
-    >
+    <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
       {announcement}
     </div>
   );

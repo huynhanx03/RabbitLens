@@ -13,11 +13,7 @@ export async function getConnections(
   signal?: AbortSignal,
 ) {
   const query = buildListQuery(search);
-  return client.request(
-    withQuery("/connections", query),
-    paginatedConnectionsSchema,
-    { signal },
-  );
+  return client.request(withQuery("/connections", query), paginatedConnectionsSchema, { signal });
 }
 
 export async function getConnection(

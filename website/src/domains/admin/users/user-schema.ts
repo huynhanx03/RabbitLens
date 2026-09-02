@@ -1,16 +1,24 @@
 import * as z from "zod";
 
-export const userSchema = z.object({
-  name: z.string(),
-  password_hash: z.string().optional(),
-  tags: z.union([z.string(), z.array(z.string())]).transform(val => {
-    if (typeof val === "string") {
-      return val.split(",").map(t => t.trim()).filter(t => t.length > 0);
-    }
-    return val;
-  }).optional(),
-  limits: z.record(z.string(), z.number()).optional(),
-}).catchall(z.unknown());
+export const userSchema = z
+  .object({
+    name: z.string(),
+    password_hash: z.string().optional(),
+    tags: z
+      .union([z.string(), z.array(z.string())])
+      .transform((val) => {
+        if (typeof val === "string") {
+          return val
+            .split(",")
+            .map((t) => t.trim())
+            .filter((t) => t.length > 0);
+        }
+        return val;
+      })
+      .optional(),
+    limits: z.record(z.string(), z.number()).optional(),
+  })
+  .catchall(z.unknown());
 
 export type UserResponse = z.infer<typeof userSchema>;
 

@@ -14,7 +14,7 @@ describe("evaluatePermission", () => {
       stream: false,
       top: false,
       tracing: false,
-    }
+    },
   };
 
   const admin: AuthenticatedUser = { name: "admin", tags: ["administrator"] };
@@ -26,7 +26,10 @@ describe("evaluatePermission", () => {
   });
 
   it("denies if caps missing but feature required", () => {
-    expect(evaluatePermission({ requiredFeature: "statistics" }, admin, null)).toEqual({ kind: "deny", reason: "feature" });
+    expect(evaluatePermission({ requiredFeature: "statistics" }, admin, null)).toEqual({
+      kind: "deny",
+      reason: "feature",
+    });
   });
 
   it("allows admin regardless of specific tags", () => {
@@ -34,19 +37,32 @@ describe("evaluatePermission", () => {
   });
 
   it("allows user with matching tag", () => {
-    expect(evaluatePermission({ requiredAnyTag: ["policymaker"] }, policymaker, caps).kind).toBe("allow");
+    expect(evaluatePermission({ requiredAnyTag: ["policymaker"] }, policymaker, caps).kind).toBe(
+      "allow",
+    );
   });
 
   it("denies user missing required tag", () => {
-    expect(evaluatePermission({ requiredAnyTag: ["policymaker"] }, guest, caps)).toEqual({ kind: "deny", reason: "tag" });
+    expect(evaluatePermission({ requiredAnyTag: ["policymaker"] }, guest, caps)).toEqual({
+      kind: "deny",
+      reason: "tag",
+    });
   });
 
   it("denies if required feature is missing", () => {
-    expect(evaluatePermission({ requiredFeature: "statistics" }, admin, { ...caps, features: { statistics: false } })).toEqual({ kind: "deny", reason: "feature" });
+    expect(
+      evaluatePermission({ requiredFeature: "statistics" }, admin, {
+        ...caps,
+        features: { statistics: false },
+      }),
+    ).toEqual({ kind: "deny", reason: "feature" });
   });
 
   it("denies if required extension is missing", () => {
-    expect(evaluatePermission({ requiredFeature: "shovel" }, admin, caps)).toEqual({ kind: "deny", reason: "feature" });
+    expect(evaluatePermission({ requiredFeature: "shovel" }, admin, caps)).toEqual({
+      kind: "deny",
+      reason: "feature",
+    });
   });
 
   it("allows if required feature/extension is present", () => {
@@ -55,10 +71,15 @@ describe("evaluatePermission", () => {
   });
 
   it("denies if vhost is required but none selected", () => {
-    expect(evaluatePermission({ requiresVisibleVhost: true }, admin, caps, undefined)).toEqual({ kind: "deny", reason: "vhost" });
+    expect(evaluatePermission({ requiresVisibleVhost: true }, admin, caps, undefined)).toEqual({
+      kind: "deny",
+      reason: "vhost",
+    });
   });
 
   it("defers to server for fine grained checks", () => {
-    expect(evaluatePermission({ fineGrainedPermission: "configure" }, admin, caps)).toEqual({ kind: "server" });
+    expect(evaluatePermission({ fineGrainedPermission: "configure" }, admin, caps)).toEqual({
+      kind: "server",
+    });
   });
 });

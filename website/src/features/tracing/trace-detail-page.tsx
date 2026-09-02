@@ -50,9 +50,10 @@ export function TraceDetailPage({ node, vhost, name }: Props) {
                   { label: t("tracing.format"), value: trace.format },
                   {
                     label: t("tracing.maxPayloadBytes"),
-                    value: trace.max_payload_bytes === undefined
-                      ? t("tracing.unlimited")
-                      : formatBytes(trace.max_payload_bytes),
+                    value:
+                      trace.max_payload_bytes === undefined
+                        ? t("tracing.unlimited")
+                        : formatBytes(trace.max_payload_bytes),
                   },
                   { label: t("tracing.username"), value: trace.tracer_connection_username },
                 ]}

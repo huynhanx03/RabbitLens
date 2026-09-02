@@ -28,12 +28,7 @@ describe("queueBindingsQueryOptions", () => {
     const options = factory(apiClient, "/production", "pentest.response");
     const signal = new AbortController().signal;
 
-    expect(options.queryKey).toEqual([
-      "bindings",
-      "queue",
-      "/production",
-      "pentest.response",
-    ]);
+    expect(options.queryKey).toEqual(["bindings", "queue", "/production", "pentest.response"]);
     await options.queryFn?.({ signal });
     expect(request).toHaveBeenCalledWith(
       "/queues/%2Fproduction/pentest.response/bindings",

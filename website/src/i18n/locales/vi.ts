@@ -51,7 +51,8 @@ export const vi = {
   },
   parameters: {
     secretTitle: "Cấu hình nhạy cảm",
-    secretDescription: "URI có thể chứa thông tin đăng nhập. RabbitLens chỉ giữ biểu mẫu này trong bộ nhớ và không lưu giá trị vào trình duyệt.",
+    secretDescription:
+      "URI có thể chứa thông tin đăng nhập. RabbitLens chỉ giữ biểu mẫu này trong bộ nhớ và không lưu giá trị vào trình duyệt.",
     nameRequired: "Hãy nhập tên tham số.",
     valueJson: "Giá trị (JSON)",
     invalidJson: "Hãy nhập một đối tượng JSON hợp lệ.",
@@ -59,16 +60,13 @@ export const vi = {
   auth: {
     signIn: "Đăng nhập",
     title: "Kết nối RabbitMQ",
-    description: "Dùng người dùng RabbitMQ có quyền truy cập Management.",
+    description: "Đăng nhập bằng tài khoản RabbitMQ Management.",
     username: "Tên người dùng",
     password: "Mật khẩu",
     usernameRequired: "Nhập tên người dùng.",
     passwordRequired: "Nhập mật khẩu.",
     invalidCredentials: "RabbitMQ đã từ chối thông tin đăng nhập này.",
-    secureOriginRequired:
-      "Xác thực Basic yêu cầu HTTPS ngoài môi trường phát triển cục bộ.",
-    welcomeTitle: "Quan sát RabbitMQ rõ ràng hơn.",
-    welcomeDescription: "Vận hành queue, exchange, kết nối, người dùng, policy và extension trong một workspace tập trung.",
+    secureOriginRequired: "Xác thực Basic yêu cầu HTTPS ngoài môi trường phát triển cục bộ.",
     memoryOnly: "Thông tin đăng nhập chỉ nằm trong bộ nhớ và bị xóa khi phiên kết thúc.",
     signInFailed: "Đăng nhập thất bại",
     signingIn: "Đang đăng nhập…",
@@ -78,8 +76,7 @@ export const vi = {
       loginWith: "Đăng nhập bằng {{provider}}",
       redirecting: "Đang chuyển hướng…",
       loginFailedTitle: "Đăng nhập thất bại",
-      loginFailedDescription:
-        "Nhà cung cấp danh tính không thể hoàn tất đăng nhập. Hãy thử lại.",
+      loginFailedDescription: "Nhà cung cấp danh tính không thể hoàn tất đăng nhập. Hãy thử lại.",
       logoutFailedTitle: "Đăng xuất thất bại",
       logoutFailedDescription:
         "Nhà cung cấp danh tính không thể hoàn tất đăng xuất. Hãy quay lại trang đăng nhập và thử lại.",
@@ -173,8 +170,7 @@ export const vi = {
     partitioned: "Mất kết nối cụm",
     details: "Chi tiết máy",
     loadBinaryMemory: "Tải chi tiết bộ nhớ binary",
-    expensiveQueryWarning:
-      "Yêu cầu này có thể tốn tài nguyên trên máy có nhiều binary nhỏ.",
+    expensiveQueryWarning: "Yêu cầu này có thể tốn tài nguyên trên máy có nhiều binary nhỏ.",
     loadDetails: "Tải chi tiết",
     resources: "Tài nguyên",
     runtime: "Runtime",
@@ -446,12 +442,14 @@ export const vi = {
     operatorPolicy: "Operator policy",
     consumerCapacity: "Khả năng phục vụ consumer",
     moveMessages: "Di chuyển message",
-    moveMessagesDescription: "Tạo Shovel tạm thời để chuyển toàn bộ message từ {{queue}} sang queue khác trong virtual host này.",
+    moveMessagesDescription:
+      "Tạo Shovel tạm thời để chuyển toàn bộ message từ {{queue}} sang queue khác trong virtual host này.",
     destinationQueue: "Queue đích",
     differentDestination: "Hãy chọn một queue đích khác.",
     syncMirrors: "Đồng bộ mirror",
     cancelSync: "Hủy đồng bộ",
-    queueActionWarning: "Thực hiện thao tác này với {{queue}}? Khả dụng và hoạt động ổ đĩa có thể thay đổi trong lúc chạy.",
+    queueActionWarning:
+      "Thực hiện thao tác này với {{queue}}? Khả dụng và hoạt động ổ đĩa có thể thay đổi trong lúc chạy.",
     bytes: "bytes",
     noMessages: "Không có tin nhắn nào được trả về",
     messageInspector: "Kiểm tra message",
@@ -493,8 +491,10 @@ export const vi = {
   },
   errors: {
     configurationTitle: "RabbitLens chưa được cấu hình",
-    configurationDescription: "RabbitLens chưa tải được runtime-config.json. Trường hợp này có thể xảy ra khi app vừa khởi động hoặc file cấu hình deploy bị thiếu.",
-    configurationHint: "Hãy tải lại sau khi container sẵn sàng. Nếu vẫn lặp lại, kiểm tra /runtime-config.json có được serve từ gốc website không.",
+    configurationDescription:
+      "RabbitLens chưa tải được runtime-config.json. Trường hợp này có thể xảy ra khi app vừa khởi động hoặc file cấu hình deploy bị thiếu.",
+    configurationHint:
+      "Hãy tải lại sau khi container sẵn sàng. Nếu vẫn lặp lại, kiểm tra /runtime-config.json có được serve từ gốc website không.",
     reloadPage: "Tải lại trang",
     backToLogin: "Về đăng nhập",
     requestFailed: "Yêu cầu RabbitMQ thất bại",
@@ -566,6 +566,10 @@ export const vi = {
     messageRates: "Tốc độ tin nhắn",
     restartTitle: "Khởi động lại máy chủ ảo trên Node",
     restartNode: "Node",
+    restartDescription: "Chọn node để khởi động lại máy chủ ảo {{name}}.",
+    selectNode: "Chọn node",
+    noNodesAvailable: "Không có node khả dụng",
+    restartAction: "Khởi động lại",
     noNodes: "Không có node nào khả dụng",
     deleteWarning: "Bạn có chắc chắn muốn xóa máy chủ ảo này không?",
     confirmDelete: "Xóa máy chủ ảo",
@@ -591,6 +595,14 @@ export const vi = {
     permissions: "Quyền",
     topicPermissions: "Quyền chủ đề",
     setPermission: "Thiết lập quyền",
+    setPermissionTitle: "Thiết lập quyền cho {{name}}",
+    setTopicPermission: "Thiết lập quyền chủ đề",
+    setTopicPermissionTitle: "Thiết lập quyền chủ đề cho {{name}}",
+    selectVhost: "Chọn máy chủ ảo",
+    configureRegexField: "Cấu hình (Regex)",
+    writeRegexField: "Ghi (Regex)",
+    readRegexField: "Đọc (Regex)",
+    exchangePattern: "Exchange (Regex hoặc tên cụ thể)",
     clear: "Xóa",
     clearPermission: "Xóa quyền",
     clearTopicPermission: "Xóa quyền chủ đề",
@@ -603,10 +615,15 @@ export const vi = {
     exchange: "Exchange",
     routingKey: "Khóa định tuyến",
     deleteWarning: "Bạn có chắc chắn muốn xóa người dùng này không?",
+    deleteTitle: "Xóa người dùng",
+    deleteDescription: "Thao tác này không thể hoàn tác. {{name}} sẽ bị xóa vĩnh viễn.",
+    deleteConfirmLabel: "Nhập tên người dùng để xác nhận",
+    deleteAction: "Xóa",
   },
   policies: {
     title: "Chính sách",
-    pageDescription: "Chính sách tiêu chuẩn và chính sách người vận hành áp dụng cho tài nguyên RabbitMQ.",
+    pageDescription:
+      "Chính sách tiêu chuẩn và chính sách người vận hành áp dụng cho tài nguyên RabbitMQ.",
     vhost: "Máy chủ Ảo",
     selectVhost: "Chọn máy chủ ảo",
     vhostRequired: "Hãy chọn máy chủ ảo.",
@@ -664,7 +681,8 @@ export const vi = {
     statisticsDescription: "Đặt lại tốc độ và bộ đếm đã thu thập mà không xóa tài nguyên broker.",
     resetStatistics: "Đặt lại toàn bộ thống kê",
     resetNodeStatistics: "Đặt lại thống kê node",
-    resetStatisticsWarning: "Đặt lại toàn bộ thống kê quản trị đã thu thập? Biểu đồ và tốc độ sẽ bắt đầu thu thập lại từ số không.",
+    resetStatisticsWarning:
+      "Đặt lại toàn bộ thống kê quản trị đã thu thập? Biểu đồ và tốc độ sẽ bắt đầu thu thập lại từ số không.",
     resetNodeStatisticsWarning: "Đặt lại thống kê quản trị đã thu thập của {{node}}?",
   },
   featureFlags: {
@@ -702,7 +720,8 @@ export const vi = {
     importFile: "Tệp Cấu hình",
     importButton: "Tải lên cấu hình",
     importSuccess: "Nhập cấu hình thành công.",
-    exportDescription: "Tải người dùng, vhost, queue, exchange, binding và policy của broker dưới dạng JSON.",
+    exportDescription:
+      "Tải người dùng, vhost, queue, exchange, binding và policy của broker dưới dạng JSON.",
     importDescription: "Áp dụng definitions broker từ một tệp JSON.",
     selectVhost: "Chọn máy chủ ảo",
     exportHint: "Chọn máy chủ ảo để chỉ xuất tài nguyên trong phạm vi đó.",
@@ -873,7 +892,8 @@ export const vi = {
     invalidPayloadLimit: "Nhập số nguyên không âm hoặc để trống.",
     username: "Tên người dùng tracer",
     password: "Mật khẩu tracer",
-    credentialsNotice: "Thông tin đăng nhập chỉ được gửi tới RabbitMQ cho yêu cầu này và RabbitLens không lưu trữ.",
+    credentialsNotice:
+      "Thông tin đăng nhập chỉ được gửi tới RabbitMQ cho yêu cầu này và RabbitLens không lưu trữ.",
     node: "Node",
     selectNode: "Chọn node",
     nodeFilter: "Bộ lọc node theo dõi",

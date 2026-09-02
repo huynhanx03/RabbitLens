@@ -14,7 +14,9 @@ describe("Statistics Capabilities", () => {
     });
 
     it("returns queue-totals-only when disable_stats is true and enable_queue_totals is true", () => {
-      expect(resolveStatisticsMode({ ...baseOverview, disable_stats: true, enable_queue_totals: true })).toBe("queue-totals-only");
+      expect(
+        resolveStatisticsMode({ ...baseOverview, disable_stats: true, enable_queue_totals: true }),
+      ).toBe("queue-totals-only");
     });
 
     it("returns no-rates when rates_mode is none", () => {
@@ -26,13 +28,15 @@ describe("Statistics Capabilities", () => {
     });
 
     it("returns detailed-rates when rates_mode is detailed", () => {
-      expect(resolveStatisticsMode({ ...baseOverview, rates_mode: "detailed" })).toBe("detailed-rates");
+      expect(resolveStatisticsMode({ ...baseOverview, rates_mode: "detailed" })).toBe(
+        "detailed-rates",
+      );
     });
 
     it("returns basic-rates as fallback when rates_mode is undefined", () => {
       expect(resolveStatisticsMode({ disable_stats: false })).toBe("basic-rates");
     });
-    
+
     it("returns basic-rates as fallback when overview is undefined", () => {
       expect(resolveStatisticsMode(undefined)).toBe("basic-rates");
     });

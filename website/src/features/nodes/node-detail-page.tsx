@@ -22,18 +22,13 @@ import { DetailGrid } from "@/components/shared/detail-grid";
 import { RawDataDisclosure } from "@/components/shared/raw-data-disclosure";
 import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
-import {
-  StructuredKeyValue,
-} from "@/components/shared/structured-key-value";
+import { StructuredKeyValue } from "@/components/shared/structured-key-value";
 import { objectToStructuredEntries } from "@/components/shared/structured-key-value-utils";
 import { UsageMeterCard } from "@/components/shared/usage-meter-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { createNodeViewModel, type NodeStatus } from "./node-view-model";
-import {
-  nodeBinaryQueryOptions,
-  nodeDetailQueryOptions,
-} from "@/domains/nodes/nodes-query";
+import { nodeBinaryQueryOptions, nodeDetailQueryOptions } from "@/domains/nodes/nodes-query";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-capabilities";
 import { StatisticsAvailability } from "@/components/shared/statistics-availability";
@@ -59,16 +54,8 @@ function formatBytes(value: number | null | undefined): string | null {
   return `${new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 }).format(amount)} ${units[unitIndex]}`;
 }
 
-function Section({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title: string;
-}) {
-  return (
-    <SectionCard title={title}>{children}</SectionCard>
-  );
+function Section({ children, title }: { children: React.ReactNode; title: string }) {
+  return <SectionCard title={title}>{children}</SectionCard>;
 }
 
 function statusPresentation(status: NodeStatus, t: (key: string) => string) {
@@ -103,14 +90,14 @@ function formatUptime(ms: number | null | undefined): string | null {
   return `${minutes}m`;
 }
 
-function applicationEntries(
-  applications: Array<{ name: string; version?: string }> | undefined,
-) {
-  return applications?.map((application) => ({
-    key: application.name,
-    value: application.version ?? "—",
-    monospace: true,
-  })) ?? [];
+function applicationEntries(applications: Array<{ name: string; version?: string }> | undefined) {
+  return (
+    applications?.map((application) => ({
+      key: application.name,
+      value: application.version ?? "—",
+      monospace: true,
+    })) ?? []
+  );
 }
 
 function binaryMemoryEntries(value: unknown, limit = 12) {
@@ -118,10 +105,7 @@ function binaryMemoryEntries(value: unknown, limit = 12) {
     return value.slice(0, limit).map((item, index) => {
       if (item && typeof item === "object" && "pid" in item) {
         const record = item as { pid?: unknown; bytes?: unknown };
-        return [
-          String(record.pid ?? `#${index + 1}`),
-          record.bytes,
-        ] as const;
+        return [String(record.pid ?? `#${index + 1}`), record.bytes] as const;
       }
 
       return [`#${index + 1}`, item] as const;
@@ -149,32 +133,20 @@ export function NodeDetailPage() {
   const [showBinaryWarning, setShowBinaryWarning] = useState(false);
   const [binaryEnabled, setBinaryEnabled] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const canResetStatistics =
-    context.auth?.user?.tags.includes("administrator") ?? false;
-  const resetStatistics = useResetNodeStatisticsMutation(
-    context.apiClient,
-    name,
-  );
-  
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const canResetStatistics = context.auth?.user?.tags.includes("administrator") ?? false;
+  const resetStatistics = useResetNodeStatisticsMutation(context.apiClient, name);
+
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const statsMode = resolveStatisticsMode(overviewQuery.data);
   const statsCapabilities = getStatisticsSelectors(statsMode);
-  
-  const nodeQuery = useQuery(
-    nodeDetailQueryOptions(context.apiClient, name, () => true),
-  );
-  const binaryQuery = useQuery(
-    nodeBinaryQueryOptions(context.apiClient, name, binaryEnabled),
-  );
+
+  const nodeQuery = useQuery(nodeDetailQueryOptions(context.apiClient, name, () => true));
+  const binaryQuery = useQuery(nodeBinaryQueryOptions(context.apiClient, name, binaryEnabled));
   const node = useMemo(
     () => (nodeQuery.data ? createNodeViewModel(nodeQuery.data) : null),
     [nodeQuery.data],
   );
-  const status = node
-    ? statusPresentation(node.status, (key) => t(key as never))
-    : null;
+  const status = node ? statusPresentation(node.status, (key) => t(key as never)) : null;
 
   return (
     <div className="space-y-6">
@@ -189,16 +161,20 @@ export function NodeDetailPage() {
           </Link>
         }
         title={name}
-        description={node ? t("nodes.nodeType", { type: node.type ?? t("common.unknown") }) : t("nodes.details")}
-        status={node && status ? <StatusBadge variant={status.variant}>{status.label}</StatusBadge> : null}
-        metadata={node ? [node.os_pid ? `PID ${node.os_pid}` : null, node.rates_mode].filter(Boolean) : []}
+        description={
+          node
+            ? t("nodes.nodeType", { type: node.type ?? t("common.unknown") })
+            : t("nodes.details")
+        }
+        status={
+          node && status ? <StatusBadge variant={status.variant}>{status.label}</StatusBadge> : null
+        }
+        metadata={
+          node ? [node.os_pid ? `PID ${node.os_pid}` : null, node.rates_mode].filter(Boolean) : []
+        }
         actions={
           canResetStatistics ? (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => setResetOpen(true)}
-            >
+            <Button type="button" variant="destructive" onClick={() => setResetOpen(true)}>
               <RotateCcw aria-hidden="true" />
               {t("cluster.resetNodeStatistics")}
             </Button>
@@ -229,14 +205,18 @@ export function NodeDetailPage() {
         isPending={nodeQuery.isPending}
         onRetry={() => void nodeQuery.refetch()}
         notFoundAction={
-          <Link to="/nodes" className="inline-flex h-8 items-center rounded-lg border px-3 text-sm font-medium hover:bg-muted">
+          <Link
+            to="/nodes"
+            className="inline-flex h-8 items-center rounded-lg border px-3 text-sm font-medium hover:bg-muted"
+          >
             {t("common.returnToList")}
           </Link>
         }
       >
         {node ? (
           <div className="space-y-6">
-            {statsCapabilities.mode !== "basic-rates" && statsCapabilities.mode !== "detailed-rates" ? (
+            {statsCapabilities.mode !== "basic-rates" &&
+            statsCapabilities.mode !== "detailed-rates" ? (
               <StatisticsAvailability reason={statsCapabilities.availabilityReason} />
             ) : null}
 
@@ -283,10 +263,7 @@ export function NodeDetailPage() {
               </div>
             </Section>
 
-            <SectionCard
-              title={t("nodes.runtime")}
-              description={t("nodes.runtimeDescription")}
-            >
+            <SectionCard title={t("nodes.runtime")} description={t("nodes.runtimeDescription")}>
               <DetailGrid
                 unavailableLabel={t("common.unavailable")}
                 items={[
@@ -304,10 +281,7 @@ export function NodeDetailPage() {
             <NodeOperationalDiagnostics node={nodeQuery.data!} />
 
             <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-              <SectionCard
-                title={t("nodes.memory")}
-                description={t("nodes.memoryDescription")}
-              >
+              <SectionCard title={t("nodes.memory")} description={t("nodes.memoryDescription")}>
                 <div className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-3">
                     <MetricCard
@@ -323,9 +297,7 @@ export function NodeDetailPage() {
                     <MetricCard
                       title={t("common.usage")}
                       value={
-                        node.memory.percent === null
-                          ? null
-                          : `${node.memory.percent.toFixed(1)}%`
+                        node.memory.percent === null ? null : `${node.memory.percent.toFixed(1)}%`
                       }
                       status={node.mem_alarm ? "critical" : "normal"}
                       icon={<Activity aria-hidden="true" />}
@@ -364,7 +336,10 @@ export function NodeDetailPage() {
                       {t("common.unavailable")}
                     </p>
                   ) : node.cluster_links ? (
-                    <RawDataDisclosure title={t("nodes.rawClusterLinks")} value={node.cluster_links} />
+                    <RawDataDisclosure
+                      title={t("nodes.rawClusterLinks")}
+                      value={node.cluster_links}
+                    />
                   ) : (
                     <p className="text-sm text-muted-foreground">{t("common.unavailable")}</p>
                   )}
@@ -383,10 +358,7 @@ export function NodeDetailPage() {
               />
             </SectionCard>
 
-            <SectionCard
-              title={t("nodes.plugins")}
-              description={t("nodes.pluginsDescription")}
-            >
+            <SectionCard title={t("nodes.plugins")} description={t("nodes.pluginsDescription")}>
               {node.enabled_plugins?.length ? (
                 <ul className="flex flex-wrap gap-2 text-sm">
                   {node.enabled_plugins.map((plugin) => (
@@ -404,10 +376,7 @@ export function NodeDetailPage() {
               )}
             </SectionCard>
 
-            <SectionCard
-              title={t("nodes.files")}
-              description={t("nodes.filesDescription")}
-            >
+            <SectionCard title={t("nodes.files")} description={t("nodes.filesDescription")}>
               <DefinitionList
                 unavailableLabel={t("common.unavailable")}
                 items={[
@@ -473,9 +442,7 @@ export function NodeDetailPage() {
                       />
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">
-                      {t("nodes.binaryEmpty")}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t("nodes.binaryEmpty")}</p>
                   )}
                 </AsyncState>
               ) : null}

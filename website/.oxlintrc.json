@@ -17,9 +17,7 @@
       }
     },
     {
-      "files": [
-        "tests/e2e/**/*.{ts,tsx}"
-      ],
+      "files": ["tests/e2e/**/*.{ts,tsx}"],
       "rules": {
         "react/rules-of-hooks": "off"
       }

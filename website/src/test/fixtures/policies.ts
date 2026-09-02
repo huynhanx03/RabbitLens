@@ -10,7 +10,7 @@ export const mockPolicies: PolicyResponse[] = [
       "ha-mode": "all",
     },
     priority: 0,
-  }
+  },
 ];
 
 export const mockOperatorPolicies: PolicyResponse[] = [
@@ -23,5 +23,5 @@ export const mockOperatorPolicies: PolicyResponse[] = [
       "message-ttl": 60000,
     },
     priority: 10,
-  }
+  },
 ];

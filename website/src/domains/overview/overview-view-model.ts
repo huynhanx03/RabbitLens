@@ -1,6 +1,10 @@
 import type { NodeResponse } from "@/api/nodes-schema";
 import type { OverviewResponse } from "./overview-schema";
-import { resolveStatisticsMode, getStatisticsSelectors, type StatisticsSelectors } from "@/api/statistics-capabilities";
+import {
+  resolveStatisticsMode,
+  getStatisticsSelectors,
+  type StatisticsSelectors,
+} from "@/api/statistics-capabilities";
 
 export type OverviewViewModel = {
   clusterName: string;
@@ -52,8 +56,7 @@ export function createOverviewViewModel(
       queues: overview.object_totals?.queues ?? null,
       consumers: overview.object_totals?.consumers ?? null,
       messagesReady: overview.queue_totals?.messages_ready ?? null,
-      messagesUnacked:
-        overview.queue_totals?.messages_unacknowledged ?? null,
+      messagesUnacked: overview.queue_totals?.messages_unacknowledged ?? null,
       messagesTotal: overview.queue_totals?.messages ?? null,
     },
     nodeHealth: {

@@ -43,16 +43,58 @@ describe("userApi", () => {
   });
 
   it("deletes one topic permission with the exchange in the path", async () => {
-    await userApi.deleteUserTopicPermission(
-      client,
-      "service user",
-      "/",
-      "amq.topic",
-    );
+    await userApi.deleteUserTopicPermission(client, "service user", "/", "amq.topic");
 
     expect(client.requestVoid).toHaveBeenCalledWith(
       "/topic-permissions/%2F/service%20user/amq.topic",
       { method: "DELETE" },
+    );
+  });
+
+  it("encodes a user name when reading permissions and topic permissions", async () => {
+    vi.mocked(client.request).mockResolvedValue([]);
+
+    await userApi.getUserPermissions(client, "service/user");
+    await userApi.getUserTopicPermissions(client, "service/user");
+
+    expect(client.request).toHaveBeenNthCalledWith(
+      1,
+      "/users/service%2Fuser/permissions",
+      expect.any(Object),
+    );
+    expect(client.request).toHaveBeenNthCalledWith(
+      2,
+      "/users/service%2Fuser/topic-permissions",
+      expect.any(Object),
+    );
+  });
+
+  it("writes and deletes a vhost permission using an encoded principal path", async () => {
+    const body = { configure: "^orders", write: "^orders", read: ".*" };
+
+    await userApi.putUserPermission(client, "service/user", "/team a", body);
+    await userApi.deleteUserPermission(client, "service/user", "/team a");
+
+    expect(client.requestVoid).toHaveBeenNthCalledWith(
+      1,
+      "/permissions/%2Fteam%20a/service%2Fuser",
+      { method: "PUT", body: JSON.stringify(body) },
+    );
+    expect(client.requestVoid).toHaveBeenNthCalledWith(
+      2,
+      "/permissions/%2Fteam%20a/service%2Fuser",
+      { method: "DELETE" },
+    );
+  });
+
+  it("writes a topic permission with its exchange in the serialized body", async () => {
+    const body = { exchange: "amq.topic", write: "^orders", read: "^orders" };
+
+    await userApi.putUserTopicPermission(client, "service/user", "/team a", body);
+
+    expect(client.requestVoid).toHaveBeenCalledWith(
+      "/topic-permissions/%2Fteam%20a/service%2Fuser",
+      { method: "PUT", body: JSON.stringify(body) },
     );
   });
 });

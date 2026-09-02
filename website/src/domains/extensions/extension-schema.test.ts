@@ -4,11 +4,13 @@ import { extensionSchema } from "./extension-schema";
 
 describe("extensionSchema", () => {
   it("normalizes RabbitMQ 4.x legacy UI descriptors", () => {
-    const result = z.array(extensionSchema).parse([
-      { javascript: "federation.js" },
-      { javascript: ["shovel.js", "shovel-extra.js"] },
-      [],
-    ]);
+    const result = z
+      .array(extensionSchema)
+      .parse([
+        { javascript: "federation.js" },
+        { javascript: ["shovel.js", "shovel-extra.js"] },
+        [],
+      ]);
 
     expect(result).toEqual([
       { javascript_src: "federation.js" },

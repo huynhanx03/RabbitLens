@@ -35,10 +35,7 @@ export function EtsTablesPage() {
         header: t("top.owner"),
         cell: ({ row }) => (
           <Button asChild variant="link" className="h-auto p-0 font-mono">
-            <Link
-              to="/extensions/top/process/$pid"
-              params={{ pid: row.original.owner }}
-            >
+            <Link to="/extensions/top/process/$pid" params={{ pid: row.original.owner }}>
               {row.original.owner}
             </Link>
           </Button>

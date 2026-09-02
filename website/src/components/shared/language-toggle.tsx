@@ -9,18 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { SupportedLocale } from "@/config/defaults";
 
-const LOCALE_PRESENTATION: Record<
-  SupportedLocale,
-  { flag: string; label: string; code: string }
-> = {
-  en: { flag: "🇬🇧", label: "English", code: "EN" },
-  vi: { flag: "🇻🇳", label: "Tiếng Việt", code: "VI" },
-};
+const LOCALE_PRESENTATION: Record<SupportedLocale, { flag: string; label: string; code: string }> =
+  {
+    en: { flag: "🇬🇧", label: "English", code: "EN" },
+    vi: { flag: "🇻🇳", label: "Tiếng Việt", code: "VI" },
+  };
 
 export function LanguageToggle() {
   const { i18n, t } = useTranslation();
-  const language: SupportedLocale =
-    i18n.resolvedLanguage === "vi" ? "vi" : "en";
+  const language: SupportedLocale = i18n.resolvedLanguage === "vi" ? "vi" : "en";
   const activeLocale = LOCALE_PRESENTATION[language];
 
   return (
@@ -44,13 +41,13 @@ export function LanguageToggle() {
       <DropdownMenuContent align="end" className="min-w-48">
         <DropdownMenuRadioGroup
           value={language}
-          onValueChange={(value) =>
-            void i18n.changeLanguage(value as SupportedLocale)
-          }
+          onValueChange={(value) => void i18n.changeLanguage(value as SupportedLocale)}
         >
-          {(Object.entries(LOCALE_PRESENTATION) as Array<
-            [SupportedLocale, (typeof LOCALE_PRESENTATION)[SupportedLocale]]
-          >).map(([locale, presentation]) => (
+          {(
+            Object.entries(LOCALE_PRESENTATION) as Array<
+              [SupportedLocale, (typeof LOCALE_PRESENTATION)[SupportedLocale]]
+            >
+          ).map(([locale, presentation]) => (
             <DropdownMenuRadioItem
               key={locale}
               value={locale}

@@ -10,9 +10,6 @@ describe("extension API", () => {
 
     await getExtensions(client);
 
-    expect(client.request).toHaveBeenCalledWith(
-      "/extensions",
-      expect.anything(),
-    );
+    expect(client.request).toHaveBeenCalledWith("/extensions", expect.anything());
   });
 });

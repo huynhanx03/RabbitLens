@@ -84,9 +84,7 @@ export function AsyncState({
 
   if (isError) {
     const apiError = error instanceof ApiError ? error : null;
-    const messageKey = apiError
-      ? getErrorTranslationKey(apiError.kind)
-      : "errors.unexpected";
+    const messageKey = apiError ? getErrorTranslationKey(apiError.kind) : "errors.unexpected";
 
     if (hasData) {
       return (
@@ -138,7 +136,9 @@ export function AsyncState({
     return (
       <div className="rounded-xl border border-dashed bg-muted/20 p-8 text-center">
         <p className="font-medium text-foreground">{emptyTitle ?? t("common.noData")}</p>
-        {emptyDescription ? <p className="mt-1 text-sm text-muted-foreground">{emptyDescription}</p> : null}
+        {emptyDescription ? (
+          <p className="mt-1 text-sm text-muted-foreground">{emptyDescription}</p>
+        ) : null}
         {emptyAction ? <div className="mt-4 flex justify-center">{emptyAction}</div> : null}
       </div>
     );

@@ -49,11 +49,11 @@ test.describe("Performance Budgets", () => {
     await page.route("**/api/extensions", async (route) => {
       await route.fulfill({ json: [] });
     });
-    
+
     await page.route("**/api/nodes", async (route) => {
       await route.fulfill({ json: [{ name: "rabbit@localhost", type: "disc", running: true }] });
     });
-    
+
     await page.route("**/api/vhosts", async (route) => {
       await route.fulfill({ json: [{ name: "/" }] });
     });
@@ -72,12 +72,10 @@ test.describe("Performance Budgets", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
-    
-    expect(apiRequestCount).toBeLessThanOrEqual(
-      PERFORMANCE_BUDGETS.initialApiRequestCount,
-    );
+
+    expect(apiRequestCount).toBeLessThanOrEqual(PERFORMANCE_BUDGETS.initialApiRequestCount);
   });
 
   test("Large data sets stay within DOM budget (virtualization/pagination)", async ({ page }) => {
@@ -108,14 +106,14 @@ test.describe("Performance Budgets", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await navigateTo(page, "Queues and Streams");
     await expect(page).toHaveURL(/\/queues/);
     await expect(page.locator("tbody tr").first()).toBeVisible();
 
     // Verify row count is bounded by virtualization/pagination
     const rows = await page.locator("tbody tr").count();
-    
+
     // Should be pagination limit (e.g., 50) + maybe header row
     expect(rows).toBeLessThanOrEqual(PERFORMANCE_BUDGETS.virtualizedDomRows);
   });

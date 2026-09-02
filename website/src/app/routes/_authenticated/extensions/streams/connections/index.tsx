@@ -9,5 +9,9 @@ export const Route = createFileRoute("/_authenticated/extensions/streams/connect
 });
 
 function RouteComponent() {
-  return <ExtensionRouteGuard id="streams"><StreamConnectionListPage search={Route.useSearch()} /></ExtensionRouteGuard>;
+  return (
+    <ExtensionRouteGuard id="streams">
+      <StreamConnectionListPage search={Route.useSearch()} />
+    </ExtensionRouteGuard>
+  );
 }

@@ -22,8 +22,8 @@ function hasApiClient(value: unknown): value is { apiClient: ManagementApiClient
 
 export function usePermissionDecision(policy: ActionPolicy): PermissionDecision {
   const { user } = useAuth();
-  
-  // Try to grab apiClient from route context. 
+
+  // Try to grab apiClient from route context.
   // In tests without router, this might throw or be undefined, so we default safely.
   let apiClient: ManagementApiClient | undefined;
   try {
@@ -35,17 +35,14 @@ export function usePermissionDecision(policy: ActionPolicy): PermissionDecision 
 
   const enabled = !!apiClient && !!policy.requiredFeature;
   const { data: overview } = useQuery({
-    ...overviewQueryOptions(
-      apiClient!,
-      () => enabled,
-    ),
+    ...overviewQueryOptions(apiClient!, () => enabled),
     enabled,
   });
   const { data: extensions } = useQuery({
     ...extensionsQueryOptions(apiClient!),
     enabled,
   });
-  
+
   const currentVhost = useCurrentVhost();
 
   const capabilities = useMemo(() => {
@@ -60,7 +57,7 @@ export function usePermissionDecision(policy: ActionPolicy): PermissionDecision 
         stream: extensions.some((ext) => ext.javascript_src.includes("stream")),
         top: extensions.some((ext) => ext.javascript_src.includes("top")),
         tracing: extensions.some((ext) => ext.javascript_src.includes("tracing")),
-      }
+      },
     };
   }, [overview, extensions]);
 

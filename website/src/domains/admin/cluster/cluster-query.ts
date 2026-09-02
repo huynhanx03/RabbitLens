@@ -27,14 +27,11 @@ export function useSetClusterNameMutation(client: ManagementApiClient) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (name: string) => putClusterName(client, name),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: clusterKeys.name() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: clusterKeys.name() }),
   });
 }
 
-function useResetStatisticsMutation(
-  reset: () => Promise<void>,
-) {
+function useResetStatisticsMutation(reset: () => Promise<void>) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: reset,
@@ -49,9 +46,6 @@ export function useResetAllStatisticsMutation(client: ManagementApiClient) {
   return useResetStatisticsMutation(() => resetAllStatistics(client));
 }
 
-export function useResetNodeStatisticsMutation(
-  client: ManagementApiClient,
-  node: string,
-) {
+export function useResetNodeStatisticsMutation(client: ManagementApiClient, node: string) {
   return useResetStatisticsMutation(() => resetNodeStatistics(client, node));
 }

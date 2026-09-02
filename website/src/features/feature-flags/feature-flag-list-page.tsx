@@ -25,8 +25,7 @@ export function FeatureFlagListPage() {
   const [filter, setFilter] = useState("");
   const [flagToEnable, setFlagToEnable] = useState<string | null>(null);
   const canManageFlags =
-    usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !==
-    "deny";
+    usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !== "deny";
 
   const rows = useMemo(() => {
     const term = filter.trim().toLocaleLowerCase();
@@ -48,11 +47,7 @@ export function FeatureFlagListPage() {
         cell: ({ row }) => {
           const state = row.original.state;
           const variant =
-            state === "enabled"
-              ? "success"
-              : state === "disabled"
-                ? "warning"
-                : "error";
+            state === "enabled" ? "success" : state === "disabled" ? "warning" : "error";
           return <StatusBadge variant={variant}>{state}</StatusBadge>;
         },
       },
@@ -83,13 +78,7 @@ export function FeatureFlagListPage() {
     <div className="space-y-4">
       <PageToolbar
         ariaLabel={t("featureFlags.title")}
-        primary={
-          <FilterBar
-            name={filter}
-            useRegex={false}
-            onSubmit={(name) => setFilter(name)}
-          />
-        }
+        primary={<FilterBar name={filter} useRegex={false} onSubmit={(name) => setFilter(name)} />}
       />
       <AsyncState
         isPending={featureFlags.isPending}

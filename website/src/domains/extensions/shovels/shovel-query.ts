@@ -23,7 +23,7 @@ export function useRestartShovelMutation(client: ManagementApiClient) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { vhost: string; name: string; node: string }) => 
+    mutationFn: (params: { vhost: string; name: string; node: string }) =>
       shovelApi.restartShovel(client, params.vhost, params.name),
     onSuccess: (_, { vhost }) => {
       queryClient.invalidateQueries({ queryKey: shovelKeys.list() });

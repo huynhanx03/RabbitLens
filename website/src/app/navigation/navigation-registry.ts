@@ -126,14 +126,7 @@ const administrationGroup: NavigationGroup = {
       labelKey: "cluster.title",
       to: "/admin/cluster",
       icon: Boxes,
-      keywords: [
-        "cluster",
-        "name",
-        "statistics",
-        "definition",
-        "import",
-        "export",
-      ],
+      keywords: ["cluster", "name", "statistics", "definition", "import", "export"],
     },
   ],
 };
@@ -165,23 +158,17 @@ function toNavigationItem(
   };
 }
 
-export function buildNavigation({
-  userTags,
-  extensions,
-}: BuildNavigationInput): NavigationGroup[] {
+export function buildNavigation({ userTags, extensions }: BuildNavigationInput): NavigationGroup[] {
   const groups = [monitorGroup, topologyGroup];
   const user = { name: "navigation", tags: [...userTags] };
 
-  if (
-    evaluatePermission(ADMIN_ACCESS_POLICY, user, null).kind !== "deny"
-  ) {
+  if (evaluatePermission(ADMIN_ACCESS_POLICY, user, null).kind !== "deny") {
     groups.push(administrationGroup);
   }
 
-  const extensionItems = getAvailableExtensionNavigation(
-    extensions,
-    userTags,
-  ).map((extension) => toNavigationItem(extension, userTags));
+  const extensionItems = getAvailableExtensionNavigation(extensions, userTags).map((extension) =>
+    toNavigationItem(extension, userTags),
+  );
 
   if (extensionItems.length > 0) {
     groups.push({

@@ -83,9 +83,15 @@ describe("AuthProvider", () => {
     expect(onLogout).not.toHaveBeenCalled();
   });
 
-  it("clears state and invokes logout cleanup", () => {
-    const { hook, onLogout } = renderAuth();
+  it("runs logout cleanup before clearing credentials", () => {
+    const { hook, onLogout, store } = renderAuth();
     act(() => hook.result.current.loginBasic("guest", "guest"));
+    onLogout.mockImplementation(() => {
+      expect(store.getSnapshot().session).toEqual({
+        type: "basic",
+        authorization: "Basic Z3Vlc3Q6Z3Vlc3Q=",
+      });
+    });
 
     act(() => hook.result.current.logout());
 

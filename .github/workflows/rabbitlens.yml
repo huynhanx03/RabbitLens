@@ -1,4 +1,4 @@
-name: RabbitLens CI
+name: CI
 
 on:
   pull_request:
@@ -21,10 +21,161 @@ env:
   RABBITMQ_SERVER_REF: "772002718e1bd154dfaaeb61156c4693dc220351"
 
 jobs:
-  quality:
-    name: Quality gates
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Check test ownership
+        run: npm run check:test-ownership
+
+  test:
+    name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: validate
+
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check changed coverage
+        if: github.event_name == 'pull_request'
+        run: npm run test:pr-coverage -- ${{ github.base_ref }}
+
+      - name: Check full coverage
+        if: github.event_name != 'pull_request'
+        run: npm run test:coverage
+
+      - name: Upload coverage
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: website/coverage/
+          retention-days: 30
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: validate
+
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check bundle budget
+        run: npm run check:bundle
+
+      - name: Audit dependencies
+        run: npm run audit
+
+  browser:
+    name: Browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: validate
+
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+
+      - name: Scan artifacts
+        run: npm run test:artifact-secrets
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: website/playwright-report/
+          retention-days: 7
+
+  parity:
+    name: Parity
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: validate
 
     defaults:
       run:
@@ -34,7 +185,7 @@ jobs:
       - name: Checkout RabbitLens
         uses: actions/checkout@v7
 
-      - name: Checkout RabbitMQ legacy management source
+      - name: Checkout RabbitMQ
         uses: actions/checkout@v7
         with:
           repository: rabbitmq/rabbitmq-server
@@ -51,67 +202,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Unit tests
-        run: npm run test
-
-      - name: Parity manifest verification
+      - name: Verify parity
         run: npm run test:parity
-
-      - name: Build
-        run: npm run build
-
-      - name: Bundle budget
-        run: npm run check:bundle
-
-      - name: Dependency audit
-        run: npm run audit
-
-  browser:
-    name: Browser regression tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: quality
-
-    defaults:
-      run:
-        working-directory: website
-
-    steps:
-      - name: Checkout RabbitLens
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: website/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
-
-      - name: End-to-end tests
-        run: npm run test:e2e
-
-      - name: Performance tests
-        run: npm run test:performance
-
-      - name: Scan artifacts for leaked secrets
-        run: npm run test:artifact-secrets
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: website/playwright-report/
-          retention-days: 7

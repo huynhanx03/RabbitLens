@@ -63,9 +63,8 @@ describe("Tracing API", () => {
 
   it("deletes a file from its owning node", async () => {
     await deleteTraceFile(client, "rabbit@node", "audit.log");
-    expect(client.requestVoid).toHaveBeenCalledWith(
-      "/trace-files/node/rabbit%40node/audit.log",
-      { method: "DELETE" },
-    );
+    expect(client.requestVoid).toHaveBeenCalledWith("/trace-files/node/rabbit%40node/audit.log", {
+      method: "DELETE",
+    });
   });
 });

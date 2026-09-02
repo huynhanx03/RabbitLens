@@ -23,6 +23,7 @@ import {
 import { ArgumentsEditor, type ArgumentValue } from "@/components/shared/arguments-editor";
 import { FormFieldRow } from "@/components/shared/form-field-row";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
+import { useResetOnClose } from "@/components/shared/use-reset-on-close";
 import { useCreateQueueMutation } from "@/domains/queues/queue-query";
 import { useRouteContext } from "@tanstack/react-router";
 
@@ -43,11 +44,7 @@ export interface CreateQueueDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateQueueDialog({
-  vhost,
-  open,
-  onOpenChange,
-}: CreateQueueDialogProps) {
+export function CreateQueueDialog({ vhost, open, onOpenChange }: CreateQueueDialogProps) {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
   const createMutation = useCreateQueueMutation(context.apiClient);
@@ -70,6 +67,8 @@ export function CreateQueueDialog({
       arguments: {},
     },
   });
+
+  useResetOnClose(open, reset);
 
   const onSubmit = (data: CreateQueueFormValues) => {
     // Merge x-queue-type into arguments if it is not classic
@@ -94,7 +93,7 @@ export function CreateQueueDialog({
           reset();
           onOpenChange(false);
         },
-      }
+      },
     );
   };
 
@@ -102,7 +101,9 @@ export function CreateQueueDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto p-6 sm:max-w-3xl">
         <DialogHeader className="space-y-2 pr-10">
-          <DialogTitle className="text-2xl font-semibold tracking-tight">{t("queues.createQueue")}</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold tracking-tight">
+            {t("queues.createQueue")}
+          </DialogTitle>
           <DialogDescription className="text-base">
             {t("queues.createQueueDescription", { vhost })}
           </DialogDescription>
@@ -112,22 +113,11 @@ export function CreateQueueDialog({
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/30 px-4 py-1">
-            <FormFieldRow
-              htmlFor="name"
-              label={t("queues.name")}
-              error={errors.name?.message}
-            >
-              <Input
-                id="name"
-                {...register("name")}
-                disabled={createMutation.isPending}
-              />
+            <FormFieldRow htmlFor="name" label={t("queues.name")} error={errors.name?.message}>
+              <Input id="name" {...register("name")} disabled={createMutation.isPending} />
             </FormFieldRow>
 
-            <FormFieldRow
-              htmlFor="node"
-              label={`${t("queues.node")} (${t("common.optional")})`}
-            >
+            <FormFieldRow htmlFor="node" label={`${t("queues.node")} (${t("common.optional")})`}>
               <Input
                 id="node"
                 placeholder="e.g. rabbit@localhost"
@@ -177,7 +167,10 @@ export function CreateQueueDialog({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="auto_delete" className="text-sm font-semibold text-muted-foreground">
+                <Label
+                  htmlFor="auto_delete"
+                  className="text-sm font-semibold text-muted-foreground"
+                >
                   {t("queues.autoDelete")}
                 </Label>
                 <Select
@@ -216,7 +209,11 @@ export function CreateQueueDialog({
             >
               {t("common.cancel")}
             </Button>
-            <Button type="submit" disabled={createMutation.isPending} className="h-11 rounded-full px-7">
+            <Button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="h-11 rounded-full px-7"
+            >
               {createMutation.isPending ? t("common.loading") : t("common.add")}
             </Button>
           </div>

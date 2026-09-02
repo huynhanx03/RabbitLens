@@ -96,8 +96,7 @@ describe("queue topology view model", () => {
   it("classifies system bindings and preserves every explicit route", async () => {
     const topologyModule = await loadTopologyModule();
     expect(topologyModule).not.toBeNull();
-    const createQueueTopologyConfig =
-      topologyModule?.createQueueTopologyConfig;
+    const createQueueTopologyConfig = topologyModule?.createQueueTopologyConfig;
     expect(createQueueTopologyConfig).toBeTypeOf("function");
     if (!createQueueTopologyConfig) return;
 
@@ -121,8 +120,7 @@ describe("queue topology view model", () => {
   it("returns unique non-empty source exchanges in binding order", async () => {
     const topologyModule = await loadTopologyModule();
     expect(topologyModule).not.toBeNull();
-    const listExplicitSourceExchanges =
-      topologyModule?.listExplicitSourceExchanges;
+    const listExplicitSourceExchanges = topologyModule?.listExplicitSourceExchanges;
     expect(listExplicitSourceExchanges).toBeTypeOf("function");
     if (!listExplicitSourceExchanges) return;
 
@@ -132,8 +130,7 @@ describe("queue topology view model", () => {
   it("marks unresolved exchange details as loading", async () => {
     const topologyModule = await loadTopologyModule();
     expect(topologyModule).not.toBeNull();
-    const createQueueTopologyConfig =
-      topologyModule?.createQueueTopologyConfig;
+    const createQueueTopologyConfig = topologyModule?.createQueueTopologyConfig;
     expect(createQueueTopologyConfig).toBeTypeOf("function");
     if (!createQueueTopologyConfig) return;
 
@@ -143,8 +140,7 @@ describe("queue topology view model", () => {
 
   it("does not present stale exchange data as available after a failed refetch", async () => {
     const topologyModule = await loadTopologyModule();
-    const resolveExchangeLookupState =
-      topologyModule?.resolveExchangeLookupState;
+    const resolveExchangeLookupState = topologyModule?.resolveExchangeLookupState;
     expect(resolveExchangeLookupState).toBeTypeOf("function");
     if (!resolveExchangeLookupState) return;
 

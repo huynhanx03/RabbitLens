@@ -17,8 +17,8 @@ import { createExchangeViewModel } from "./exchange-view-model";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
-import { PublishMessageDialog } from "./publish-message-dialog";
-import { BindingList } from "../bindings/binding-list";
+import { PublishMessageDialog } from "@/domains/exchanges/publish-message-dialog";
+import { BindingList } from "@/domains/bindings/binding-list";
 
 import { PRODUCT_DEFAULTS } from "@/config/defaults";
 import { CHART_RANGES } from "@/config/chart-ranges";
@@ -38,9 +38,7 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
   const navigate = useNavigate();
   const [range, setRange] = useState(CHART_RANGES[0]);
 
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const statsMode = resolveStatisticsMode(overviewQuery.data);
   const statsCapabilities = getStatisticsSelectors(statsMode);
 
@@ -56,20 +54,26 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
   const featureBadges = vm?.features ?? [];
 
   const rateSeries = useMemo<RateChartSeries[]>(() => {
-    if (!exchange?.message_stats?.publish_in_details?.samples && !exchange?.message_stats?.publish_out_details?.samples) {
+    if (
+      !exchange?.message_stats?.publish_in_details?.samples &&
+      !exchange?.message_stats?.publish_out_details?.samples
+    ) {
       return [];
     }
     const series: RateChartSeries[] = [];
     if (exchange.message_stats.publish_in_details?.samples) {
       series.push({
         name: t("exchanges.publishInRate"),
-        data: exchange.message_stats.publish_in_details.samples.map(s => [s.timestamp, s.sample])
+        data: exchange.message_stats.publish_in_details.samples.map((s) => [s.timestamp, s.sample]),
       });
     }
     if (exchange.message_stats.publish_out_details?.samples) {
       series.push({
         name: t("exchanges.publishOutRate"),
-        data: exchange.message_stats.publish_out_details.samples.map(s => [s.timestamp, s.sample])
+        data: exchange.message_stats.publish_out_details.samples.map((s) => [
+          s.timestamp,
+          s.sample,
+        ]),
       });
     }
     return series;
@@ -86,16 +90,18 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => navigate({
-              to: "/exchanges",
-              search: {
-                page: 1,
-                pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
-                name: "",
-                useRegex: false,
-                sortReverse: false,
-              },
-            })}
+            onClick={() =>
+              navigate({
+                to: "/exchanges",
+                search: {
+                  page: 1,
+                  pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
+                  name: "",
+                  useRegex: false,
+                  sortReverse: false,
+                },
+              })
+            }
             aria-label={t("common.back")}
           >
             <ChevronLeft aria-hidden="true" />
@@ -126,8 +132,14 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
         ].filter(Boolean)}
         actions={
           <>
-            <Button onClick={() => setPublishDialogOpen(true)}>{t("exchanges.publishMessage")}</Button>
-            {name !== "" ? <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>{t("common.remove")}</Button> : null}
+            <Button onClick={() => setPublishDialogOpen(true)}>
+              {t("exchanges.publishMessage")}
+            </Button>
+            {name !== "" ? (
+              <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
+                {t("common.remove")}
+              </Button>
+            ) : null}
           </>
         }
       />
@@ -145,21 +157,24 @@ export function ExchangeDetailPage({ vhost, name }: ExchangeDetailPageProps) {
         title={t("common.remove")}
         description={t("exchanges.deleteDescription", { name: displayName })}
         onConfirm={() => {
-          deleteExchange.mutate({ vhost, name }, {
-            onSuccess: () => {
-              setDeleteDialogOpen(false);
-              navigate({
-                to: "/exchanges",
-                search: {
-                  page: 1,
-                  pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
-                  name: "",
-                  useRegex: false,
-                  sortReverse: false,
-                },
-              });
-            }
-          });
+          deleteExchange.mutate(
+            { vhost, name },
+            {
+              onSuccess: () => {
+                setDeleteDialogOpen(false);
+                navigate({
+                  to: "/exchanges",
+                  search: {
+                    page: 1,
+                    pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
+                    name: "",
+                    useRegex: false,
+                    sortReverse: false,
+                  },
+                });
+              },
+            },
+          );
         }}
         isConfirming={deleteExchange.isPending}
         error={deleteExchange.error}

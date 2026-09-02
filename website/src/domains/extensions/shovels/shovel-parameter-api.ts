@@ -30,9 +30,7 @@ export function buildMoveMessagesShovel(
     "src-protocol": "amqp091",
     "src-prefetch-count": 1000,
     "src-delete-after": "queue-length",
-    ...(queueType === "stream"
-      ? { "src-consumer-args": { "x-stream-offset": "first" } }
-      : {}),
+    ...(queueType === "stream" ? { "src-consumer-args": { "x-stream-offset": "first" } } : {}),
     "dest-uri": "amqp:///",
     "dest-queue": destinationQueue,
     "dest-protocol": "amqp091",
@@ -55,11 +53,7 @@ export function getShovelParameters(client: ManagementApiClient) {
   return client.request(parameterPath(), z.array(shovelParameterSchema));
 }
 
-export function getShovelParameter(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
+export function getShovelParameter(client: ManagementApiClient, vhost: string, name: string) {
   return client.request(parameterPath(vhost, name), shovelParameterSchema);
 }
 
@@ -75,19 +69,11 @@ export async function putShovelParameter(
   });
 }
 
-export async function deleteShovel(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
+export async function deleteShovel(client: ManagementApiClient, vhost: string, name: string) {
   await client.requestVoid(shovelPath(vhost, name), { method: "DELETE" });
 }
 
-export async function restartShovel(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
+export async function restartShovel(client: ManagementApiClient, vhost: string, name: string) {
   await client.requestVoid(`${shovelPath(vhost, name)}/restart`, {
     method: "DELETE",
   });

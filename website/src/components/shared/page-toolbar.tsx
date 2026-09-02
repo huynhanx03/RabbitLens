@@ -8,12 +8,7 @@ type PageToolbarProps = {
   className?: string;
 };
 
-export function PageToolbar({
-  ariaLabel,
-  primary,
-  secondary,
-  className,
-}: PageToolbarProps) {
+export function PageToolbar({ ariaLabel, primary, secondary, className }: PageToolbarProps) {
   return (
     <div
       role="toolbar"
@@ -25,9 +20,7 @@ export function PageToolbar({
     >
       <div className="min-w-0 flex-1">{primary}</div>
       {secondary ? (
-        <div className="flex shrink-0 items-center gap-3 sm:ml-auto">
-          {secondary}
-        </div>
+        <div className="flex shrink-0 items-center gap-3 sm:ml-auto">{secondary}</div>
       ) : null}
     </div>
   );

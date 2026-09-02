@@ -23,7 +23,7 @@ export function useRestartFederationLinkMutation(client: ManagementApiClient) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { vhost: string; id: string; node: string }) => 
+    mutationFn: (params: { vhost: string; id: string; node: string }) =>
       federationApi.restartFederationLink(client, params.vhost, params.id, params.node),
     onSuccess: (_, { vhost }) => {
       queryClient.invalidateQueries({ queryKey: federationKeys.linkList() });

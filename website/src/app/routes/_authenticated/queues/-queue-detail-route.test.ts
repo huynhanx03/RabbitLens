@@ -27,12 +27,7 @@ describe("Queue detail loader", () => {
     expect(ensureQueryData).toHaveBeenCalledTimes(1);
     expect(ensureQueryData).toHaveBeenCalledWith(
       expect.objectContaining({
-        queryKey: queueDetailQueryOptions(
-          apiClient,
-          "/",
-          "orders",
-          CHART_RANGES[0],
-        ).queryKey,
+        queryKey: queueDetailQueryOptions(apiClient, "/", "orders", CHART_RANGES[0]).queryKey,
       }),
     );
   });

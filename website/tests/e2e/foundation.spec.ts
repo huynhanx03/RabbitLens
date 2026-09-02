@@ -81,9 +81,7 @@ test.describe("RabbitLens foundation", () => {
     });
   });
 
-  test("signs in and navigates from Overview to node detail", async ({
-    page,
-  }) => {
+  test("signs in and navigates from Overview to node detail", async ({ page }) => {
     await page.goto("/");
 
     await expect(page).toHaveURL(/\/login/);
@@ -99,9 +97,21 @@ test.describe("RabbitLens foundation", () => {
     await expect(page.getByRole("link", { name: "rabbit@localhost" })).toBeVisible();
 
     await page.getByRole("link", { name: "rabbit@localhost" }).click();
-    await expect(
-      page.getByRole("heading", { name: "rabbit@localhost" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "rabbit@localhost" })).toBeVisible();
     await expect(page.getByText("File Descriptors")).toBeVisible();
+  });
+
+  test("signs out to a clean login URL", async ({ page }) => {
+    await page.goto("/");
+    await page.getByLabel("Username").fill("operator");
+    await page.locator("#password").fill("secret");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByRole("menuitem", { name: "Sign out" }).click();
+
+    await expect(page).toHaveURL("http://127.0.0.1:4173/login");
+    await expect(page.getByRole("heading", { name: "Connect to RabbitMQ" })).toBeVisible();
   });
 });

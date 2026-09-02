@@ -45,11 +45,13 @@ describe("channelSchema", () => {
       name: "channel",
       pending_raft_commands: 2,
       cached_segments: 4,
-      consumer_details: [{
-        consumer_tag: "worker",
-        queue: { name: "orders", vhost: "/" },
-        prefetch_count: 50,
-      }],
+      consumer_details: [
+        {
+          consumer_tag: "worker",
+          queue: { name: "orders", vhost: "/" },
+          prefetch_count: 50,
+        },
+      ],
     });
 
     expect(parsed.consumer_details?.[0]?.consumer_tag).toBe("worker");

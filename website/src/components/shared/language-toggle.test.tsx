@@ -17,20 +17,17 @@ describe("LanguageToggle", () => {
       </I18nextProvider>,
     );
 
-    expect(screen.getByTestId("language-trigger-flag")).toHaveTextContent(
-      "🇬🇧",
-    );
+    expect(screen.getByTestId("language-trigger-flag")).toHaveTextContent("🇬🇧");
     await user.click(screen.getByRole("button", { name: "Language" }));
     expect(screen.getByRole("menu")).toHaveClass("min-w-48");
     expect(screen.getByText("EN")).toBeInTheDocument();
     expect(screen.getByText("VI")).toBeInTheDocument();
-    expect(
-      screen.getByRole("menuitemradio", { name: "English" }),
-    ).toHaveAttribute("aria-checked", "true");
-
-    await user.click(
-      screen.getByRole("menuitemradio", { name: "Tiếng Việt" }),
+    expect(screen.getByRole("menuitemradio", { name: "English" })).toHaveAttribute(
+      "aria-checked",
+      "true",
     );
+
+    await user.click(screen.getByRole("menuitemradio", { name: "Tiếng Việt" }));
     expect(i18n.language).toBe("vi");
   });
 });

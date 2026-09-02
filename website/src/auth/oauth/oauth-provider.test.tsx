@@ -32,9 +32,18 @@ describe("OAuthProvider", () => {
       auth: {
         basic: true,
         oauth: {
-          resources: [{ id: "test", label: "test", authority: "https://auth", clientId: "client", scopes: ["openid"], redirectUri: "https://cb" }]
-        }
-      }
+          resources: [
+            {
+              id: "test",
+              label: "test",
+              authority: "https://auth",
+              clientId: "client",
+              scopes: ["openid"],
+              redirectUri: "https://cb",
+            },
+          ],
+        },
+      },
     };
 
     render(
@@ -44,11 +53,11 @@ describe("OAuthProvider", () => {
             <div>Child</div>
           </OAuthProvider>
         </AuthContext.Provider>
-      </RuntimeConfigContext.Provider>
+      </RuntimeConfigContext.Provider>,
     );
 
     expect(authContextValue.setRestoringOAuth).toHaveBeenCalled();
-    
+
     await waitFor(() => {
       expect(manager.restore).toHaveBeenCalled();
       expect(authContextValue.setBearer).toHaveBeenCalledWith("token123");
@@ -58,7 +67,12 @@ describe("OAuthProvider", () => {
   it("does not overwrite a Basic session established while OAuth restore is pending", async () => {
     let finishRestore: (value: null) => void = () => undefined;
     const manager = {
-      restore: vi.fn(() => new Promise<null>((resolve) => { finishRestore = resolve; })),
+      restore: vi.fn(
+        () =>
+          new Promise<null>((resolve) => {
+            finishRestore = resolve;
+          }),
+      ),
       subscribe: vi.fn().mockReturnValue(() => {}),
     } as unknown as OAuthManager;
     const logout = vi.fn();
@@ -79,14 +93,25 @@ describe("OAuthProvider", () => {
       auth: {
         basic: true,
         oauth: {
-          resources: [{ id: "test", label: "test", authority: "https://auth", clientId: "client", scopes: ["openid"], redirectUri: "https://cb" }],
+          resources: [
+            {
+              id: "test",
+              label: "test",
+              authority: "https://auth",
+              clientId: "client",
+              scopes: ["openid"],
+              redirectUri: "https://cb",
+            },
+          ],
         },
       },
     };
     const renderTree = (session: AuthContextValue["session"]) => (
       <RuntimeConfigContext.Provider value={config}>
         <AuthContext.Provider value={{ ...baseAuth, session }}>
-          <OAuthProvider manager={manager}><div>Child</div></OAuthProvider>
+          <OAuthProvider manager={manager}>
+            <div>Child</div>
+          </OAuthProvider>
         </AuthContext.Provider>
       </RuntimeConfigContext.Provider>
     );
@@ -123,7 +148,16 @@ describe("OAuthProvider", () => {
       auth: {
         basic: true,
         oauth: {
-          resources: [{ id: "test", label: "test", authority: "https://auth", clientId: "client", scopes: ["openid"], redirectUri: "https://cb" }],
+          resources: [
+            {
+              id: "test",
+              label: "test",
+              authority: "https://auth",
+              clientId: "client",
+              scopes: ["openid"],
+              redirectUri: "https://cb",
+            },
+          ],
         },
       },
     };
@@ -131,7 +165,9 @@ describe("OAuthProvider", () => {
     render(
       <RuntimeConfigContext.Provider value={config}>
         <AuthContext.Provider value={authContextValue}>
-          <OAuthProvider manager={manager}><div>Child</div></OAuthProvider>
+          <OAuthProvider manager={manager}>
+            <div>Child</div>
+          </OAuthProvider>
         </AuthContext.Provider>
       </RuntimeConfigContext.Provider>,
     );

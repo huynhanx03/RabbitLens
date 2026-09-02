@@ -7,11 +7,20 @@ test.describe("OAuth Tests", () => {
       await route.fulfill({
         json: {
           apiBaseUrl: "/api",
-          auth: { 
-            basic: true, 
-            oauth: { 
-              resources: [{ id: "test-idp", label: "Test IdP", authority: "https://idp.local", clientId: "client", redirectUri: "http://localhost:5173/oauth/callback", scopes: ["openid"] }] 
-            } 
+          auth: {
+            basic: true,
+            oauth: {
+              resources: [
+                {
+                  id: "test-idp",
+                  label: "Test IdP",
+                  authority: "https://idp.local",
+                  clientId: "client",
+                  redirectUri: "http://localhost:5173/oauth/callback",
+                  scopes: ["openid"],
+                },
+              ],
+            },
           },
           defaultLocale: "en",
           defaultTheme: "system",
@@ -51,7 +60,7 @@ test.describe("OAuth Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
   });
 });

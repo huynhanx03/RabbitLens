@@ -21,12 +21,7 @@ export function DetailPageHeader({
   className,
 }: DetailPageHeaderProps) {
   return (
-    <header
-      className={cn(
-        "rounded-2xl border bg-card p-4 shadow-sm sm:p-5",
-        className,
-      )}
-    >
+    <header className={cn("rounded-2xl border bg-card p-4 shadow-sm sm:p-5", className)}>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex min-w-0 items-start gap-3">
           {backAction ? <div className="shrink-0">{backAction}</div> : null}
@@ -38,9 +33,7 @@ export function DetailPageHeader({
               {status}
             </div>
             {description ? (
-              <p className="text-sm text-muted-foreground sm:text-base">
-                {description}
-              </p>
+              <p className="text-sm text-muted-foreground sm:text-base">{description}</p>
             ) : null}
             {metadata.length ? (
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -52,9 +45,7 @@ export function DetailPageHeader({
           </div>
         </div>
         {actions ? (
-          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-            {actions}
-          </div>
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">{actions}</div>
         ) : null}
       </div>
     </header>

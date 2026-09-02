@@ -25,9 +25,7 @@ describe("MetricCard", () => {
     );
 
     expect(screen.getByRole("region", { name: "Connections" })).toBeVisible();
-    expect(screen.getByRole("region", { name: "Connections" })).toHaveClass(
-      "rl-metric-card",
-    );
+    expect(screen.getByRole("region", { name: "Connections" })).toHaveClass("rl-metric-card");
     expect(screen.getByText("12")).toHaveClass("rl-metric-value");
     expect(screen.getByTestId("metric-icon")).toBeVisible();
     expect(screen.getByText("Active clients")).toBeVisible();
@@ -35,14 +33,7 @@ describe("MetricCard", () => {
   });
 
   it("uses an explicit unavailable label", () => {
-    render(
-      <MetricCard
-        title="Queues"
-        value={null}
-        isUnavailable
-        unavailableLabel="Unavailable"
-      />,
-    );
+    render(<MetricCard title="Queues" value={null} isUnavailable unavailableLabel="Unavailable" />);
     expect(screen.getByText("Unavailable")).toBeInTheDocument();
   });
 });

@@ -16,8 +16,10 @@ export const streamKeys = {
   all: ["stream-management"] as const,
   list: (search: ResourceListSearch) => [...streamKeys.all, "list", search] as const,
   detail: (vhost: string, name: string) => [...streamKeys.all, "detail", vhost, name] as const,
-  publishers: (vhost: string, name: string) => [...streamKeys.detail(vhost, name), "publishers"] as const,
-  consumers: (vhost: string, name: string) => [...streamKeys.detail(vhost, name), "consumers"] as const,
+  publishers: (vhost: string, name: string) =>
+    [...streamKeys.detail(vhost, name), "publishers"] as const,
+  consumers: (vhost: string, name: string) =>
+    [...streamKeys.detail(vhost, name), "consumers"] as const,
 };
 
 export function streamConnectionListQueryOptions(
@@ -43,18 +45,33 @@ export function streamConnectionDetailQueryOptions(
   });
 }
 
-export function streamPublisherQueryOptions(client: ManagementApiClient, vhost: string, name: string) {
-  return queryOptions({ queryKey: streamKeys.publishers(vhost, name), queryFn: () => getStreamConnectionPublishers(client, vhost, name) });
+export function streamPublisherQueryOptions(
+  client: ManagementApiClient,
+  vhost: string,
+  name: string,
+) {
+  return queryOptions({
+    queryKey: streamKeys.publishers(vhost, name),
+    queryFn: () => getStreamConnectionPublishers(client, vhost, name),
+  });
 }
 
-export function streamConsumerQueryOptions(client: ManagementApiClient, vhost: string, name: string) {
-  return queryOptions({ queryKey: streamKeys.consumers(vhost, name), queryFn: () => getStreamConnectionConsumers(client, vhost, name) });
+export function streamConsumerQueryOptions(
+  client: ManagementApiClient,
+  vhost: string,
+  name: string,
+) {
+  return queryOptions({
+    queryKey: streamKeys.consumers(vhost, name),
+    queryFn: () => getStreamConnectionConsumers(client, vhost, name),
+  });
 }
 
 export function useCreateSuperStream(client: ManagementApiClient) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ vhost, name, body }: { vhost: string; name: string; body: SuperStreamBody }) => createSuperStream(client, vhost, name, body),
+    mutationFn: ({ vhost, name, body }: { vhost: string; name: string; body: SuperStreamBody }) =>
+      createSuperStream(client, vhost, name, body),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["queues"] }),
   });
 }

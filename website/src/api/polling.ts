@@ -1,23 +1,11 @@
 import type { Query, QueryKey } from "@tanstack/react-query";
 import { ApiError } from "./api-error";
 
-export function createPollingInterval(
-  intervalMs: number,
-  isEnabled: () => boolean = () => true,
-) {
-  return <
-    TQueryFnData,
-    TError,
-    TData,
-    TQueryKey extends QueryKey = QueryKey,
-  >(
+export function createPollingInterval(intervalMs: number, isEnabled: () => boolean = () => true) {
+  return <TQueryFnData, TError, TData, TQueryKey extends QueryKey = QueryKey>(
     query: Query<TQueryFnData, TError, TData, TQueryKey>,
   ) => {
-    if (
-      !isEnabled() ||
-      document.visibilityState !== "visible" ||
-      !navigator.onLine
-    ) {
+    if (!isEnabled() || document.visibilityState !== "visible" || !navigator.onLine) {
       return false;
     }
 

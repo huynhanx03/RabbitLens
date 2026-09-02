@@ -8,7 +8,7 @@ test.describe("Statistics Modes Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
     await expect(page.getByText("Statistics Unavailable")).toBeVisible();
     await expect(page.getByText("Statistics are globally disabled on this node.")).toBeVisible();
     await expect(page.getByText("Message rates")).toBeHidden();
@@ -20,14 +20,10 @@ test.describe("Statistics Modes Tests", () => {
     await page.getByLabel("Username").fill("operator");
     await page.locator("#password").fill("secret");
     await page.getByRole("button", { name: "Sign in" }).click();
-    
+
+    await expect(page.getByRole("region", { name: "Workload health" })).toBeVisible();
     await expect(
-      page.getByRole("region", { name: "Workload health" }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(
-        "Statistics are disabled, but queue totals are explicitly enabled.",
-      ),
+      page.getByText("Statistics are disabled, but queue totals are explicitly enabled."),
     ).toBeVisible();
     await expect(page.getByText("Message rates")).toBeHidden();
   });

@@ -16,9 +16,9 @@ export interface Capabilities {
 
 export function resolveCapabilities(
   overview: OverviewResponse,
-  extensions: ExtensionResponse[]
+  extensions: ExtensionResponse[],
 ): Capabilities {
-  const hasExtension = (name: string) => 
+  const hasExtension = (name: string) =>
     extensions.some((ext) => ext.javascript_src.includes(name));
 
   return {

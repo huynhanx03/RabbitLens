@@ -13,7 +13,8 @@ export const policyKeys = {
   operatorLists: () => [...policyKeys.operatorAll, "list"] as const,
   operatorList: () => [...policyKeys.operatorLists()] as const,
   operatorDetails: () => [...policyKeys.operatorAll, "detail"] as const,
-  operatorDetail: (vhost: string, name: string) => [...policyKeys.operatorDetails(), vhost, name] as const,
+  operatorDetail: (vhost: string, name: string) =>
+    [...policyKeys.operatorDetails(), vhost, name] as const,
 };
 
 export function usePolicies(client: ManagementApiClient) {

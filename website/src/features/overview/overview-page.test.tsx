@@ -5,7 +5,12 @@ import { OverviewPage } from "./overview-page";
 import { server } from "@/test/server";
 import { http, HttpResponse } from "msw";
 import { ManagementApiClient } from "@/api/management-api-client";
-import { createRootRouteWithContext, createRouter, createMemoryHistory, RouterProvider } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  createRouter,
+  createMemoryHistory,
+  RouterProvider,
+} from "@tanstack/react-router";
 
 describe("OverviewPage", () => {
   const setup = () => {
@@ -67,20 +72,14 @@ describe("OverviewPage", () => {
 
     await screen.findByText("Connections", {}, { timeout: 3000 });
     expect(screen.queryByText("test-cluster")).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { level: 1 }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
     expect(screen.getByText("Connections")).toBeInTheDocument();
     expect(screen.getByText("10")).toBeInTheDocument();
     expect(screen.getByText("Ready messages")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
     expect(screen.getByText("Running nodes")).toBeInTheDocument();
-    expect(
-      screen.getByRole("region", { name: "Workload health" }),
-    ).toBeVisible();
-    expect(screen.getByTestId("overview-workload-health-grid")).toHaveClass(
-      "xl:grid-cols-6",
-    );
+    expect(screen.getByRole("region", { name: "Workload health" })).toBeVisible();
+    expect(screen.getByTestId("overview-workload-health-grid")).toHaveClass("xl:grid-cols-6");
     expect(screen.getAllByText("1")).toHaveLength(2);
   });
 
@@ -102,15 +101,9 @@ describe("OverviewPage", () => {
 
     setup();
 
-    await screen.findByText(
-      /Statistics are globally disabled/,
-      {},
-      { timeout: 3000 },
-    );
+    await screen.findByText(/Statistics are globally disabled/, {}, { timeout: 3000 });
     expect(screen.queryByText("test-cluster")).not.toBeInTheDocument();
-    expect(
-      screen.getByText(/Statistics are globally disabled/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Statistics are globally disabled/)).toBeInTheDocument();
     expect(screen.getAllByText("Unavailable").length).toBeGreaterThan(0);
   });
 });

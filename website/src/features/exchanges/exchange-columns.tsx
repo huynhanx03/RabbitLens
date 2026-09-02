@@ -2,9 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import type { ExchangeViewModel } from "./exchange-view-model";
 import { Badge } from "@/components/ui/badge";
 
-export function createExchangeColumns(
-  t: (key: string) => string,
-): ColumnDef<ExchangeViewModel>[] {
+export function createExchangeColumns(t: (key: string) => string): ColumnDef<ExchangeViewModel>[] {
   return [
     {
       accessorKey: "vhost",
@@ -17,9 +15,7 @@ export function createExchangeColumns(
       enableSorting: true,
       meta: { className: "min-w-60 max-w-[24rem]", variant: "code", wrap: "break" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-sm font-medium">
-          {getValue<string>()}
-        </span>
+        <span className="font-mono text-sm font-medium">{getValue<string>()}</span>
       ),
     },
     {

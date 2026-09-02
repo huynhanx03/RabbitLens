@@ -12,11 +12,7 @@ type DefinitionListProps = {
   unavailableLabel: ReactNode;
 };
 
-export function DefinitionList({
-  className,
-  items,
-  unavailableLabel,
-}: DefinitionListProps) {
+export function DefinitionList({ className, items, unavailableLabel }: DefinitionListProps) {
   return (
     <dl className={cn("grid gap-x-6 gap-y-3 sm:grid-cols-2", className)}>
       {items.map((item, index) => (
@@ -24,9 +20,7 @@ export function DefinitionList({
           <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {item.label}
           </dt>
-          <dd className="mt-1 break-words text-sm font-medium">
-            {item.value ?? unavailableLabel}
-          </dd>
+          <dd className="mt-1 break-words text-sm font-medium">{item.value ?? unavailableLabel}</dd>
         </div>
       ))}
     </dl>

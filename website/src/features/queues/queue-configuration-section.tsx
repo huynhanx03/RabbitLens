@@ -5,11 +5,7 @@ import { DetailGrid } from "@/components/shared/detail-grid";
 import { SectionCard } from "@/components/shared/section-card";
 import type { Queue } from "@/domains/queues/queue-schema";
 
-function formatBoolean(
-  value: boolean | undefined,
-  yes: string,
-  no: string,
-) {
+function formatBoolean(value: boolean | undefined, yes: string, no: string) {
   if (value === undefined) return undefined;
   return value ? yes : no;
 }
@@ -30,9 +26,7 @@ export function QueueConfigurationSection({ queue }: { queue: Queue }) {
       description={t("queues.actualBrokerConfiguration")}
     >
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold">
-          {t("queues.queueDeclaration")}
-        </h3>
+        <h3 className="text-sm font-semibold">{t("queues.queueDeclaration")}</h3>
         <DetailGrid
           unavailableLabel={t("common.unavailable")}
           items={[
@@ -41,27 +35,15 @@ export function QueueConfigurationSection({ queue }: { queue: Queue }) {
             { label: t("queues.type"), value: queue.type },
             {
               label: t("queues.durable"),
-              value: formatBoolean(
-                queue.durable,
-                t("common.yes"),
-                t("common.no"),
-              ),
+              value: formatBoolean(queue.durable, t("common.yes"), t("common.no")),
             },
             {
               label: t("queues.autoDelete"),
-              value: formatBoolean(
-                queue.auto_delete,
-                t("common.yes"),
-                t("common.no"),
-              ),
+              value: formatBoolean(queue.auto_delete, t("common.yes"), t("common.no")),
             },
             {
               label: t("consumerDetails.exclusive"),
-              value: formatBoolean(
-                queue.exclusive,
-                t("common.yes"),
-                t("common.no"),
-              ),
+              value: formatBoolean(queue.exclusive, t("common.yes"), t("common.no")),
             },
             { label: t("queues.arguments"), value: renderedArguments },
             { label: t("queues.node"), value: queue.node, monospace: true },

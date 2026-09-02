@@ -21,12 +21,14 @@ describe("consumerSchema", () => {
   });
 
   it("accepts stream and older consumer shapes with nullable status", () => {
-    expect(consumerSchema.parse({
-      consumer_tag: "stream.subid-0",
-      queue: { name: "events", vhost: "streams" },
-      channel_details: { connection_name: "stream-client" },
-      consumer_timeout: null,
-      active: null,
-    }).active).toBeNull();
+    expect(
+      consumerSchema.parse({
+        consumer_tag: "stream.subid-0",
+        queue: { name: "events", vhost: "streams" },
+        channel_details: { connection_name: "stream-client" },
+        consumer_timeout: null,
+        active: null,
+      }).active,
+    ).toBeNull();
   });
 });

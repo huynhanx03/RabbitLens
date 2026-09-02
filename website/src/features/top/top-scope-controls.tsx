@@ -19,13 +19,7 @@ type Props = {
   onRowCountChange: (rowCount: number) => void;
 };
 
-export function TopScopeControls({
-  nodes,
-  node,
-  rowCount,
-  onNodeChange,
-  onRowCountChange,
-}: Props) {
+export function TopScopeControls({ nodes, node, rowCount, onNodeChange, onRowCountChange }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -47,10 +41,7 @@ export function TopScopeControls({
       </div>
       <div className="flex items-center gap-2">
         <Label>{t("top.rowCount")}</Label>
-        <Select
-          value={String(rowCount)}
-          onValueChange={(value) => onRowCountChange(Number(value))}
-        >
+        <Select value={String(rowCount)} onValueChange={(value) => onRowCountChange(Number(value))}>
           <SelectTrigger aria-label={t("top.rowCount")}>
             <SelectValue />
           </SelectTrigger>
