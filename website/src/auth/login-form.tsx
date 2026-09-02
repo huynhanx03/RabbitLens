@@ -115,7 +115,9 @@ export function LoginForm() {
             </div>
             <div className="space-y-1.5">
               <h1 className="text-2xl font-semibold tracking-tight">{t("auth.title")}</h1>
-              <p className="text-sm leading-relaxed text-muted-foreground">{t("auth.description")}</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {t("auth.description")}
+              </p>
             </div>
           </CardHeader>
 
