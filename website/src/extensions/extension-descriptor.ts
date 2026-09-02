@@ -1,9 +1,4 @@
-export type ExtensionId =
-  | "federation"
-  | "shovel"
-  | "streams"
-  | "top"
-  | "tracing";
+export type ExtensionId = "federation" | "shovel" | "streams" | "top" | "tracing";
 
 import type { ActionPolicy } from "@/auth/permissions/action-policy";
 import type { LucideIcon } from "lucide-react";

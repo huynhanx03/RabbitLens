@@ -27,7 +27,7 @@ describe("Overview Schema", () => {
     };
 
     const parsed = overviewSchema.parse(payload);
-    
+
     expect(parsed.object_totals?.connections).toBe(10);
     expect(parsed.message_stats?.publish_details?.rate).toBe(25.5);
   });

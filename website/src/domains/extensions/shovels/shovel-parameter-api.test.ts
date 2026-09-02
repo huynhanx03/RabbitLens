@@ -5,6 +5,7 @@ import {
   getShovelParameter,
   getShovelParameters,
   putShovelParameter,
+  redactShovelUris,
   restartShovel,
   buildMoveMessagesShovel,
 } from "./shovel-parameter-api";
@@ -24,11 +25,7 @@ describe("dynamic shovel API", () => {
     await getShovelParameters(client);
     await getShovelParameter(client, "/", "move orders");
 
-    expect(client.request).toHaveBeenNthCalledWith(
-      1,
-      "/parameters/shovel",
-      expect.any(Object),
-    );
+    expect(client.request).toHaveBeenNthCalledWith(1, "/parameters/shovel", expect.any(Object));
     expect(client.request).toHaveBeenNthCalledWith(
       2,
       "/parameters/shovel/%2F/move%20orders",
@@ -42,21 +39,16 @@ describe("dynamic shovel API", () => {
     await deleteShovel(client, "/", "move");
     await restartShovel(client, "/", "move");
 
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      1,
-      "/parameters/shovel/%2F/move",
-      { method: "PUT", body: JSON.stringify({ value }) },
-    );
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      2,
-      "/shovels/vhost/%2F/move",
-      { method: "DELETE" },
-    );
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      3,
-      "/shovels/vhost/%2F/move/restart",
-      { method: "DELETE" },
-    );
+    expect(client.requestVoid).toHaveBeenNthCalledWith(1, "/parameters/shovel/%2F/move", {
+      method: "PUT",
+      body: JSON.stringify({ value }),
+    });
+    expect(client.requestVoid).toHaveBeenNthCalledWith(2, "/shovels/vhost/%2F/move", {
+      method: "DELETE",
+    });
+    expect(client.requestVoid).toHaveBeenNthCalledWith(3, "/shovels/vhost/%2F/move/restart", {
+      method: "DELETE",
+    });
   });
 
   it("builds a bounded temporary shovel for moving queue contents", () => {
@@ -77,6 +69,20 @@ describe("dynamic shovel API", () => {
   it("starts stream moves from the first offset", () => {
     expect(buildMoveMessagesShovel("events", "archive", "stream")).toMatchObject({
       "src-consumer-args": { "x-stream-offset": "first" },
+    });
+  });
+
+  it("redacts credentials in shovel URIs without changing unrelated parameters", () => {
+    expect(
+      redactShovelUris({
+        "src-uri": "amqp://alice:source-secret@source.example/vhost",
+        "dest-uri": ["amqps://bob:destination-secret@dest.example/vhost"],
+        "reconnect-delay": 5,
+      }),
+    ).toEqual({
+      "src-uri": "amqp://alice:***@source.example/vhost",
+      "dest-uri": ["amqps://bob:***@dest.example/vhost"],
+      "reconnect-delay": 5,
     });
   });
 });

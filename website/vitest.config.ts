@@ -8,17 +8,12 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
-    exclude: [
-      ...configDefaults.exclude,
-      "e2e/**",
-      "tests/e2e/**",
-      "scripts/**/*.test.mjs",
-    ],
+    exclude: [...configDefaults.exclude, "e2e/**", "tests/e2e/**", "scripts/**/*.test.mjs"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/components/ui/**", "src/app/route-tree.gen.ts"],
+      exclude: ["src/components/ui/**", "src/app/route-tree.gen.ts", "src/test/**", "src/types/**"],
     },
   },
 });

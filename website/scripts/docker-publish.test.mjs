@@ -24,10 +24,7 @@ describe("docker publish command", () => {
     assert.match(result.stdout, /registry\.example\/rabbitlens:1\.0\.2/);
     assert.match(result.stdout, /registry\.example\/rabbitlens:latest/);
     assert.match(result.stdout, /--platform linux\/amd64/);
-    assert.match(
-      result.stdout,
-      /org\.opencontainers\.image\.revision=test-revision/,
-    );
+    assert.match(result.stdout, /org\.opencontainers\.image\.revision=test-revision/);
     assert.match(result.stdout, /--push/);
   });
 });

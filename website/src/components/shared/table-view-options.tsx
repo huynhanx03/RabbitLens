@@ -6,18 +6,10 @@ type TableViewOptionsProps = {
   onVisibleChange: ColumnPickerProps["onChange"];
 };
 
-export function TableViewOptions({
-  columns,
-  visible,
-  onVisibleChange,
-}: TableViewOptionsProps) {
+export function TableViewOptions({ columns, visible, onVisibleChange }: TableViewOptionsProps) {
   return (
     <div className="flex items-center gap-1">
-      <ColumnPicker
-        columns={columns}
-        visible={visible}
-        onChange={onVisibleChange}
-      />
+      <ColumnPicker columns={columns} visible={visible} onChange={onVisibleChange} />
     </div>
   );
 }

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 describe("bundle budget manifest traversal", () => {
   it("collects and deduplicates the complete static import closure", async () => {
-    // @ts-expect-error The Node build script intentionally has no TS declaration.
     const budgetModule = await import("../../scripts/verify-bundle-budget.mjs");
     const collectInitialJavaScriptFiles = (
       budgetModule as {
@@ -47,8 +46,8 @@ describe("bundle budget manifest traversal", () => {
   });
 
   it("rejects a manifest without the application entry", async () => {
-    // @ts-expect-error The Node build script intentionally has no TS declaration.
-    const { collectInitialJavaScriptFiles } = await import("../../scripts/verify-bundle-budget.mjs");
+    const { collectInitialJavaScriptFiles } =
+      await import("../../scripts/verify-bundle-budget.mjs");
 
     expect(() => collectInitialJavaScriptFiles({}, "index.html")).toThrow(
       "Missing JavaScript entry",

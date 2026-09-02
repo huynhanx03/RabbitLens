@@ -25,19 +25,14 @@ import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { createOverviewViewModel } from "@/domains/overview/overview-view-model";
 
 function canSeeNodes(tags: readonly string[] | undefined): boolean {
-  return (
-    tags?.includes("administrator") === true ||
-    tags?.includes("monitoring") === true
-  );
+  return tags?.includes("administrator") === true || tags?.includes("monitoring") === true;
 }
 
 export function OverviewPage() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
   const showNodeHealth = canSeeNodes(context.auth?.user?.tags);
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const nodesQuery = useQuery({
     ...nodesListQueryOptions(context.apiClient, () => showNodeHealth),
     enabled: showNodeHealth,
@@ -49,23 +44,21 @@ export function OverviewPage() {
         : null,
     [nodesQuery.data, overviewQuery.data],
   );
-  const isPending =
-    overviewQuery.isPending || (showNodeHealth && nodesQuery.isPending);
+  const isPending = overviewQuery.isPending || (showNodeHealth && nodesQuery.isPending);
   const isError = overviewQuery.isError || (showNodeHealth && nodesQuery.isError);
   const error = overviewQuery.error ?? nodesQuery.error;
   const hasNodeIssue = Boolean(
-    viewModel &&
-      (viewModel.nodeHealth.stopped > 0 || viewModel.nodeHealth.alarmed > 0),
+    viewModel && (viewModel.nodeHealth.stopped > 0 || viewModel.nodeHealth.alarmed > 0),
   );
   const statisticsLimited = Boolean(
     viewModel &&
-      viewModel.statisticsCapabilities.mode !== "basic-rates" &&
-      viewModel.statisticsCapabilities.mode !== "detailed-rates",
+    viewModel.statisticsCapabilities.mode !== "basic-rates" &&
+    viewModel.statisticsCapabilities.mode !== "detailed-rates",
   );
   const canShowObjectTotals = Boolean(
     viewModel &&
-      viewModel.statisticsCapabilities.mode !== "disabled" &&
-      viewModel.statisticsCapabilities.mode !== "queue-totals-only",
+    viewModel.statisticsCapabilities.mode !== "disabled" &&
+    viewModel.statisticsCapabilities.mode !== "queue-totals-only",
   );
 
   return (
@@ -73,9 +66,7 @@ export function OverviewPage() {
       <AsyncState
         error={error}
         isError={isError}
-        isFetching={
-          !isPending && (overviewQuery.isFetching || nodesQuery.isFetching)
-        }
+        isFetching={!isPending && (overviewQuery.isFetching || nodesQuery.isFetching)}
         isPending={isPending}
         onRetry={() => {
           void overviewQuery.refetch();
@@ -89,9 +80,7 @@ export function OverviewPage() {
               description={t("overview.clusterHealthDescription")}
               action={
                 <StatusBadge variant={hasNodeIssue ? "warning" : "success"}>
-                  {hasNodeIssue
-                    ? t("overview.attentionRequired")
-                    : t("overview.operational")}
+                  {hasNodeIssue ? t("overview.attentionRequired") : t("overview.operational")}
                 </StatusBadge>
               }
             >
@@ -123,26 +112,48 @@ export function OverviewPage() {
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-                <MetricCard title={t("overview.connections")} value={viewModel.totals.connections} icon={<Cable aria-hidden="true" />} isUnavailable={!canShowObjectTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.channels")} value={viewModel.totals.channels} icon={<Radio aria-hidden="true" />} isUnavailable={!canShowObjectTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.exchanges")} value={viewModel.totals.exchanges} icon={<Network aria-hidden="true" />} isUnavailable={!canShowObjectTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.queues")} value={viewModel.totals.queues} icon={<Layers3 aria-hidden="true" />} isUnavailable={!canShowObjectTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.consumers")} value={viewModel.totals.consumers} icon={<Users aria-hidden="true" />} isUnavailable={!canShowObjectTotals} unavailableLabel={t("common.unavailable")} />
+                <MetricCard
+                  title={t("overview.connections")}
+                  value={viewModel.totals.connections}
+                  icon={<Cable aria-hidden="true" />}
+                  isUnavailable={!canShowObjectTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.channels")}
+                  value={viewModel.totals.channels}
+                  icon={<Radio aria-hidden="true" />}
+                  isUnavailable={!canShowObjectTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.exchanges")}
+                  value={viewModel.totals.exchanges}
+                  icon={<Network aria-hidden="true" />}
+                  isUnavailable={!canShowObjectTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.queues")}
+                  value={viewModel.totals.queues}
+                  icon={<Layers3 aria-hidden="true" />}
+                  isUnavailable={!canShowObjectTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.consumers")}
+                  value={viewModel.totals.consumers}
+                  icon={<Users aria-hidden="true" />}
+                  isUnavailable={!canShowObjectTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
               </div>
             </section>
 
-            <section
-              aria-labelledby="overview-workload-health-title"
-              className="space-y-3"
-            >
+            <section aria-labelledby="overview-workload-health-title" className="space-y-3">
               <div>
-                <h2
-                  id="overview-workload-health-title"
-                  className="text-lg font-semibold"
-                >
-                  {showNodeHealth
-                    ? t("overview.workloadHealth")
-                    : t("overview.messageTotals")}
+                <h2 id="overview-workload-health-title" className="text-lg font-semibold">
+                  {showNodeHealth ? t("overview.workloadHealth") : t("overview.messageTotals")}
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   {showNodeHealth
@@ -154,14 +165,68 @@ export function OverviewPage() {
                 data-testid="overview-workload-health-grid"
                 className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
               >
-                <MetricCard title={t("overview.messagesReady")} value={viewModel.totals.messagesReady} icon={<Inbox aria-hidden="true" />} status={(viewModel.totals.messagesReady ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesReady ?? 0) > 0 ? t("overview.backlogPresent") : t("overview.noBacklog")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.messagesUnacked")} value={viewModel.totals.messagesUnacked} icon={<Activity aria-hidden="true" />} status={(viewModel.totals.messagesUnacked ?? 0) > 0 ? "warning" : "normal"} statusLabel={(viewModel.totals.messagesUnacked ?? 0) > 0 ? t("overview.unackedPresent") : t("overview.noUnacked")} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
-                <MetricCard title={t("overview.messagesTotal")} value={viewModel.totals.messagesTotal} icon={<Box aria-hidden="true" />} isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals} unavailableLabel={t("common.unavailable")} />
+                <MetricCard
+                  title={t("overview.messagesReady")}
+                  value={viewModel.totals.messagesReady}
+                  icon={<Inbox aria-hidden="true" />}
+                  status={(viewModel.totals.messagesReady ?? 0) > 0 ? "warning" : "normal"}
+                  statusLabel={
+                    (viewModel.totals.messagesReady ?? 0) > 0
+                      ? t("overview.backlogPresent")
+                      : t("overview.noBacklog")
+                  }
+                  isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.messagesUnacked")}
+                  value={viewModel.totals.messagesUnacked}
+                  icon={<Activity aria-hidden="true" />}
+                  status={(viewModel.totals.messagesUnacked ?? 0) > 0 ? "warning" : "normal"}
+                  statusLabel={
+                    (viewModel.totals.messagesUnacked ?? 0) > 0
+                      ? t("overview.unackedPresent")
+                      : t("overview.noUnacked")
+                  }
+                  isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
+                <MetricCard
+                  title={t("overview.messagesTotal")}
+                  value={viewModel.totals.messagesTotal}
+                  icon={<Box aria-hidden="true" />}
+                  isUnavailable={!viewModel.statisticsCapabilities.canShowQueueTotals}
+                  unavailableLabel={t("common.unavailable")}
+                />
                 {showNodeHealth ? (
                   <>
-                    <MetricCard title={t("overview.runningNodes")} value={viewModel.nodeHealth.running} icon={<Server aria-hidden="true" />} />
-                    <MetricCard title={t("overview.stoppedNodes")} value={viewModel.nodeHealth.stopped} icon={<CircleDot aria-hidden="true" />} status={viewModel.nodeHealth.stopped > 0 ? "critical" : "normal"} statusLabel={viewModel.nodeHealth.stopped > 0 ? t("overview.attentionRequired") : t("overview.operational")} />
-                    <MetricCard title={t("overview.alarmedNodes")} value={viewModel.nodeHealth.alarmed} icon={<Activity aria-hidden="true" />} status={viewModel.nodeHealth.alarmed > 0 ? "warning" : "normal"} statusLabel={viewModel.nodeHealth.alarmed > 0 ? t("overview.attentionRequired") : t("overview.operational")} />
+                    <MetricCard
+                      title={t("overview.runningNodes")}
+                      value={viewModel.nodeHealth.running}
+                      icon={<Server aria-hidden="true" />}
+                    />
+                    <MetricCard
+                      title={t("overview.stoppedNodes")}
+                      value={viewModel.nodeHealth.stopped}
+                      icon={<CircleDot aria-hidden="true" />}
+                      status={viewModel.nodeHealth.stopped > 0 ? "critical" : "normal"}
+                      statusLabel={
+                        viewModel.nodeHealth.stopped > 0
+                          ? t("overview.attentionRequired")
+                          : t("overview.operational")
+                      }
+                    />
+                    <MetricCard
+                      title={t("overview.alarmedNodes")}
+                      value={viewModel.nodeHealth.alarmed}
+                      icon={<Activity aria-hidden="true" />}
+                      status={viewModel.nodeHealth.alarmed > 0 ? "warning" : "normal"}
+                      statusLabel={
+                        viewModel.nodeHealth.alarmed > 0
+                          ? t("overview.attentionRequired")
+                          : t("overview.operational")
+                      }
+                    />
                   </>
                 ) : null}
               </div>

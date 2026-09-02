@@ -6,12 +6,7 @@ import { CHART_RANGES } from "@/config/chart-ranges";
 export const Route = createFileRoute("/_authenticated/queues/$vhost/$name")({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(
-      queueDetailQueryOptions(
-        context.apiClient,
-        params.vhost,
-        params.name,
-        CHART_RANGES[0],
-      ),
+      queueDetailQueryOptions(context.apiClient, params.vhost, params.name, CHART_RANGES[0]),
     ),
   component: RouteComponent,
 });

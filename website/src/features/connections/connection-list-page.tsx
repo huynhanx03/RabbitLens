@@ -45,40 +45,27 @@ export function ConnectionListPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const search = Route.useSearch();
   const [connectionToClose, setConnectionToClose] = useState<string | null>(null);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    ...COLUMN_IDS,
-  ]);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([...COLUMN_IDS]);
   const closeConnectionMutation = useCloseConnectionMutation(context.apiClient);
 
-  const query = useQuery(
-    connectionListQueryOptions(context.apiClient, search),
-  );
+  const query = useQuery(connectionListQueryOptions(context.apiClient, search));
 
-  const columns = useMemo(
-    () => createConnectionColumns(t, setConnectionToClose),
-    [t],
-  );
+  const columns = useMemo(() => createConnectionColumns(t, setConnectionToClose), [t]);
   const rows = useMemo<ConnectionViewModel[]>(
     () => query.data?.items.map(createConnectionViewModel) ?? [],
     [query.data],
   );
   const columnVisibility = useMemo<VisibilityState>(
-    () =>
-      Object.fromEntries(
-        COLUMN_IDS.map((id) => [id, visibleColumns.includes(id)]),
-      ),
+    () => Object.fromEntries(COLUMN_IDS.map((id) => [id, visibleColumns.includes(id)])),
     [visibleColumns],
   );
 
   const updateSearch = (updates: Partial<ResourceListSearch>) => {
     navigate({ search: (previous) => ({ ...previous, ...updates }) });
   };
-  const clearFilter = () =>
-    updateSearch({ name: "", useRegex: false, page: 1 });
+  const clearFilter = () => updateSearch({ name: "", useRegex: false, page: 1 });
 
-  const sorting: SortingState = search.sort
-    ? [{ id: search.sort, desc: search.sortReverse }]
-    : [];
+  const sorting: SortingState = search.sort ? [{ id: search.sort, desc: search.sortReverse }] : [];
   const hasFilter = Boolean(search.name || search.useRegex);
   const lastUpdated = query.dataUpdatedAt
     ? new Intl.DateTimeFormat(i18n.language, {
@@ -96,52 +83,46 @@ export function ConnectionListPage() {
           <FilterBar
             name={search.name}
             useRegex={search.useRegex}
-            onSubmit={(name, useRegex) =>
-              updateSearch({ name, useRegex, page: 1 })
-            }
+            onSubmit={(name, useRegex) => updateSearch({ name, useRegex, page: 1 })}
           />
         }
         secondary={
           <>
-          <div className="flex items-center gap-2">
-            {lastUpdated ? (
-              <span className="hidden text-xs text-muted-foreground lg:inline">
-                {t("common.updatedAt", { time: lastUpdated })}
-              </span>
-            ) : null}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => query.refetch()}
-              disabled={query.isFetching}
-            >
-              <RefreshCw
-                aria-hidden="true"
-                className={cn("size-4", query.isFetching && "animate-spin")}
-              />
-              {query.isFetching ? t("common.refreshing") : t("common.refresh")}
-            </Button>
-          </div>
-          <TableViewOptions
-            columns={COLUMN_IDS.filter((id) => id !== "actions").map((id) => ({
-              id,
-              label: t(`connections.${id}`),
-            }))}
-            visible={visibleColumns.filter((id) => id !== "actions")}
-            onVisibleChange={(next) => setVisibleColumns([...next, "actions"])}
-          />
+            <div className="flex items-center gap-2">
+              {lastUpdated ? (
+                <span className="hidden text-xs text-muted-foreground lg:inline">
+                  {t("common.updatedAt", { time: lastUpdated })}
+                </span>
+              ) : null}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => query.refetch()}
+                disabled={query.isFetching}
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={cn("size-4", query.isFetching && "animate-spin")}
+                />
+                {query.isFetching ? t("common.refreshing") : t("common.refresh")}
+              </Button>
+            </div>
+            <TableViewOptions
+              columns={COLUMN_IDS.filter((id) => id !== "actions").map((id) => ({
+                id,
+                label: t(`connections.${id}`),
+              }))}
+              visible={visibleColumns.filter((id) => id !== "actions")}
+              onVisibleChange={(next) => setVisibleColumns([...next, "actions"])}
+            />
           </>
         }
       />
 
       <MutationErrorAlert error={closeConnectionMutation.error} />
 
-      <AsyncState
-        error={query.error}
-        isError={query.isError}
-        onRetry={() => query.refetch()}
-      >
+      <AsyncState error={query.error} isError={query.isError} onRetry={() => query.refetch()}>
         <DataTable
           ariaLabel={t("connections.tableLabel")}
           columns={columns}
@@ -153,9 +134,7 @@ export function ConnectionListPage() {
             <div className="flex flex-col items-center gap-2 py-5 text-muted-foreground">
               <Cable aria-hidden="true" className="size-7" />
               <p className="font-medium text-foreground">
-                {hasFilter
-                  ? t("connections.noMatches")
-                  : t("connections.emptyTitle")}
+                {hasFilter ? t("connections.noMatches") : t("connections.emptyTitle")}
               </p>
               <p className="max-w-md whitespace-normal text-sm">
                 {hasFilter

@@ -8,5 +8,5 @@ export const mockLimits: VhostLimit[] = [
   {
     vhost: "test-vhost",
     value: { "max-queues": -1 },
-  }
+  },
 ];

@@ -6,7 +6,14 @@ import { NodeDetailPage } from "./node-detail-page";
 import { server } from "@/test/server";
 import { http, HttpResponse } from "msw";
 import { ManagementApiClient } from "@/api/management-api-client";
-import { createRootRouteWithContext, createRouter, createMemoryHistory, RouterProvider, Outlet, createRoute } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  createRouter,
+  createMemoryHistory,
+  RouterProvider,
+  Outlet,
+  createRoute,
+} from "@tanstack/react-router";
 
 describe("NodeDetailPage", () => {
   const setup = () => {
@@ -21,7 +28,7 @@ describe("NodeDetailPage", () => {
     const rootRoute = createRootRouteWithContext<any>()({
       component: () => <Outlet />,
     });
-    
+
     // We need a route with a parameter
     const nodeRoute = createRoute({
       getParentRoute: () => rootRoute,
@@ -70,7 +77,7 @@ describe("NodeDetailPage", () => {
           config_files: ["/etc/rabbitmq/rabbitmq.conf"],
           log_files: ["/var/log/rabbitmq/rabbit.log"],
         });
-      })
+      }),
     );
 
     setup();
@@ -80,13 +87,9 @@ describe("NodeDetailPage", () => {
     expect(screen.getByText("Applications")).toBeInTheDocument();
     expect(screen.queryByText("<0.42.0>")).not.toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Load binary memory details" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: "Load binary memory details" }));
     expect(
-      screen.getByText(
-        "This request can be expensive on nodes with many small binaries.",
-      ),
+      screen.getByText("This request can be expensive on nodes with many small binaries."),
     ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Load details" }));

@@ -22,8 +22,7 @@ export function UsageMeterCard({
   footer,
   className,
 }: UsageMeterCardProps) {
-  const safePercent =
-    typeof percent === "number" ? Math.min(100, Math.max(0, percent)) : null;
+  const safePercent = typeof percent === "number" ? Math.min(100, Math.max(0, percent)) : null;
 
   return (
     <article
@@ -47,9 +46,7 @@ export function UsageMeterCard({
               {value ?? "—"}
             </span>
             {limit ? (
-              <span className="text-xs font-medium text-muted-foreground">
-                / {limit}
-              </span>
+              <span className="text-xs font-medium text-muted-foreground">/ {limit}</span>
             ) : null}
           </div>
         </div>

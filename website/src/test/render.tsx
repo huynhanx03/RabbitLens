@@ -14,15 +14,12 @@ const mockConfig = {
   defaultTheme: "system" as const,
 };
 
-export function renderWithProviders(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
-) {
+export function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) {
   const store = createAuthStore();
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  
+
   return render(ui, {
     wrapper: ({ children }) => (
       <RuntimeConfigProvider config={mockConfig}>

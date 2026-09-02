@@ -6,8 +6,6 @@ describe("Button", () => {
   it("uses the shared RabbitLens button surface", () => {
     render(<Button>Save</Button>);
 
-    expect(screen.getByRole("button", { name: "Save" })).toHaveClass(
-      "rl-button",
-    );
+    expect(screen.getByRole("button", { name: "Save" })).toHaveClass("rl-button");
   });
 });

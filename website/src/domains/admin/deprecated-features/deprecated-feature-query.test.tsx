@@ -25,13 +25,13 @@ describe("deprecated feature queries", () => {
   });
 
   function wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
 
   it("useDeprecatedFeatures fetches features", async () => {
-    vi.mocked(deprecatedFeatureApi.getDeprecatedFeatures).mockResolvedValueOnce(mockDeprecatedFeatures);
+    vi.mocked(deprecatedFeatureApi.getDeprecatedFeatures).mockResolvedValueOnce(
+      mockDeprecatedFeatures,
+    );
     const { result } = renderHook(() => useDeprecatedFeatures(apiClient), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

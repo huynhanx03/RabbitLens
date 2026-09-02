@@ -25,32 +25,21 @@ describe("limit API", () => {
     await getVhostLimits(client);
     await getUserLimits(client);
 
-    expect(client.request).toHaveBeenNthCalledWith(
-      1,
-      "/vhost-limits",
-      expect.any(Object),
-    );
-    expect(client.request).toHaveBeenNthCalledWith(
-      2,
-      "/user-limits",
-      expect.any(Object),
-    );
+    expect(client.request).toHaveBeenNthCalledWith(1, "/vhost-limits", expect.any(Object));
+    expect(client.request).toHaveBeenNthCalledWith(2, "/user-limits", expect.any(Object));
   });
 
   it("uses encoded vhost limit paths", async () => {
     await putVhostLimit(client, "/", "max-connections", 12);
     await deleteVhostLimit(client, "/", "max-connections");
 
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      1,
-      "/vhost-limits/%2F/max-connections",
-      { method: "PUT", body: JSON.stringify({ value: 12 }) },
-    );
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      2,
-      "/vhost-limits/%2F/max-connections",
-      { method: "DELETE" },
-    );
+    expect(client.requestVoid).toHaveBeenNthCalledWith(1, "/vhost-limits/%2F/max-connections", {
+      method: "PUT",
+      body: JSON.stringify({ value: 12 }),
+    });
+    expect(client.requestVoid).toHaveBeenNthCalledWith(2, "/vhost-limits/%2F/max-connections", {
+      method: "DELETE",
+    });
   });
 
   it("uses encoded user limit paths", async () => {

@@ -2,9 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ExtensionRouteGuard } from "@/extensions/extension-route-guard";
 import { ProcessDetailPage } from "@/features/top/process-detail-page";
 
-export const Route = createFileRoute(
-  "/_authenticated/extensions/top/process/$pid",
-)({
+export const Route = createFileRoute("/_authenticated/extensions/top/process/$pid")({
   component: RouteComponent,
 });
 

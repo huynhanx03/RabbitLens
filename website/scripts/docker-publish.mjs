@@ -59,7 +59,5 @@ function gitRevision() {
 }
 
 function shellEscape(value) {
-  return /[^A-Za-z0-9_/:=.,-]/.test(value)
-    ? `'${value.replaceAll("'", "'\\\"'\\\"'")}'`
-    : value;
+  return /[^A-Za-z0-9_/:=.,-]/.test(value) ? `'${value.replaceAll("'", "'\\\"'\\\"'")}'` : value;
 }

@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
 import { userApi } from "@/domains/admin/users/user-api";
-import { type UserBody, type PermissionBody, type TopicPermissionBody } from "@/domains/admin/users/user-schema";
+import {
+  type UserBody,
+  type PermissionBody,
+  type TopicPermissionBody,
+} from "@/domains/admin/users/user-schema";
 import { userKeys } from "@/domains/admin/users/user-query";
 
 export function useCreateUserMutation(client: ManagementApiClient) {

@@ -4,8 +4,7 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-const developmentApiTarget =
-  process.env.RABBITMQ_MANAGEMENT_URL ?? "http://127.0.0.1:15672";
+const developmentApiTarget = process.env.RABBITMQ_MANAGEMENT_URL ?? "http://127.0.0.1:15672";
 
 export const CHUNK_SIZE_WARNING_LIMIT_KB = 600;
 

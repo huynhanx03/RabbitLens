@@ -1,21 +1,12 @@
 import i18next, { type i18n } from "i18next";
 import { initReactI18next } from "react-i18next";
-import {
-  PRODUCT_DEFAULTS,
-  type SupportedLocale,
-} from "@/config/defaults";
+import { PRODUCT_DEFAULTS, type SupportedLocale } from "@/config/defaults";
 import { resources } from "./resources";
 
-export async function createAppI18n(
-  defaultLocale: SupportedLocale,
-): Promise<i18n> {
-  const storedLocale = localStorage.getItem(
-    PRODUCT_DEFAULTS.persistenceKeys.locale,
-  );
+export async function createAppI18n(defaultLocale: SupportedLocale): Promise<i18n> {
+  const storedLocale = localStorage.getItem(PRODUCT_DEFAULTS.persistenceKeys.locale);
   const initialLocale =
-    storedLocale === "vi" || storedLocale === "en"
-      ? storedLocale
-      : defaultLocale;
+    storedLocale === "vi" || storedLocale === "en" ? storedLocale : defaultLocale;
   const instance = i18next.createInstance();
 
   await instance.use(initReactI18next).init({

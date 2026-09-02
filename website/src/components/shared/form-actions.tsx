@@ -23,12 +23,7 @@ export function FormActions({
       data-testid="form-actions"
       className="rl-form-actions flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
     >
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onCancel}
-        disabled={isPending}
-      >
+      <Button type="button" variant="outline" onClick={onCancel} disabled={isPending}>
         {t("common.cancel")}
       </Button>
       <Button type="submit" disabled={isPending || submitDisabled}>

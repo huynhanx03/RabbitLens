@@ -11,16 +11,11 @@ describe("Capability Registry", () => {
     cluster_name: "test-cluster",
     disable_stats: false,
   };
-  
-  const defaultExtensions: ExtensionResponse[] = [
-    { javascript_src: "federation.js" },
-  ];
+
+  const defaultExtensions: ExtensionResponse[] = [{ javascript_src: "federation.js" }];
 
   it("identifies disabled statistics", () => {
-    const caps = resolveCapabilities(
-      { ...defaultOverview, disable_stats: true },
-      []
-    );
+    const caps = resolveCapabilities({ ...defaultOverview, disable_stats: true }, []);
     expect(caps.features.statistics).toBe(false);
   });
 

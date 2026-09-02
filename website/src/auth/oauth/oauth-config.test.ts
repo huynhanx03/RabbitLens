@@ -10,7 +10,7 @@ describe("OAuth Configuration", () => {
       clientId: "my-client",
       scopes: ["openid", "profile"],
       redirectUri: "https://rabbitlens.example.com/oauth/callback",
-      clientSecret: "super-secret"
+      clientSecret: "super-secret",
     };
     const result = oauthResourceConfigSchema.safeParse(data);
     expect(result.success).toBe(false);
@@ -60,8 +60,8 @@ describe("OAuth Configuration", () => {
           clientId: "my-client",
           scopes: ["openid"],
           redirectUri: "https://rabbitlens.example.com/oauth/callback",
-        }
-      ]
+        },
+      ],
     };
     const result = oauthConfigSchema.safeParse(data);
     expect(result.success).toBe(false);
@@ -78,8 +78,8 @@ describe("OAuth Configuration", () => {
           clientId: "my-client",
           scopes: ["openid"],
           redirectUri: "https://rabbitlens.example.com/oauth/callback",
-        }
-      ]
+        },
+      ],
     };
     const result = oauthConfigSchema.safeParse(data);
     expect(result.success).toBe(false);

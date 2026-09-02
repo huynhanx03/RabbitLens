@@ -25,17 +25,11 @@ describe("AppErrorBoundary", () => {
     expect(resolveListPath("/queues/vhost.queue")).toBe("/queues");
     expect(resolveListPath("/admin/users/guest")).toBe("/admin/users");
     expect(resolveListPath("/channels/client-1")).toBe("/channels");
-    expect(resolveListPath("/extensions/federation/link-1")).toBe(
-      "/extensions/federation/status",
-    );
-    expect(resolveListPath("/extensions/tracing/trace-1")).toBe(
-      "/extensions/tracing",
-    );
+    expect(resolveListPath("/extensions/federation/link-1")).toBe("/extensions/federation/status");
+    expect(resolveListPath("/extensions/tracing/trace-1")).toBe("/extensions/tracing");
   });
   it("renders unexpected error by default", () => {
-    renderWithProviders(
-      <AppErrorBoundary error={new Error("boom")} reset={vi.fn()} />
-    );
+    renderWithProviders(<AppErrorBoundary error={new Error("boom")} reset={vi.fn()} />);
     expect(screen.getByText("RabbitMQ request failed")).toBeInTheDocument();
   });
 
@@ -49,7 +43,7 @@ describe("AppErrorBoundary", () => {
     const reset = vi.fn();
     const error = new ApiError("network", undefined, true, "network failed");
     renderWithProviders(<AppErrorBoundary error={error} reset={reset} />);
-    
+
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(reset).toHaveBeenCalled();
   });
@@ -57,7 +51,7 @@ describe("AppErrorBoundary", () => {
   it("hides retry button for non-retryable errors", () => {
     const error = new ApiError("validation", 400, false, "bad request");
     renderWithProviders(<AppErrorBoundary error={error} reset={vi.fn()} />);
-    
+
     expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
   });
 
@@ -73,7 +67,7 @@ describe("AppErrorBoundary", () => {
 
     const error = new ApiError("not-found", 404, false, "not found");
     renderWithProviders(<AppErrorBoundary error={error} reset={vi.fn()} />);
-    
+
     expect(screen.getByText("Unavailable")).toBeInTheDocument();
     expect(screen.getByText("This resource no longer exists.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back" })).toBeInTheDocument();

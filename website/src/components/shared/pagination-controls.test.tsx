@@ -39,18 +39,13 @@ describe("PaginationControls", () => {
       />,
     );
 
-    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
-      "rl-pagination",
-    );
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass("rl-pagination");
     expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
       "border-0",
       "bg-transparent",
       "shadow-none",
     );
-    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass(
-      "px-0",
-      "py-1",
-    );
+    expect(screen.getByRole("navigation", { name: "Pagination" })).toHaveClass("px-0", "py-1");
     expect(screen.getByRole("combobox", { name: "Page size" })).toHaveClass(
       "w-24",
       "justify-center",

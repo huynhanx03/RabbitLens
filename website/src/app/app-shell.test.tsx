@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/render";
 import { AppShell } from "./app-shell";
 import {
@@ -29,6 +30,7 @@ describe("AppShell", () => {
       onUnauthorized: vi.fn(),
     });
 
+    const logout = vi.fn();
     const rootRoute = createRootRouteWithContext<RouterContext>()({
       component: AppShell,
     });
@@ -38,6 +40,11 @@ describe("AppShell", () => {
       component: () => <div>OverviewPage</div>,
     });
     overviewRoute.update({ getParentRoute: () => rootRoute, path: "/" });
+
+    const loginRoute = (createFileRoute as any)("/login")({
+      component: () => <div>LoginPage</div>,
+    });
+    loginRoute.update({ getParentRoute: () => rootRoute, path: "/login" });
 
     const router = createRouter({
       routeTree: rootRoute.addChildren([overviewRoute]),
@@ -52,7 +59,7 @@ describe("AppShell", () => {
           setExpiring: vi.fn(),
           setExpired: vi.fn(),
           setUser: vi.fn(),
-          logout: vi.fn(),
+          logout,
         },
         queryClient,
         apiClient,
@@ -66,18 +73,14 @@ describe("AppShell", () => {
     });
 
     renderWithProviders(<RouterProvider router={router} />);
-    return { router, queryClient };
+    return { router, queryClient, logout };
   };
 
   it("renders the sidebar, top bar, and routed content", async () => {
     setup(["administrator"]);
 
     expect(
-      await screen.findByRole(
-        "navigation",
-        { name: "Primary navigation" },
-        { timeout: 3000 },
-      ),
+      await screen.findByRole("navigation", { name: "Primary navigation" }, { timeout: 3000 }),
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "Go to…" })).toBeVisible();
     expect(screen.getByText("OverviewPage")).toBeVisible();
@@ -94,16 +97,10 @@ describe("AppShell", () => {
     setup(["monitoring"]);
 
     expect(
-      await screen.findByRole(
-        "navigation",
-        { name: "Primary navigation" },
-        { timeout: 3000 },
-      ),
+      await screen.findByRole("navigation", { name: "Primary navigation" }, { timeout: 3000 }),
     ).toBeVisible();
     expect(screen.getByRole("link", { name: "Overview" })).toBeVisible();
-    expect(
-      screen.queryByRole("link", { name: "Virtual Hosts" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Virtual Hosts" })).not.toBeInTheDocument();
   });
 
   it("does not duplicate primary links in the top bar", async () => {
@@ -115,6 +112,18 @@ describe("AppShell", () => {
     expect(screen.getAllByRole("link", { name: "Overview" })).toHaveLength(1);
   });
 
+  it("returns to login after signing out", async () => {
+    const user = userEvent.setup();
+    const { router, logout } = setup();
+
+    await screen.findByRole("navigation", { name: "Primary navigation" });
+    await user.click(screen.getByRole("button", { name: "Account menu" }));
+    await user.click(screen.getByRole("menuitem", { name: "Sign out" }));
+
+    expect(logout).toHaveBeenCalledOnce();
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
+  });
+
   it("does not block routed content when overview is unavailable", async () => {
     server.use(
       http.get("http://localhost/api/overview", () =>
@@ -124,9 +133,7 @@ describe("AppShell", () => {
     setup(["administrator"]);
 
     expect(await screen.findByText("OverviewPage")).toBeVisible();
-    expect(
-      screen.getByRole("navigation", { name: "Primary navigation" }),
-    ).toBeVisible();
+    expect(screen.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
   });
 
   it("shows Federation if the extension is loaded", async () => {
@@ -138,18 +145,12 @@ describe("AppShell", () => {
     setup(["administrator"]);
 
     expect(
-      await screen.findByRole(
-        "navigation",
-        { name: "Primary navigation" },
-        { timeout: 3000 },
-      ),
+      await screen.findByRole("navigation", { name: "Primary navigation" }, { timeout: 3000 }),
     ).toBeVisible();
 
     // Wait for Federation link to appear
     await waitFor(() => {
-      expect(
-        screen.getByRole("link", { name: /^Federation$/ }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /^Federation$/ })).toBeInTheDocument();
     });
   });
 });

@@ -1,10 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-export type NavigationGroupId =
-  | "monitor"
-  | "topology"
-  | "administration"
-  | "extensions";
+export type NavigationGroupId = "monitor" | "topology" | "administration" | "extensions";
 
 export type NavigationItem = {
   id: string;

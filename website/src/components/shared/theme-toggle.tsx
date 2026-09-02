@@ -14,8 +14,7 @@ import type { ThemePreference } from "@/config/defaults";
 export function ThemeToggle() {
   const { preference, setPreference } = useTheme();
   const { t } = useTranslation();
-  const TriggerIcon =
-    preference === "light" ? Sun : preference === "dark" ? Moon : Monitor;
+  const TriggerIcon = preference === "light" ? Sun : preference === "dark" ? Moon : Monitor;
 
   return (
     <DropdownMenu>
@@ -32,9 +31,7 @@ export function ThemeToggle() {
       <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuRadioGroup
           value={preference}
-          onValueChange={(value) =>
-            setPreference(value as ThemePreference)
-          }
+          onValueChange={(value) => setPreference(value as ThemePreference)}
         >
           <DropdownMenuRadioItem value="light" className="gap-2 px-2 py-1.5 whitespace-nowrap">
             <Sun data-testid="theme-option-light-icon" aria-hidden="true" />

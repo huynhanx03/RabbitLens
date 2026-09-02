@@ -91,4 +91,3 @@ describe("MessageInspector", () => {
     expect(onOpenTracing).toHaveBeenCalledOnce();
   });
 });
-

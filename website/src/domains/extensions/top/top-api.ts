@@ -68,31 +68,14 @@ function collectionPath(prefix: string, node: string, rowCount: number) {
   return `${prefix}/${encodeURIComponent(node)}?row_count=${rowCount}`;
 }
 
-export function getTopProcesses(
-  client: ManagementApiClient,
-  node: string,
-  rowCount: number,
-) {
-  return client.request(
-    collectionPath("/top", node, rowCount),
-    topProcessesSchema,
-  );
+export function getTopProcesses(client: ManagementApiClient, node: string, rowCount: number) {
+  return client.request(collectionPath("/top", node, rowCount), topProcessesSchema);
 }
 
-export function getEtsTables(
-  client: ManagementApiClient,
-  node: string,
-  rowCount: number,
-) {
-  return client.request(
-    collectionPath("/top/ets", node, rowCount),
-    etsTablesSchema,
-  );
+export function getEtsTables(client: ManagementApiClient, node: string, rowCount: number) {
+  return client.request(collectionPath("/top/ets", node, rowCount), etsTablesSchema);
 }
 
 export function getProcess(client: ManagementApiClient, pid: string) {
-  return client.request(
-    `/process/${encodeURIComponent(pid)}`,
-    processDetailSchema,
-  );
+  return client.request(`/process/${encodeURIComponent(pid)}`, processDetailSchema);
 }

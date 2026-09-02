@@ -26,33 +26,19 @@ type EChartsRendererProps = {
   heightClassName?: string;
 };
 
-const THEME_COLORS = [
-  "--chart-1",
-  "--chart-2",
-  "--chart-3",
-  "--chart-4",
-  "--chart-5",
-  "--chart-6",
-];
+const THEME_COLORS = ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5", "--chart-6"];
 
 function readThemeColor(token: string) {
-  return getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim();
+  return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
 }
 
-export default function EChartsRenderer({
-  series,
-  unit,
-  heightClassName,
-}: EChartsRendererProps) {
+export default function EChartsRenderer({ series, unit, heightClassName }: EChartsRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
 
   // Check reduced motion preference
   const prefersReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
     if (!containerRef.current) return;

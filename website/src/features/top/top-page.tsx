@@ -38,10 +38,7 @@ export function TopPage() {
         header: t("top.pid"),
         cell: ({ row }) => (
           <Button asChild variant="link" className="h-auto p-0 font-mono">
-            <Link
-              to="/extensions/top/process/$pid"
-              params={{ pid: row.original.pid }}
-            >
+            <Link to="/extensions/top/process/$pid" params={{ pid: row.original.pid }}>
               {row.original.pid}
             </Link>
           </Button>

@@ -1,10 +1,5 @@
 export type OAuthFailureKind =
-  | "initiation"
-  | "login"
-  | "logout"
-  | "restore"
-  | "renewal"
-  | "silent-callback";
+  "initiation" | "login" | "logout" | "restore" | "renewal" | "silent-callback";
 
 const diagnosticMessages: Record<OAuthFailureKind, string> = {
   initiation: "OAuth initiation failed",

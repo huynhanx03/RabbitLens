@@ -17,10 +17,14 @@ export function useCreatePolicyMutation(client: ManagementApiClient, isOperator:
     onSuccess: (_, variables) => {
       if (isOperator) {
         queryClient.invalidateQueries({ queryKey: policyKeys.operatorLists() });
-        queryClient.invalidateQueries({ queryKey: policyKeys.operatorDetail(variables.vhost, variables.name) });
+        queryClient.invalidateQueries({
+          queryKey: policyKeys.operatorDetail(variables.vhost, variables.name),
+        });
       } else {
         queryClient.invalidateQueries({ queryKey: policyKeys.lists() });
-        queryClient.invalidateQueries({ queryKey: policyKeys.detail(variables.vhost, variables.name) });
+        queryClient.invalidateQueries({
+          queryKey: policyKeys.detail(variables.vhost, variables.name),
+        });
       }
     },
   });

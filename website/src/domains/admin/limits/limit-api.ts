@@ -26,11 +26,7 @@ export async function putVhostLimit(
   });
 }
 
-export async function deleteVhostLimit(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
+export async function deleteVhostLimit(client: ManagementApiClient, vhost: string, name: string) {
   await client.requestVoid(limitPath("vhost", vhost, name), {
     method: "DELETE",
   });
@@ -48,11 +44,7 @@ export async function putUserLimit(
   });
 }
 
-export async function deleteUserLimit(
-  client: ManagementApiClient,
-  user: string,
-  name: string,
-) {
+export async function deleteUserLimit(client: ManagementApiClient, user: string, name: string) {
   await client.requestVoid(limitPath("user", user, name), {
     method: "DELETE",
   });

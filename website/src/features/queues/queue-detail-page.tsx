@@ -19,7 +19,7 @@ import type { QueueAction } from "@/domains/queues/queue-api";
 import { createQueueViewModel } from "./queue-view-model";
 import { DeleteQueueDialog } from "./delete-queue-dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
-import { CreateBindingDialog } from "../bindings/create-binding-dialog";
+import { CreateBindingDialog } from "@/domains/bindings/create-binding-dialog";
 import {
   queueBindingsQueryOptions,
   useDeleteBindingMutation,
@@ -35,10 +35,10 @@ import { Button } from "@/components/ui/button";
 import { overviewQueryOptions } from "@/domains/overview/overview-query";
 import { resolveStatisticsMode, getStatisticsSelectors } from "@/api/statistics-capabilities";
 import { AsyncState } from "@/components/shared/async-state";
-import { ConsumerTable } from "@/features/consumers/consumer-table";
-import { PublishMessageDialog } from "@/features/exchanges/publish-message-dialog";
+import { ConsumerTable } from "@/domains/consumers/consumer-table";
+import { PublishMessageDialog } from "@/domains/exchanges/publish-message-dialog";
 import { getStreamQueuePublishers } from "@/domains/extensions/streams/stream-api";
-import { StreamPublisherTable } from "@/features/streams/stream-publisher-table";
+import { StreamPublisherTable } from "@/domains/extensions/streams/stream-publisher-table";
 import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
 import { isExtensionInstalled } from "@/extensions/extension-registry";
 import { MoveMessagesDialog } from "./move-messages-dialog";
@@ -77,12 +77,9 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
     isExtensionInstalled("shovel", extensionsQuery.data ?? []) &&
     (tags.includes("administrator") || tags.includes("policymaker"));
   const canUseTracing =
-    isExtensionInstalled("tracing", extensionsQuery.data ?? []) &&
-    tags.includes("administrator");
+    isExtensionInstalled("tracing", extensionsQuery.data ?? []) && tags.includes("administrator");
 
-  const overviewQuery = useQuery(
-    overviewQueryOptions(context.apiClient, () => true),
-  );
+  const overviewQuery = useQuery(overviewQueryOptions(context.apiClient, () => true));
   const statsMode = resolveStatisticsMode(overviewQuery.data);
   const statsCapabilities = getStatisticsSelectors(statsMode);
 
@@ -97,9 +94,7 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
 
   const bindingsQuery = useQuery({
     ...queueBindingsQueryOptions(context.apiClient, vhost, name),
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.heavyListsMs,
-    ),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
   });
 
   const explicitExchangeNames = useMemo(
@@ -130,13 +125,7 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
 
   const topology = useMemo(
     () =>
-      queue
-        ? createQueueTopologyConfig(
-            queue,
-            bindingsQuery.data ?? [],
-            exchangeLookups,
-          )
-        : null,
+      queue ? createQueueTopologyConfig(queue, bindingsQuery.data ?? [], exchangeLookups) : null,
     [bindingsQuery.data, exchangeLookups, queue],
   );
 
@@ -161,25 +150,38 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
     if (queue.messages_details?.samples) {
       series.push({
         name: t("queues.total"),
-        data: queue.messages_details.samples.map((sample) => [sample.timestamp, sample.sample])
+        data: queue.messages_details.samples.map((sample) => [sample.timestamp, sample.sample]),
       });
     }
     if (queue.messages_ready_details?.samples) {
       series.push({
         name: t("queues.ready"),
-        data: queue.messages_ready_details.samples.map((sample) => [sample.timestamp, sample.sample])
+        data: queue.messages_ready_details.samples.map((sample) => [
+          sample.timestamp,
+          sample.sample,
+        ]),
       });
     }
     if (queue.messages_unacknowledged_details?.samples) {
       series.push({
         name: t("queues.unacked"),
-        data: queue.messages_unacknowledged_details.samples.map((sample) => [sample.timestamp, sample.sample])
+        data: queue.messages_unacknowledged_details.samples.map((sample) => [
+          sample.timestamp,
+          sample.sample,
+        ]),
       });
     }
     return series;
   }, [queue, t]);
 
-  const stateVariant = vm?.state === "running" ? "success" : vm?.state === "idle" ? "info" : vm?.state === "flow" ? "warning" : "error";
+  const stateVariant =
+    vm?.state === "running"
+      ? "success"
+      : vm?.state === "idle"
+        ? "info"
+        : vm?.state === "flow"
+          ? "warning"
+          : "error";
   const featureBadges = vm?.features ?? [];
   const queueType = vm?.type;
 
@@ -190,16 +192,18 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => navigate({
-              to: "/queues",
-              search: {
-                page: 1,
-                pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
-                name: "",
-                useRegex: false,
-                sortReverse: false,
-              },
-            })}
+            onClick={() =>
+              navigate({
+                to: "/queues",
+                search: {
+                  page: 1,
+                  pageSize: PRODUCT_DEFAULTS.tables.defaultPageSize,
+                  name: "",
+                  useRegex: false,
+                  sortReverse: false,
+                },
+              })
+            }
             aria-label={t("common.back")}
           >
             <ChevronLeft aria-hidden="true" />
@@ -254,9 +258,21 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
               <Upload aria-hidden="true" />
               {t("exchanges.publishMessage")}
             </Button>
-            {canMoveMessages ? <Button variant="outline" onClick={() => setMoveDialogOpen(true)}>{t("queues.moveMessages")}</Button> : null}
-            {queue?.slave_nodes?.length ? <Button variant="outline" onClick={() => setQueueAction("sync")}>{t("queues.syncMirrors")}</Button> : null}
-            {queue?.state === "syncing" ? <Button variant="outline" onClick={() => setQueueAction("cancel_sync")}>{t("queues.cancelSync")}</Button> : null}
+            {canMoveMessages ? (
+              <Button variant="outline" onClick={() => setMoveDialogOpen(true)}>
+                {t("queues.moveMessages")}
+              </Button>
+            ) : null}
+            {queue?.slave_nodes?.length ? (
+              <Button variant="outline" onClick={() => setQueueAction("sync")}>
+                {t("queues.syncMirrors")}
+              </Button>
+            ) : null}
+            {queue?.state === "syncing" ? (
+              <Button variant="outline" onClick={() => setQueueAction("cancel_sync")}>
+                {t("queues.cancelSync")}
+              </Button>
+            ) : null}
             <Button
               variant="outline"
               className="border-destructive/30 text-destructive hover:border-destructive/60 hover:bg-destructive/10 hover:text-destructive"
@@ -292,15 +308,22 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
 
       <ConfirmDialog
         open={queueAction !== null}
-        onOpenChange={(open) => { if (!open) setQueueAction(null); }}
+        onOpenChange={(open) => {
+          if (!open) setQueueAction(null);
+        }}
         title={queueAction === "cancel_sync" ? t("queues.cancelSync") : t("queues.syncMirrors")}
         description={t("queues.queueActionWarning", { queue: name })}
-        confirmText={queueAction === "cancel_sync" ? t("queues.cancelSync") : t("queues.syncMirrors")}
+        confirmText={
+          queueAction === "cancel_sync" ? t("queues.cancelSync") : t("queues.syncMirrors")
+        }
         isConfirming={queueActionMutation.isPending}
         error={queueActionMutation.error}
         onConfirm={() => {
           if (!queueAction) return;
-          queueActionMutation.mutate({ vhost, name, action: queueAction }, { onSuccess: () => setQueueAction(null) });
+          queueActionMutation.mutate(
+            { vhost, name, action: queueAction },
+            { onSuccess: () => setQueueAction(null) },
+          );
         }}
       />
 
@@ -322,7 +345,7 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
             { vhost, name },
             {
               onSuccess: () => setPurgeDialogOpen(false),
-            }
+            },
           );
         }}
       />
@@ -351,21 +374,14 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
         description={
           bindingToDelete ? (
             <div>
-              {t("bindings.removeConfirm")} {" "}
-              <strong>{bindingToDelete.source}</strong> {t("bindings.and")} {" "}
-              <strong>{bindingToDelete.destination}</strong>?
+              {t("bindings.removeConfirm")} <strong>{bindingToDelete.source}</strong>{" "}
+              {t("bindings.and")} <strong>{bindingToDelete.destination}</strong>?
               <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 text-sm">
-                <dt className="text-muted-foreground">
-                  {t("bindings.routingKey")}
-                </dt>
+                <dt className="text-muted-foreground">{t("bindings.routingKey")}</dt>
                 <dd className="font-mono">
-                  {bindingToDelete.routing_key === ""
-                    ? '""'
-                    : bindingToDelete.routing_key}
+                  {bindingToDelete.routing_key === "" ? '""' : bindingToDelete.routing_key}
                 </dd>
-                <dt className="text-muted-foreground">
-                  {t("bindings.arguments")}
-                </dt>
+                <dt className="text-muted-foreground">{t("bindings.arguments")}</dt>
                 <dd>
                   {Object.keys(bindingToDelete.arguments).length === 0 ? (
                     <span className="font-mono">{"{}"}</span>
@@ -444,7 +460,12 @@ export function QueueDetailPage({ vhost, name }: QueueDetailPageProps) {
 
       {queue?.type === "stream" ? (
         <SectionCard title={t("streams.publishers")}>
-          <AsyncState isPending={streamPublishers.isPending} isError={streamPublishers.isError} error={streamPublishers.error} onRetry={() => void streamPublishers.refetch()}>
+          <AsyncState
+            isPending={streamPublishers.isPending}
+            isError={streamPublishers.isError}
+            error={streamPublishers.error}
+            onRetry={() => void streamPublishers.refetch()}
+          >
             <StreamPublisherTable publishers={streamPublishers.data ?? []} />
           </AsyncState>
         </SectionCard>

@@ -11,12 +11,7 @@ interface StatusBadgeProps {
   icon?: boolean;
 }
 
-export function StatusBadge({
-  variant,
-  children,
-  className,
-  icon = true,
-}: StatusBadgeProps) {
+export function StatusBadge({ variant, children, className, icon = true }: StatusBadgeProps) {
   const icons: Record<StatusVariant, ReactNode> = {
     success: <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />,
     warning: <AlertTriangle className="mr-1.5 h-3.5 w-3.5" />,
@@ -30,7 +25,7 @@ export function StatusBadge({
       data-variant={variant}
       className={cn(
         "rl-status-badge inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors",
-        className
+        className,
       )}
     >
       {icon && <span aria-hidden="true">{icons[variant]}</span>}

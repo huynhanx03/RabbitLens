@@ -1,10 +1,7 @@
 import { useLocation } from "@tanstack/react-router";
 import { LogOut, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type {
-  NavigationGroup,
-  NavigationItem,
-} from "@/app/navigation/navigation-types";
+import type { NavigationGroup, NavigationItem } from "@/app/navigation/navigation-types";
 import { LanguageToggle } from "@/components/shared/language-toggle";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -67,9 +64,7 @@ export function AppTopbar({ groups, userName, onLogout }: AppTopbarProps) {
       <div className="hidden min-w-0 md:block">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           {currentGroup ? <span>{t(currentGroup.labelKey)}</span> : null}
-          {currentGroup && currentItem ? (
-            <span aria-hidden="true">/</span>
-          ) : null}
+          {currentGroup && currentItem ? <span aria-hidden="true">/</span> : null}
           <span className="truncate font-medium text-foreground">
             {currentItem ? t(currentItem.labelKey) : t("common.appName")}
           </span>

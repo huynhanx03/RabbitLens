@@ -66,15 +66,18 @@ export function TracingPage() {
   const deleteTraceMutation = useDeleteTrace(apiClient);
   const deleteFileMutation = useDeleteTraceFile(apiClient);
 
-  const downloadFile = useCallback(async (file: TraceFile) => {
-    const blob = await apiClient.requestBlob(traceFilePath(node, file.name));
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = file.name;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }, [apiClient, node]);
+  const downloadFile = useCallback(
+    async (file: TraceFile) => {
+      const blob = await apiClient.requestBlob(traceFilePath(node, file.name));
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = file.name;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    },
+    [apiClient, node],
+  );
 
   const traceColumns = useMemo<ColumnDef<Trace>[]>(
     () => [
@@ -100,7 +103,9 @@ export function TracingPage() {
       {
         accessorKey: "pattern",
         header: t("tracing.pattern"),
-        cell: ({ row }) => <code className="rounded bg-muted px-1.5 py-0.5">{row.original.pattern}</code>,
+        cell: ({ row }) => (
+          <code className="rounded bg-muted px-1.5 py-0.5">{row.original.pattern}</code>
+        ),
       },
       { accessorKey: "max_payload_bytes", header: t("tracing.maxPayloadBytes") },
       {
@@ -112,7 +117,9 @@ export function TracingPage() {
             size="icon-sm"
             className={destructiveIconButtonClassName}
             aria-label={`${t("tracing.stopTrace")} ${row.original.name}`}
-            onClick={() => setTraceToDelete({ node, vhost: row.original.vhost, name: row.original.name })}
+            onClick={() =>
+              setTraceToDelete({ node, vhost: row.original.vhost, name: row.original.name })
+            }
           >
             <Trash2 aria-hidden="true" />
           </Button>
@@ -133,7 +140,8 @@ export function TracingPage() {
       {
         accessorKey: "mtime",
         header: t("tracing.lastModified"),
-        cell: ({ row }) => row.original.mtime ? new Date(row.original.mtime).toLocaleString() : "—",
+        cell: ({ row }) =>
+          row.original.mtime ? new Date(row.original.mtime).toLocaleString() : "—",
       },
       {
         id: "actions",
@@ -175,7 +183,9 @@ export function TracingPage() {
             </SelectTrigger>
             <SelectContent>
               {nodes.data?.map((item) => (
-                <SelectItem key={item.name} value={item.name}>{item.name}</SelectItem>
+                <SelectItem key={item.name} value={item.name}>
+                  {item.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -196,11 +206,19 @@ export function TracingPage() {
             isPending={nodes.isPending || traces.isPending}
             isError={nodes.isError || traces.isError}
             error={nodes.error ?? traces.error}
-            onRetry={() => { void nodes.refetch(); void traces.refetch(); }}
+            onRetry={() => {
+              void nodes.refetch();
+              void traces.refetch();
+            }}
             isEmpty={!traces.isPending && traces.data?.length === 0}
             emptyTitle={t("tracing.emptyTraces")}
           >
-            <DataTable ariaLabel={t("tracing.traces")} columns={traceColumns} data={traces.data ?? []} getRowId={(trace) => `${trace.vhost}:${trace.name}`} />
+            <DataTable
+              ariaLabel={t("tracing.traces")}
+              columns={traceColumns}
+              data={traces.data ?? []}
+              getRowId={(trace) => `${trace.vhost}:${trace.name}`}
+            />
           </AsyncState>
         </TabsContent>
         <TabsContent value="files" className="pt-2">
@@ -208,11 +226,19 @@ export function TracingPage() {
             isPending={nodes.isPending || files.isPending}
             isError={nodes.isError || files.isError}
             error={nodes.error ?? files.error}
-            onRetry={() => { void nodes.refetch(); void files.refetch(); }}
+            onRetry={() => {
+              void nodes.refetch();
+              void files.refetch();
+            }}
             isEmpty={!files.isPending && files.data?.length === 0}
             emptyTitle={t("tracing.emptyFiles")}
           >
-            <DataTable ariaLabel={t("tracing.logFiles")} columns={fileColumns} data={files.data ?? []} getRowId={(file) => file.name} />
+            <DataTable
+              ariaLabel={t("tracing.logFiles")}
+              columns={fileColumns}
+              data={files.data ?? []}
+              getRowId={(file) => file.name}
+            />
           </AsyncState>
         </TabsContent>
       </Tabs>
@@ -246,7 +272,10 @@ export function TracingPage() {
         confirmText={t("tracing.stopTrace")}
         isConfirming={deleteTraceMutation.isPending}
         error={deleteTraceMutation.error}
-        onConfirm={() => traceToDelete && deleteTraceMutation.mutate(traceToDelete, { onSuccess: () => setTraceToDelete(null) })}
+        onConfirm={() =>
+          traceToDelete &&
+          deleteTraceMutation.mutate(traceToDelete, { onSuccess: () => setTraceToDelete(null) })
+        }
       />
       <ConfirmDialog
         open={fileToDelete !== null}
@@ -256,7 +285,13 @@ export function TracingPage() {
         confirmText={t("tracing.deleteFile")}
         isConfirming={deleteFileMutation.isPending}
         error={deleteFileMutation.error}
-        onConfirm={() => fileToDelete && deleteFileMutation.mutate({ node, name: fileToDelete.name }, { onSuccess: () => setFileToDelete(null) })}
+        onConfirm={() =>
+          fileToDelete &&
+          deleteFileMutation.mutate(
+            { node, name: fileToDelete.name },
+            { onSuccess: () => setFileToDelete(null) },
+          )
+        }
       />
     </div>
   );

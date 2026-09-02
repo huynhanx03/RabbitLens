@@ -10,9 +10,12 @@ import { FilterBar } from "@/components/shared/filter-bar";
 import { PageToolbar } from "@/components/shared/page-toolbar";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { channelListQueryOptions } from "@/domains/channels/channel-query";
-import { createChannelViewModel, type ChannelViewModel } from "@/domains/channels/channel-view-model";
+import {
+  createChannelViewModel,
+  type ChannelViewModel,
+} from "@/domains/channels/channel-view-model";
 import type { ResourceListSearch } from "@/api/pagination-schema";
-import { createChannelColumns } from "./channel-columns";
+import { createChannelColumns } from "@/domains/channels/channel-columns";
 
 export function ChannelListPage() {
   const { t } = useTranslation();
@@ -21,9 +24,13 @@ export function ChannelListPage() {
   const search = Route.useSearch();
   const query = useQuery(channelListQueryOptions(context.apiClient, search));
   const columns = useMemo(() => createChannelColumns(t), [t]);
-  const rows = useMemo<ChannelViewModel[]>(() => query.data?.items.map(createChannelViewModel) ?? [], [query.data]);
+  const rows = useMemo<ChannelViewModel[]>(
+    () => query.data?.items.map(createChannelViewModel) ?? [],
+    [query.data],
+  );
   const sorting: SortingState = search.sort ? [{ id: search.sort, desc: search.sortReverse }] : [];
-  const updateSearch = (updates: Partial<ResourceListSearch>) => navigate({ search: (previous) => ({ ...previous, ...updates }) });
+  const updateSearch = (updates: Partial<ResourceListSearch>) =>
+    navigate({ search: (previous) => ({ ...previous, ...updates }) });
 
   return (
     <div className="space-y-4">
@@ -33,16 +40,16 @@ export function ChannelListPage() {
           <FilterBar
             name={search.name}
             useRegex={search.useRegex}
-            onSubmit={(name, useRegex) =>
-              updateSearch({ name, useRegex, page: 1 })
-            }
+            onSubmit={(name, useRegex) => updateSearch({ name, useRegex, page: 1 })}
           />
         }
-        secondary={query.data ? (
-          <span className="text-sm text-muted-foreground">
-            {t("channels.resultCount", { count: query.data.filtered_count })}
-          </span>
-        ) : undefined}
+        secondary={
+          query.data ? (
+            <span className="text-sm text-muted-foreground">
+              {t("channels.resultCount", { count: query.data.filtered_count })}
+            </span>
+          ) : undefined
+        }
       />
       <AsyncState error={query.error} isError={query.isError} onRetry={() => query.refetch()}>
         <DataTable
@@ -53,13 +60,29 @@ export function ChannelListPage() {
           sorting={sorting}
           onSortingChange={(next) => {
             const column = next[0];
-            updateSearch(column ? { sort: column.id, sortReverse: column.desc, page: 1 } : { sort: undefined, sortReverse: false, page: 1 });
+            updateSearch(
+              column
+                ? { sort: column.id, sortReverse: column.desc, page: 1 }
+                : { sort: undefined, sortReverse: false, page: 1 },
+            );
           }}
-          onRowClick={(row) => navigate({ to: "/channels/$name", params: { name: row.name }, search })}
+          onRowClick={(row) =>
+            navigate({ to: "/channels/$name", params: { name: row.name }, search })
+          }
           getRowId={(row) => row.name}
         />
       </AsyncState>
-      {query.data ? <PaginationControls page={query.data.page} pageCount={query.data.page_count} pageSize={query.data.page_size} filteredCount={query.data.filtered_count} totalCount={query.data.total_count} onPageChange={(page) => updateSearch({ page })} onPageSizeChange={(pageSize) => updateSearch({ pageSize, page: 1 })} /> : null}
+      {query.data ? (
+        <PaginationControls
+          page={query.data.page}
+          pageCount={query.data.page_count}
+          pageSize={query.data.page_size}
+          filteredCount={query.data.filtered_count}
+          totalCount={query.data.total_count}
+          onPageChange={(page) => updateSearch({ page })}
+          onPageSizeChange={(pageSize) => updateSearch({ pageSize, page: 1 })}
+        />
+      ) : null}
     </div>
   );
 }

@@ -10,8 +10,6 @@ describe("capability API", () => {
 
     await getVisibleVhosts(client);
 
-    expect(vi.mocked(client.request).mock.calls.map(([path]) => path)).toEqual([
-      "/vhosts",
-    ]);
+    expect(vi.mocked(client.request).mock.calls.map(([path]) => path)).toEqual(["/vhosts"]);
   });
 });

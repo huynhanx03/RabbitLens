@@ -13,17 +13,11 @@ export const nodesKeys = {
   binary: (name: string) => [...nodesKeys.detail(name), "binary"] as const,
 };
 
-export function nodesListQueryOptions(
-  client: ManagementApiClient,
-  isEnabled: () => boolean,
-) {
+export function nodesListQueryOptions(client: ManagementApiClient, isEnabled: () => boolean) {
   return queryOptions({
     queryKey: nodesKeys.list(),
     queryFn: () => getNodes(client),
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.heavyListsMs,
-      isEnabled,
-    ),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs, isEnabled),
   });
 }
 
@@ -35,10 +29,7 @@ export function nodeDetailQueryOptions(
   return queryOptions({
     queryKey: nodesKeys.detail(name),
     queryFn: () => getNode(client, name),
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.nodeDetailsMs,
-      isEnabled,
-    ),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs, isEnabled),
   });
 }
 

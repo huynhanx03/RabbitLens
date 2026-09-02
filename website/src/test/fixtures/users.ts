@@ -1,4 +1,8 @@
-import type { UserResponse, PermissionResponse, TopicPermissionResponse } from "@/domains/admin/users/user-schema";
+import type {
+  UserResponse,
+  PermissionResponse,
+  TopicPermissionResponse,
+} from "@/domains/admin/users/user-schema";
 
 export const mockUsers: UserResponse[] = [
   {
@@ -12,7 +16,7 @@ export const mockUsers: UserResponse[] = [
     password_hash: "efgh",
     tags: ["monitoring"],
     limits: { "max-connections": 100 },
-  }
+  },
 ];
 
 export const mockPermissions: PermissionResponse[] = [
@@ -22,7 +26,7 @@ export const mockPermissions: PermissionResponse[] = [
     configure: ".*",
     write: ".*",
     read: ".*",
-  }
+  },
 ];
 
 export const mockTopicPermissions: TopicPermissionResponse[] = [
@@ -32,5 +36,5 @@ export const mockTopicPermissions: TopicPermissionResponse[] = [
     exchange: "amq.topic",
     write: ".*",
     read: ".*",
-  }
+  },
 ];

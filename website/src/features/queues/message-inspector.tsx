@@ -58,10 +58,7 @@ export function MessageInspector({
   };
 
   return (
-    <section
-      aria-labelledby="message-inspector-title"
-      className="space-y-4"
-    >
+    <section aria-labelledby="message-inspector-title" className="space-y-4">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="max-w-3xl space-y-2">
           <div className="flex items-center gap-2">
@@ -78,7 +75,10 @@ export function MessageInspector({
         </div>
         <div className="flex flex-wrap items-end gap-3">
           <div className="space-y-2">
-            <Label htmlFor="message-inspector-count" className="text-xs uppercase tracking-wide text-muted-foreground">
+            <Label
+              htmlFor="message-inspector-count"
+              className="text-xs uppercase tracking-wide text-muted-foreground"
+            >
               {t("queues.snapshotCount")}
             </Label>
             <Input
@@ -114,12 +114,7 @@ export function MessageInspector({
             </Button>
           ) : null}
           {tracingAvailable && onOpenTracing ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onOpenTracing}
-              className="h-11"
-            >
+            <Button type="button" variant="outline" onClick={onOpenTracing} className="h-11">
               <Radio aria-hidden="true" />
               {t("queues.openLiveTracing")}
             </Button>
@@ -172,13 +167,7 @@ export function MessageInspector({
   );
 }
 
-function MessageSnapshotCard({
-  message,
-  index,
-}: {
-  message: MessageResponse;
-  index: number;
-}) {
+function MessageSnapshotCard({ message, index }: { message: MessageResponse; index: number }) {
   const { t } = useTranslation();
   const exchange = message.exchange === "" ? t("queues.defaultExchange") : message.exchange;
 
@@ -199,7 +188,8 @@ function MessageSnapshotCard({
           ) : null}
         </div>
         <div className="text-sm text-muted-foreground">
-          {formatBytes(message.payload_bytes)} · {t("queues.remainingAfterSnapshot", { count: message.message_count })}
+          {formatBytes(message.payload_bytes)} ·{" "}
+          {t("queues.remainingAfterSnapshot", { count: message.message_count })}
         </div>
       </div>
 

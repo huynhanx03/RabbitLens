@@ -20,10 +20,18 @@ describe("FederationStatusPage", () => {
     vi.clearAllMocks();
     client.request.mockImplementation((path: string) => {
       if (path === "/vhosts") return Promise.resolve([{ name: "/" }]);
-      if (path === "/federation-links") return Promise.resolve([{
-        vhost: "/", id: "link-1", node: "rabbit@node", upstream: "remote",
-        status: "running", uri: "amqp://user:secret@remote", timestamp: "now",
-      }]);
+      if (path === "/federation-links")
+        return Promise.resolve([
+          {
+            vhost: "/",
+            id: "link-1",
+            node: "rabbit@node",
+            upstream: "remote",
+            status: "running",
+            uri: "amqp://user:secret@remote",
+            timestamp: "now",
+          },
+        ]);
       return Promise.reject(new Error(`Unexpected request: ${path}`));
     });
     client.requestVoid.mockResolvedValue(undefined);

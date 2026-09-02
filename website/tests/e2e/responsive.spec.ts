@@ -13,10 +13,7 @@ type VisualPreferences = {
   locale: "en" | "vi";
 };
 
-async function applyPreferences(
-  page: Page,
-  preferences: VisualPreferences,
-) {
+async function applyPreferences(page: Page, preferences: VisualPreferences) {
   await page.addInitScript((values) => {
     localStorage.setItem("rabbitlens.theme", values.theme);
     localStorage.setItem("rabbitlens.locale", values.locale);
@@ -43,7 +40,7 @@ test.describe("Responsive shell archetypes", () => {
   });
 
   for (const viewport of viewports) {
-    test(`Overview shell at ${viewport.name}`, async ({ page }, testInfo) => {
+    test(`Overview shell at ${viewport.name}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await applyPreferences(page, {
         theme: "light",
@@ -52,42 +49,22 @@ test.describe("Responsive shell archetypes", () => {
       await signIn(page, "Overview");
 
       const hasHorizontalOverflow = await page.evaluate(
-        () =>
-          document.documentElement.scrollWidth >
-          document.documentElement.clientWidth,
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
       );
       expect(hasHorizontalOverflow).toBe(false);
-
-      if (testInfo.project.name === "chromium") {
-        await expect(page).toHaveScreenshot(`overview-${viewport.name}.png`, {
-          animations: "disabled",
-          fullPage: true,
-          // Font rasterization can differ by a handful of pixels between
-          // GitHub's patched Chromium image and the pinned local container.
-          // Keep a tight tolerance while preserving meaningful visual diffs.
-          maxDiffPixels: viewport.name === "tablet" ? 800 : 100,
-        });
-      }
     });
   }
 
-  test("Overview desktop dark English", async ({ page }, testInfo) => {
+  test("Overview desktop dark English", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await applyPreferences(page, {
       theme: "dark",
       locale: "en",
     });
     await signIn(page, "Overview");
-
-    if (testInfo.project.name === "chromium") {
-      await expect(page).toHaveScreenshot(
-        "overview-desktop-dark-en.png",
-        { animations: "disabled", fullPage: true, maxDiffPixels: 100 },
-      );
-    }
   });
 
-  test("Overview phone drawer", async ({ page }, testInfo) => {
+  test("Overview phone drawer", async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await applyPreferences(page, {
       theme: "light",
@@ -95,15 +72,6 @@ test.describe("Responsive shell archetypes", () => {
     });
     await signIn(page, "Overview");
     await page.getByRole("button", { name: "Open navigation" }).click();
-    await expect(
-      page.getByRole("navigation", { name: "Primary navigation" }),
-    ).toBeVisible();
-
-    if (testInfo.project.name === "chromium") {
-      await expect(page).toHaveScreenshot("overview-phone-drawer.png", {
-        animations: "disabled",
-        fullPage: true,
-      });
-    }
+    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
   });
 });

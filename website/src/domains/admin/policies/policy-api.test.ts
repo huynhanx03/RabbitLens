@@ -28,10 +28,63 @@ describe("policyApi", () => {
   });
 
   it("putPolicy calls PUT /policies/vhost/name", async () => {
-    await policyApi.putPolicy(client, "/", "test", { pattern: ".*", "apply-to": "all", definition: {} });
+    const body = {
+      pattern: ".*",
+      "apply-to": "all" as const,
+      definition: {},
+    };
+    await policyApi.putPolicy(client, "/", "test", body);
     expect(client.requestVoid).toHaveBeenCalledWith("/policies/%2F/test", {
       method: "PUT",
-      body: expect.any(String),
+      body: JSON.stringify(body),
     });
+  });
+
+  it("encodes vhost and name for normal and operator policy detail reads", async () => {
+    vi.mocked(client.request).mockResolvedValue(mockPolicies[0]!);
+
+    await policyApi.getPolicy(client, "/team a", "ha/policy");
+    await policyApi.getOperatorPolicy(client, "/team a", "ha/policy");
+
+    expect(client.request).toHaveBeenNthCalledWith(
+      1,
+      "/policies/%2Fteam%20a/ha%2Fpolicy",
+      expect.any(Object),
+    );
+    expect(client.request).toHaveBeenNthCalledWith(
+      2,
+      "/operator-policies/%2Fteam%20a/ha%2Fpolicy",
+      expect.any(Object),
+    );
+  });
+
+  it("writes operator policies with the exact serialized RabbitMQ body", async () => {
+    const body = {
+      pattern: "^orders\\.",
+      "apply-to": "queues" as const,
+      definition: { "message-ttl": 30000 },
+      priority: 10,
+    };
+
+    await policyApi.putOperatorPolicy(client, "/team a", "ttl/policy", body);
+
+    expect(client.requestVoid).toHaveBeenCalledWith("/operator-policies/%2Fteam%20a/ttl%2Fpolicy", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  });
+
+  it("deletes normal and operator policies through their isolated endpoints", async () => {
+    await policyApi.deletePolicy(client, "/team a", "ttl/policy");
+    await policyApi.deleteOperatorPolicy(client, "/team a", "ttl/policy");
+
+    expect(client.requestVoid).toHaveBeenNthCalledWith(1, "/policies/%2Fteam%20a/ttl%2Fpolicy", {
+      method: "DELETE",
+    });
+    expect(client.requestVoid).toHaveBeenNthCalledWith(
+      2,
+      "/operator-policies/%2Fteam%20a/ttl%2Fpolicy",
+      { method: "DELETE" },
+    );
   });
 });

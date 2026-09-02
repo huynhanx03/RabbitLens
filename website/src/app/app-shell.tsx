@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Outlet, useLocation, useRouteContext } from "@tanstack/react-router";
+import { Outlet, useLocation, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AppSidebar } from "@/app/layout/app-sidebar";
 import { AppTopbar } from "@/app/layout/app-topbar";
@@ -12,6 +12,7 @@ import { extensionsQueryOptions } from "@/domains/extensions/extension-query";
 export function AppShell() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
+  const navigate = useNavigate();
   const currentPath = useLocation({ select: (location) => location.pathname });
   const extensionsQuery = useQuery(extensionsQueryOptions(context.apiClient));
 
@@ -20,11 +21,7 @@ export function AppShell() {
   }
 
   if (extensionsQuery.isError) {
-    return (
-      <div className="p-8 text-center text-destructive">
-        {t("errors.unexpected")}
-      </div>
-    );
+    return <div className="p-8 text-center text-destructive">{t("errors.unexpected")}</div>;
   }
 
   const userTags = context.auth.user?.tags ?? [];
@@ -40,6 +37,13 @@ export function AppShell() {
         : currentPath === item.to || currentPath.startsWith(`${item.to}/`),
     )
     .sort((left, right) => right.to.length - left.to.length)[0];
+  const handleLogout = () => {
+    context.auth.logout();
+    window.setTimeout(() => {
+      void navigate({ to: "/login", search: {}, replace: true });
+    }, 0);
+  };
+
   return (
     <>
       <a
@@ -50,14 +54,11 @@ export function AppShell() {
       </a>
       <SidebarProvider open>
         <AppSidebar groups={groups} currentPath={currentPath} />
-        <SidebarInset
-          id="main-content"
-          className="rl-app-shell min-w-0 bg-background"
-        >
+        <SidebarInset id="main-content" className="rl-app-shell min-w-0 bg-background">
           <AppTopbar
             groups={groups}
             userName={context.auth.user?.name ?? ""}
-            onLogout={() => context.auth.logout()}
+            onLogout={handleLogout}
           />
           <ConnectivityBanner />
           <div className="min-w-0 flex-1 px-(--page-gutter) py-5 md:py-6">

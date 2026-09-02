@@ -1,10 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Settings2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -17,11 +13,7 @@ export type ColumnPickerProps = {
   onChange: (visible: string[]) => void;
 };
 
-export function ColumnPicker({
-  columns,
-  visible,
-  onChange,
-}: ColumnPickerProps) {
+export function ColumnPicker({ columns, visible, onChange }: ColumnPickerProps) {
   const { t } = useTranslation();
 
   const toggleColumn = (id: string) => {
@@ -37,12 +29,7 @@ export function ColumnPicker({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1.5"
-          aria-label={t("columns.toggle")}
-        >
+        <Button variant="outline" size="sm" className="gap-1.5" aria-label={t("columns.toggle")}>
           <Settings2 className="size-4" />
           {t("columns.label")}
         </Button>

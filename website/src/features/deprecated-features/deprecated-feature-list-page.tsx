@@ -16,8 +16,9 @@ export function DeprecatedFeatureListPage() {
   const [filter, setFilter] = useState("");
   const rows = (query.data ?? []).filter((feature) => {
     const needle = filter.toLowerCase();
-    return feature.name.toLowerCase().includes(needle)
-      || feature.desc?.toLowerCase().includes(needle);
+    return (
+      feature.name.toLowerCase().includes(needle) || feature.desc?.toLowerCase().includes(needle)
+    );
   });
   const columns = useMemo<ColumnDef<DeprecatedFeatureResponse>[]>(
     () => [
@@ -26,16 +27,19 @@ export function DeprecatedFeatureListPage() {
       {
         accessorKey: "docs_url",
         header: t("deprecatedFeatures.documentation"),
-        cell: ({ row }) => row.original.docs_url ? (
-          <a
-            href={row.original.docs_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary hover:underline"
-          >
-            {t("deprecatedFeatures.readMore")}
-          </a>
-        ) : "—",
+        cell: ({ row }) =>
+          row.original.docs_url ? (
+            <a
+              href={row.original.docs_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary hover:underline"
+            >
+              {t("deprecatedFeatures.readMore")}
+            </a>
+          ) : (
+            "—"
+          ),
       },
     ],
     [t],
@@ -45,13 +49,7 @@ export function DeprecatedFeatureListPage() {
     <div className="space-y-4">
       <PageToolbar
         ariaLabel={t("deprecatedFeatures.filter")}
-        primary={
-          <FilterBar
-            name={filter}
-            useRegex={false}
-            onSubmit={(name) => setFilter(name)}
-          />
-        }
+        primary={<FilterBar name={filter} useRegex={false} onSubmit={(name) => setFilter(name)} />}
       />
       <AsyncState
         isPending={query.isPending}

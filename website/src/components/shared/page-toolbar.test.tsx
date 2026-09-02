@@ -13,12 +13,16 @@ describe("PageToolbar", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("toolbar", { name: "Connection controls" }),
-    ).toHaveClass("rl-toolbar", "flex-col", "sm:flex-row");
-    expect(
-      screen.getByRole("toolbar", { name: "Connection controls" }),
-    ).toHaveClass("border-0", "bg-transparent", "shadow-none");
+    expect(screen.getByRole("toolbar", { name: "Connection controls" })).toHaveClass(
+      "rl-toolbar",
+      "flex-col",
+      "sm:flex-row",
+    );
+    expect(screen.getByRole("toolbar", { name: "Connection controls" })).toHaveClass(
+      "border-0",
+      "bg-transparent",
+      "shadow-none",
+    );
     expect(screen.getByText("Search")).toBeVisible();
     expect(screen.getByRole("button", { name: "Columns" })).toBeVisible();
   });

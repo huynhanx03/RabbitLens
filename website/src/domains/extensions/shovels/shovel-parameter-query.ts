@@ -55,9 +55,7 @@ export function useSaveShovel(client: ManagementApiClient) {
 export function useDeleteShovel(client: ManagementApiClient) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ vhost, name }: Omit<SaveInput, "value">) =>
-      deleteShovel(client, vhost, name),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: shovelParameterKeys.list() }),
+    mutationFn: ({ vhost, name }: Omit<SaveInput, "value">) => deleteShovel(client, vhost, name),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: shovelParameterKeys.list() }),
   });
 }

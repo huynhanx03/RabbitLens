@@ -17,16 +17,8 @@ type AuthProviderProps = PropsWithChildren<{
   onLogout: () => void;
 }>;
 
-export function AuthProvider({
-  store,
-  onLogout,
-  children,
-}: AuthProviderProps) {
-  const state = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    store.getSnapshot,
-  );
+export function AuthProvider({ store, onLogout, children }: AuthProviderProps) {
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
 
   const loginBasic = useCallback(
     (username: string, password: string) => {
@@ -49,9 +41,12 @@ export function AuthProvider({
     store.setSession({ type: "restoring_oauth" });
   }, [store]);
 
-  const setExpiring = useCallback((accessToken: string) => {
-    store.setSession({ type: "expiring", accessToken });
-  }, [store]);
+  const setExpiring = useCallback(
+    (accessToken: string) => {
+      store.setSession({ type: "expiring", accessToken });
+    },
+    [store],
+  );
 
   const setExpired = useCallback(() => {
     store.setSession({ type: "expired" });
@@ -65,8 +60,10 @@ export function AuthProvider({
   );
 
   const logout = useCallback(() => {
-    store.clear();
+    // Cancel and clear API work while the credentials are still available. This
+    // prevents a late query from being re-issued anonymously during sign-out.
     onLogout();
+    store.clear();
   }, [onLogout, store]);
 
   useEffect(() => {
@@ -75,15 +72,21 @@ export function AuthProvider({
       return;
     }
 
-    const timeoutId = window.setTimeout(
-      logout,
-      timeoutMinutes * MILLISECONDS_PER_MINUTE,
-    );
+    const timeoutId = window.setTimeout(logout, timeoutMinutes * MILLISECONDS_PER_MINUTE);
     return () => window.clearTimeout(timeoutId);
   }, [logout, state.user?.loginSessionTimeoutMinutes]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ ...state, loginBasic, setBearer, setRestoringOAuth, setExpiring, setExpired, setUser, logout }),
+    () => ({
+      ...state,
+      loginBasic,
+      setBearer,
+      setRestoringOAuth,
+      setExpiring,
+      setExpired,
+      setUser,
+      logout,
+    }),
     [state, loginBasic, setBearer, setRestoringOAuth, setExpiring, setExpired, setUser, logout],
   );
 

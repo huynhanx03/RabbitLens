@@ -21,5 +21,5 @@ export const mockShovels: ShovelStatusResponse[] = [
     dest_uri: "amqp://127.0.0.1:5672",
     timestamp: "2024-03-20 10:05:00",
     error: "connection refused",
-  }
+  },
 ];

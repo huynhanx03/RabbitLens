@@ -17,7 +17,8 @@ export function OAuthCallback() {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    manager.completeLogin()
+    manager
+      .completeLogin()
       .then((user) => {
         // oidc-client-ts passes state in user.state
         const returnPath = user.state && typeof user.state === "string" ? user.state : "/";
@@ -39,12 +40,9 @@ export function OAuthCallback() {
           </AlertTitle>
           <AlertDescription className="space-y-4">
             <p>{t("auth.oauth.loginFailedDescription")}</p>
-          <Button
-            onClick={() => navigate({ to: "/login", replace: true })}
-            variant="outline"
-          >
-            {t("auth.oauth.returnToLogin")}
-          </Button>
+            <Button onClick={() => navigate({ to: "/login", replace: true })} variant="outline">
+              {t("auth.oauth.returnToLogin")}
+            </Button>
           </AlertDescription>
         </Alert>
       </div>

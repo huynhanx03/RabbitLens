@@ -8,13 +8,8 @@ describe("buildNavigation", () => {
       extensions: [],
     });
 
-    expect(groups.map((group) => group.id)).toEqual([
-      "monitor",
-      "topology",
-    ]);
-    expect(
-      groups.flatMap((group) => group.items.map((item) => item.id)),
-    ).toEqual([
+    expect(groups.map((group) => group.id)).toEqual(["monitor", "topology"]);
+    expect(groups.flatMap((group) => group.items.map((item) => item.id))).toEqual([
       "overview",
       "nodes",
       "connections",
@@ -48,17 +43,12 @@ describe("buildNavigation", () => {
   it("shows only available and permitted extensions", () => {
     const groups = buildNavigation({
       userTags: ["administrator"],
-      extensions: [
-        { javascript_src: "federation.js" },
-        { javascript_src: "top.js" },
-      ],
+      extensions: [{ javascript_src: "federation.js" }, { javascript_src: "top.js" }],
     });
 
-    expect(
-      groups
-        .find((group) => group.id === "extensions")
-        ?.items.map((item) => item.id),
-    ).toEqual(["federation", "top"]);
+    expect(groups.find((group) => group.id === "extensions")?.items.map((item) => item.id)).toEqual(
+      ["federation", "top"],
+    );
   });
 
   it("does not expose an extension to a role that lacks access", () => {

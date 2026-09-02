@@ -7,12 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ChevronsLeft,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsRight,
-} from "lucide-react";
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 
 export type PaginationControlsProps = {
   /** Current page (1-indexed) from API envelope */
@@ -59,10 +54,7 @@ export function PaginationControls({
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
-        <Select
-          value={String(pageSize)}
-          onValueChange={(value) => onPageSizeChange(Number(value))}
-        >
+        <Select value={String(pageSize)} onValueChange={(value) => onPageSizeChange(Number(value))}>
           <SelectTrigger
             className="h-8 w-24 justify-center text-center *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:justify-center"
             aria-label={t("pagination.pageSize")}

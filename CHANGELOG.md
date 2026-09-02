@@ -22,7 +22,6 @@ All notable changes are documented here. RabbitLens follows
 
 ### Compatibility
 
-- Verified against RabbitMQ `4.3.2-management`. See
-  [docs/compatibility.md](docs/compatibility.md) for scope and limitations.
+- Verified against RabbitMQ `4.3.2-management` and its Management HTTP API.
 
 [1.0.2]: https://github.com/huynhanx03/RabbitLens/releases/tag/v1.0.2

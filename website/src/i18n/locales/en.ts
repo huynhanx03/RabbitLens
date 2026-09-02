@@ -19,7 +19,8 @@ export const en = {
     refreshing: "Refreshing data",
     updatedAt: "Updated {{time}}",
     offline: "You are offline",
-    offlineDescription: "RabbitLens will keep the current view and reconnect when the network returns.",
+    offlineDescription:
+      "RabbitLens will keep the current view and reconnect when the network returns.",
     reconnected: "Connection restored",
     changesSaved: "Changes saved",
     searchPlaceholder: "Search...",
@@ -51,7 +52,8 @@ export const en = {
   },
   parameters: {
     secretTitle: "Sensitive configuration",
-    secretDescription: "URIs may contain credentials. RabbitLens keeps this form in memory and never stores its value in the browser.",
+    secretDescription:
+      "URIs may contain credentials. RabbitLens keeps this form in memory and never stores its value in the browser.",
     nameRequired: "Enter a parameter name.",
     valueJson: "Value (JSON)",
     invalidJson: "Enter a valid JSON object.",
@@ -59,16 +61,13 @@ export const en = {
   auth: {
     signIn: "Sign in",
     title: "Connect to RabbitMQ",
-    description: "Use a RabbitMQ user that has Management access.",
+    description: "Sign in with a RabbitMQ Management user.",
     username: "Username",
     password: "Password",
     usernameRequired: "Enter a username.",
     passwordRequired: "Enter a password.",
     invalidCredentials: "RabbitMQ rejected these credentials.",
-    secureOriginRequired:
-      "Basic authentication requires HTTPS outside local development.",
-    welcomeTitle: "See RabbitMQ clearly.",
-    welcomeDescription: "Operate queues, exchanges, connections, users, policies, and extensions from one focused workspace.",
+    secureOriginRequired: "Basic authentication requires HTTPS outside local development.",
     memoryOnly: "Credentials stay in memory and are cleared when this session ends.",
     signInFailed: "Sign-in failed",
     signingIn: "Signing in…",
@@ -78,8 +77,7 @@ export const en = {
       loginWith: "Log in with {{provider}}",
       redirecting: "Redirecting…",
       loginFailedTitle: "Login failed",
-      loginFailedDescription:
-        "The identity provider could not complete sign-in. Try again.",
+      loginFailedDescription: "The identity provider could not complete sign-in. Try again.",
       logoutFailedTitle: "Logout failed",
       logoutFailedDescription:
         "The identity provider could not complete sign-out. Return to login and try again.",
@@ -148,8 +146,7 @@ export const en = {
     attentionRequired: "Attention required",
     objectTotalsDescription: "Live topology and client activity across the cluster.",
     messageTotalsDescription: "Current queue backlog and delivery work.",
-    workloadHealthDescription:
-      "Queue backlog, delivery work, and node availability in one view.",
+    workloadHealthDescription: "Queue backlog, delivery work, and node availability in one view.",
     nodeHealthDescription: "Availability and resource alarms for cluster members.",
     backlogPresent: "Messages are waiting for consumers",
     noBacklog: "No ready-message backlog",
@@ -173,8 +170,7 @@ export const en = {
     partitioned: "Partitioned",
     details: "Node details",
     loadBinaryMemory: "Load binary memory details",
-    expensiveQueryWarning:
-      "This request can be expensive on nodes with many small binaries.",
+    expensiveQueryWarning: "This request can be expensive on nodes with many small binaries.",
     loadDetails: "Load details",
     resources: "Resources",
     runtime: "Runtime",
@@ -446,12 +442,14 @@ export const en = {
     operatorPolicy: "Operator policy",
     consumerCapacity: "Consumer capacity",
     moveMessages: "Move messages",
-    moveMessagesDescription: "Create a temporary shovel that drains {{queue}} into another queue on this virtual host.",
+    moveMessagesDescription:
+      "Create a temporary shovel that drains {{queue}} into another queue on this virtual host.",
     destinationQueue: "Destination queue",
     differentDestination: "Choose a different destination queue.",
     syncMirrors: "Synchronize mirrors",
     cancelSync: "Cancel synchronization",
-    queueActionWarning: "Apply this operation to {{queue}}? Availability and disk activity may change while it runs.",
+    queueActionWarning:
+      "Apply this operation to {{queue}}? Availability and disk activity may change while it runs.",
     bytes: "bytes",
     noMessages: "No messages returned",
     messageInspector: "Message inspector",
@@ -493,8 +491,10 @@ export const en = {
   },
   errors: {
     configurationTitle: "RabbitLens is not configured",
-    configurationDescription: "RabbitLens could not load runtime-config.json. This can happen while the app is starting or when the deployment config is missing.",
-    configurationHint: "Reload after the container is ready. If this keeps happening, verify that /runtime-config.json is served from the site root.",
+    configurationDescription:
+      "RabbitLens could not load runtime-config.json. This can happen while the app is starting or when the deployment config is missing.",
+    configurationHint:
+      "Reload after the container is ready. If this keeps happening, verify that /runtime-config.json is served from the site root.",
     reloadPage: "Reload page",
     backToLogin: "Back to login",
     requestFailed: "RabbitMQ request failed",
@@ -566,6 +566,10 @@ export const en = {
     messageRates: "Message rates",
     restartTitle: "Restart Virtual Host on Node",
     restartNode: "Node",
+    restartDescription: "Select a node to restart virtual host {{name}} on.",
+    selectNode: "Select a node",
+    noNodesAvailable: "No nodes available",
+    restartAction: "Restart",
     noNodes: "No nodes available",
     deleteWarning: "Are you sure you want to delete this virtual host?",
     confirmDelete: "Delete virtual host",
@@ -591,6 +595,14 @@ export const en = {
     permissions: "Permissions",
     topicPermissions: "Topic permissions",
     setPermission: "Set permission",
+    setPermissionTitle: "Set permission for {{name}}",
+    setTopicPermission: "Set topic permission",
+    setTopicPermissionTitle: "Set topic permission for {{name}}",
+    selectVhost: "Select a virtual host",
+    configureRegexField: "Configure (Regex)",
+    writeRegexField: "Write (Regex)",
+    readRegexField: "Read (Regex)",
+    exchangePattern: "Exchange (Regex or specific name)",
     clear: "Clear",
     clearPermission: "Clear permission",
     clearTopicPermission: "Clear topic permission",
@@ -603,6 +615,10 @@ export const en = {
     exchange: "Exchange",
     routingKey: "Routing key",
     deleteWarning: "Are you sure you want to delete this user?",
+    deleteTitle: "Delete user",
+    deleteDescription: "This action cannot be undone. This permanently deletes {{name}}.",
+    deleteConfirmLabel: "Type the user name to confirm",
+    deleteAction: "Delete",
   },
   policies: {
     title: "Policies",
@@ -664,7 +680,8 @@ export const en = {
     statisticsDescription: "Reset collected rates and counters without deleting broker resources.",
     resetStatistics: "Reset all statistics",
     resetNodeStatistics: "Reset node statistics",
-    resetStatisticsWarning: "Reset all collected management statistics? Charts and rates will start collecting again from zero.",
+    resetStatisticsWarning:
+      "Reset all collected management statistics? Charts and rates will start collecting again from zero.",
     resetNodeStatisticsWarning: "Reset collected management statistics for {{node}}?",
   },
   featureFlags: {
@@ -702,7 +719,8 @@ export const en = {
     importFile: "Definitions File",
     importButton: "Upload definitions",
     importSuccess: "Definitions imported successfully.",
-    exportDescription: "Download broker users, vhosts, queues, exchanges, bindings, and policies as JSON.",
+    exportDescription:
+      "Download broker users, vhosts, queues, exchanges, bindings, and policies as JSON.",
     importDescription: "Apply broker definitions from a JSON file.",
     selectVhost: "Select a virtual host",
     exportHint: "Choose a virtual host to export only resources in that scope.",
@@ -790,7 +808,8 @@ export const en = {
     emptyConnections: "No stream connections",
     connectionDetail: "Stream protocol connection details.",
     superStreams: "Super Streams",
-    superStreamsDescription: "Create a partitioned super stream from a partition count or binding keys.",
+    superStreamsDescription:
+      "Create a partitioned super stream from a partition count or binding keys.",
     partitionMode: "Partition strategy",
     partitions: "Partitions",
     bindingKeys: "Binding keys",
@@ -873,7 +892,8 @@ export const en = {
     invalidPayloadLimit: "Enter a non-negative whole number or leave it blank.",
     username: "Tracer username",
     password: "Tracer password",
-    credentialsNotice: "Credentials are sent only to RabbitMQ for this request and are not stored by RabbitLens.",
+    credentialsNotice:
+      "Credentials are sent only to RabbitMQ for this request and are not stored by RabbitLens.",
     node: "Node",
     selectNode: "Select a node",
     nodeFilter: "Tracing node filter",

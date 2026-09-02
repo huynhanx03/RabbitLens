@@ -14,9 +14,11 @@ interface ExtensionRouteGuardProps {
 
 export function ExtensionRouteGuard({ id, children }: ExtensionRouteGuardProps) {
   const context = useRouteContext({ from: "__root__" });
-  const { data: extensions, isPending, isError } = useQuery(
-    extensionsQueryOptions(context.apiClient),
-  );
+  const {
+    data: extensions,
+    isPending,
+    isError,
+  } = useQuery(extensionsQueryOptions(context.apiClient));
   if (isPending) {
     return <Skeleton className="h-[200px] w-full" />;
   }

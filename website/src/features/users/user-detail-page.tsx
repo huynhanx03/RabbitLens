@@ -1,12 +1,28 @@
 import { useRouteContext, Link, useParams } from "@tanstack/react-router";
-import { useUser, useUserPermissions, useUserTopicPermissions } from "@/domains/admin/users/user-query";
+import {
+  useUser,
+  useUserPermissions,
+  useUserTopicPermissions,
+} from "@/domains/admin/users/user-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { UserForm } from "./user-form";
-import { useCreateUserMutation, useClearPermissionMutation, useClearTopicPermissionMutation, useSetPermissionMutation, useSetTopicPermissionMutation } from "./user-mutations";
+import {
+  useCreateUserMutation,
+  useClearPermissionMutation,
+  useClearTopicPermissionMutation,
+  useSetPermissionMutation,
+  useSetTopicPermissionMutation,
+} from "./user-mutations";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { usePermissionDecision } from "@/auth/permissions/permission-gate";
 import { ArrowLeft, Cable, Pencil, Trash2 } from "lucide-react";
@@ -30,17 +46,22 @@ export function UserDetailPage() {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "/_authenticated/admin/users/$name" });
   const { name } = useParams({ from: "/_authenticated/admin/users/$name" });
-  
+
   const { data: user, isPending, isError, error } = useUser(context.apiClient, name);
-  const { data: permissions, isPending: isPermPending } = useUserPermissions(context.apiClient, name);
-  const { data: topicPermissions, isPending: isTopicPending } = useUserTopicPermissions(context.apiClient, name);
+  const { data: permissions, isPending: isPermPending } = useUserPermissions(
+    context.apiClient,
+    name,
+  );
+  const { data: topicPermissions, isPending: isTopicPending } = useUserTopicPermissions(
+    context.apiClient,
+    name,
+  );
 
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isPermOpen, setIsPermOpen] = useState(false);
   const [isTopicPermOpen, setIsTopicPermOpen] = useState(false);
-  const [permissionToClear, setPermissionToClear] =
-    useState<PermissionResponse | null>(null);
+  const [permissionToClear, setPermissionToClear] = useState<PermissionResponse | null>(null);
   const [topicPermissionToClear, setTopicPermissionToClear] =
     useState<TopicPermissionResponse | null>(null);
 
@@ -50,25 +71,31 @@ export function UserDetailPage() {
   const setTopicPermMutation = useSetTopicPermissionMutation(context.apiClient);
   const clearTopicPermMutation = useClearTopicPermissionMutation(context.apiClient);
 
-  const canManageUsers = usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !== "deny";
+  const canManageUsers =
+    usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !== "deny";
 
   if (isPending) return <Skeleton className="h-[400px] w-full" />;
-  if (isError) return <AsyncState isError error={error} onRetry={() => undefined}><span /></AsyncState>;
+  if (isError)
+    return (
+      <AsyncState isError error={error} onRetry={() => undefined}>
+        <span />
+      </AsyncState>
+    );
 
   const tagsArray = user.tags || [];
 
   const permColumns: ColumnDef<PermissionResponse>[] = [
-    { accessorKey: "vhost", header: "Virtual Host" },
-    { accessorKey: "configure", header: "Configure regex" },
-    { accessorKey: "write", header: "Write regex" },
-    { accessorKey: "read", header: "Read regex" },
+    { accessorKey: "vhost", header: t("users.vhost") },
+    { accessorKey: "configure", header: t("users.configureRegex") },
+    { accessorKey: "write", header: t("users.writeRegex") },
+    { accessorKey: "read", header: t("users.readRegex") },
     {
       id: "actions",
       cell: ({ row }) => {
         if (!canManageUsers) return null;
         return (
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className={destructiveIconButtonClassName}
             onClick={() => setPermissionToClear(row.original)}
@@ -77,22 +104,22 @@ export function UserDetailPage() {
             <Trash2 className="h-4 w-4" />
           </Button>
         );
-      }
-    }
+      },
+    },
   ];
 
   const topicPermColumns: ColumnDef<TopicPermissionResponse>[] = [
-    { accessorKey: "vhost", header: "Virtual Host" },
-    { accessorKey: "exchange", header: "Exchange" },
-    { accessorKey: "write", header: "Write regex" },
-    { accessorKey: "read", header: "Read regex" },
+    { accessorKey: "vhost", header: t("users.vhost") },
+    { accessorKey: "exchange", header: t("users.exchange") },
+    { accessorKey: "write", header: t("users.writeRegex") },
+    { accessorKey: "read", header: t("users.readRegex") },
     {
       id: "actions",
       cell: ({ row }) => {
         if (!canManageUsers) return null;
         return (
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className={destructiveIconButtonClassName}
             onClick={() => setTopicPermissionToClear(row.original)}
@@ -101,8 +128,8 @@ export function UserDetailPage() {
             <Trash2 className="h-4 w-4" />
           </Button>
         );
-      }
-    }
+      },
+    },
   ];
 
   return (
@@ -120,67 +147,71 @@ export function UserDetailPage() {
         metadata={[
           ...(tagsArray.length > 0
             ? tagsArray.map((tag: string) => (
-                <Badge key={tag} variant="secondary">{tag.trim()}</Badge>
+                <Badge key={tag} variant="secondary">
+                  {tag.trim()}
+                </Badge>
               ))
-            : [<Badge key="no-tags" variant="secondary">{t("users.noTags")}</Badge>]),
+            : [
+                <Badge key="no-tags" variant="secondary">
+                  {t("users.noTags")}
+                </Badge>,
+              ]),
           <span key="limits" className="inline-flex items-center gap-2">
             <span>{t("limits.title")}</span>
-            <Badge variant="secondary">
-              {user.limits ? Object.keys(user.limits).length : 0}
-            </Badge>
+            <Badge variant="secondary">{user.limits ? Object.keys(user.limits).length : 0}</Badge>
           </span>,
         ]}
         actions={
           canManageUsers ? (
             <>
-            <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
-              <DialogTrigger asChild>
+              <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
+                <DialogTrigger asChild>
                   <Button variant="outline">
                     <Pencil aria-hidden="true" />
                     {t("common.edit")}
                   </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Edit user</DialogTitle>
-                </DialogHeader>
-                <MutationErrorAlert error={updateMutation.error} />
-                <UserForm 
-                  initialValues={{
-                    name: user.name,
-                    tags: tagsArray.join(", "),
-                  }}
-                  isUpdate
-                  onSubmit={(data) => {
-                    const payload: UserBody = { tags: data.tags };
-                    if (data.password) payload.password = data.password;
-                    updateMutation.mutate(
-                      { name: name, body: payload },
-                      { onSuccess: () => setIsUpdateOpen(false) }
-                    );
-                  }} 
-                  isLoading={updateMutation.isPending}
-                  onCancel={() => setIsUpdateOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>{t("users.updateUser")}</DialogTitle>
+                  </DialogHeader>
+                  <MutationErrorAlert error={updateMutation.error} />
+                  <UserForm
+                    initialValues={{
+                      name: user.name,
+                      tags: tagsArray.join(", "),
+                    }}
+                    isUpdate
+                    onSubmit={(data) => {
+                      const payload: UserBody = { tags: data.tags };
+                      if (data.password) payload.password = data.password;
+                      updateMutation.mutate(
+                        { name: name, body: payload },
+                        { onSuccess: () => setIsUpdateOpen(false) },
+                      );
+                    }}
+                    isLoading={updateMutation.isPending}
+                    onCancel={() => setIsUpdateOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className={destructiveIconButtonClassName}
-              onClick={() => setIsDeleteOpen(true)}
+              <Button
+                variant="ghost"
+                size="icon"
+                className={destructiveIconButtonClassName}
+                onClick={() => setIsDeleteOpen(true)}
                 aria-label={t("common.delete")}
-            >
+              >
                 <Trash2 aria-hidden="true" />
-            </Button>
+              </Button>
 
-            <DeleteUserDialog 
-              name={name}
-              open={isDeleteOpen}
-              onOpenChange={setIsDeleteOpen}
-              apiClient={context.apiClient}
-            />
+              <DeleteUserDialog
+                name={name}
+                open={isDeleteOpen}
+                onOpenChange={setIsDeleteOpen}
+                apiClient={context.apiClient}
+              />
             </>
           ) : undefined
         }
@@ -188,7 +219,10 @@ export function UserDetailPage() {
 
       <nav aria-label={t("common.resources")} className="flex flex-wrap gap-3">
         <Button asChild variant="outline">
-          <Link to="/connections" search={{ page: 1, pageSize: 100, name, useRegex: false, sortReverse: false }}>
+          <Link
+            to="/connections"
+            search={{ page: 1, pageSize: 100, name, useRegex: false, sortReverse: false }}
+          >
             <Cable aria-hidden="true" />
             {t("nav.connections")}
           </Link>
@@ -197,23 +231,25 @@ export function UserDetailPage() {
 
       <div className="space-y-4 pt-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold tracking-tight">Permissions</h2>
+          <h2 className="text-xl font-bold tracking-tight">{t("users.permissions")}</h2>
           {canManageUsers && (
             <Dialog open={isPermOpen} onOpenChange={setIsPermOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">Set permission</Button>
+                <Button variant="outline" size="sm">
+                  {t("users.setPermission")}
+                </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Set permission for {name}</DialogTitle>
+                  <DialogTitle>{t("users.setPermissionTitle", { name })}</DialogTitle>
                 </DialogHeader>
                 <MutationErrorAlert error={setPermMutation.error} />
-                <PermissionForm 
+                <PermissionForm
                   apiClient={context.apiClient}
                   onSubmit={(vhost, data) => {
                     setPermMutation.mutate(
                       { user: name, vhost, body: data },
-                      { onSuccess: () => setIsPermOpen(false) }
+                      { onSuccess: () => setIsPermOpen(false) },
                     );
                   }}
                   isLoading={setPermMutation.isPending}
@@ -223,30 +259,34 @@ export function UserDetailPage() {
             </Dialog>
           )}
         </div>
-        {isPermPending ? <Skeleton className="h-[200px] w-full" /> : (
+        {isPermPending ? (
+          <Skeleton className="h-[200px] w-full" />
+        ) : (
           <DataTable columns={permColumns} data={permissions || []} />
         )}
       </div>
 
       <div className="space-y-4 pt-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold tracking-tight">Topic Permissions</h2>
+          <h2 className="text-xl font-bold tracking-tight">{t("users.topicPermissions")}</h2>
           {canManageUsers && (
             <Dialog open={isTopicPermOpen} onOpenChange={setIsTopicPermOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">Set topic permission</Button>
+                <Button variant="outline" size="sm">
+                  {t("users.topicPermissions")}
+                </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Set topic permission for {name}</DialogTitle>
+                  <DialogTitle>{t("users.setTopicPermissionTitle", { name })}</DialogTitle>
                 </DialogHeader>
                 <MutationErrorAlert error={setTopicPermMutation.error} />
-                <TopicPermissionForm 
+                <TopicPermissionForm
                   apiClient={context.apiClient}
                   onSubmit={(vhost, data) => {
                     setTopicPermMutation.mutate(
                       { user: name, vhost, body: data },
-                      { onSuccess: () => setIsTopicPermOpen(false) }
+                      { onSuccess: () => setIsTopicPermOpen(false) },
                     );
                   }}
                   isLoading={setTopicPermMutation.isPending}
@@ -256,7 +296,9 @@ export function UserDetailPage() {
             </Dialog>
           )}
         </div>
-        {isTopicPending ? <Skeleton className="h-[200px] w-full" /> : (
+        {isTopicPending ? (
+          <Skeleton className="h-[200px] w-full" />
+        ) : (
           <DataTable columns={topicPermColumns} data={topicPermissions || []} />
         )}
       </div>
@@ -307,7 +349,6 @@ export function UserDetailPage() {
           );
         }}
       />
-
     </div>
   );
 }

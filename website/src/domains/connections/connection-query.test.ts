@@ -42,9 +42,7 @@ describe("connectionDetailQueryOptions", () => {
     ]);
     expect(first.queryKey).toEqual(second.queryKey);
     expect(first.refetchInterval).toBeTypeOf("function");
-    expect(
-      (first.refetchInterval as () => number)(),
-    ).toBe(PRODUCT_DEFAULTS.polling.nodeDetailsMs);
+    expect((first.refetchInterval as () => number)()).toBe(PRODUCT_DEFAULTS.polling.nodeDetailsMs);
 
     await first.queryFn?.({ signal });
     expect(request).toHaveBeenCalledWith(

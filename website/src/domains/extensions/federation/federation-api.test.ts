@@ -29,8 +29,11 @@ describe("federationApi", () => {
 
   it("restartFederationLink calls DELETE", async () => {
     await federationApi.restartFederationLink(client, "my-vhost", "link-id", "rabbit@node1");
-    expect(client.requestVoid).toHaveBeenCalledWith("/federation-links/vhost/my-vhost/link-id/rabbit%40node1/restart", {
-      method: "DELETE",
-    });
+    expect(client.requestVoid).toHaveBeenCalledWith(
+      "/federation-links/vhost/my-vhost/link-id/rabbit%40node1/restart",
+      {
+        method: "DELETE",
+      },
+    );
   });
 });

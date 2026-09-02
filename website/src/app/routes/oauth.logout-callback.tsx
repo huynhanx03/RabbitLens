@@ -17,7 +17,8 @@ export function OAuthLogoutCallback() {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    manager.completeLogout()
+    manager
+      .completeLogout()
       .then(() => {
         navigate({ to: "/login", replace: true });
       })
@@ -36,12 +37,9 @@ export function OAuthLogoutCallback() {
           </AlertTitle>
           <AlertDescription className="space-y-4">
             <p>{t("auth.oauth.logoutFailedDescription")}</p>
-          <Button
-            onClick={() => navigate({ to: "/login", replace: true })}
-            variant="outline"
-          >
-            {t("auth.oauth.returnToLogin")}
-          </Button>
+            <Button onClick={() => navigate({ to: "/login", replace: true })} variant="outline">
+              {t("auth.oauth.returnToLogin")}
+            </Button>
           </AlertDescription>
         </Alert>
       </div>

@@ -22,9 +22,8 @@ describe("featureFlagApi", () => {
 
   it("enableFeatureFlag calls PUT", async () => {
     await featureFlagApi.enableFeatureFlag(client, "quorum_queue");
-    expect(client.requestVoid).toHaveBeenCalledWith(
-      "/feature-flags/quorum_queue/enable",
-      { method: "PUT" },
-    );
+    expect(client.requestVoid).toHaveBeenCalledWith("/feature-flags/quorum_queue/enable", {
+      method: "PUT",
+    });
   });
 });

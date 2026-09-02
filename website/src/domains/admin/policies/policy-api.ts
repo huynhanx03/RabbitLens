@@ -11,19 +11,33 @@ export const policyApi = {
     return client.request("/operator-policies", z.array(policySchema));
   },
 
-  getPolicy: async (client: ManagementApiClient, vhost: string, name: string): Promise<PolicyResponse> => {
-    return client.request(`/policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`, policySchema);
+  getPolicy: async (
+    client: ManagementApiClient,
+    vhost: string,
+    name: string,
+  ): Promise<PolicyResponse> => {
+    return client.request(
+      `/policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`,
+      policySchema,
+    );
   },
 
-  getOperatorPolicy: async (client: ManagementApiClient, vhost: string, name: string): Promise<PolicyResponse> => {
-    return client.request(`/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`, policySchema);
+  getOperatorPolicy: async (
+    client: ManagementApiClient,
+    vhost: string,
+    name: string,
+  ): Promise<PolicyResponse> => {
+    return client.request(
+      `/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`,
+      policySchema,
+    );
   },
 
   putPolicy: async (
     client: ManagementApiClient,
     vhost: string,
     name: string,
-    body: PolicyBody
+    body: PolicyBody,
   ): Promise<void> => {
     await client.requestVoid(`/policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`, {
       method: "PUT",
@@ -35,12 +49,15 @@ export const policyApi = {
     client: ManagementApiClient,
     vhost: string,
     name: string,
-    body: PolicyBody
+    body: PolicyBody,
   ): Promise<void> => {
-    await client.requestVoid(`/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`, {
-      method: "PUT",
-      body: JSON.stringify(body),
-    });
+    await client.requestVoid(
+      `/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(body),
+      },
+    );
   },
 
   deletePolicy: async (client: ManagementApiClient, vhost: string, name: string): Promise<void> => {
@@ -49,9 +66,16 @@ export const policyApi = {
     });
   },
 
-  deleteOperatorPolicy: async (client: ManagementApiClient, vhost: string, name: string): Promise<void> => {
-    await client.requestVoid(`/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`, {
-      method: "DELETE",
-    });
+  deleteOperatorPolicy: async (
+    client: ManagementApiClient,
+    vhost: string,
+    name: string,
+  ): Promise<void> => {
+    await client.requestVoid(
+      `/operator-policies/${encodeURIComponent(vhost)}/${encodeURIComponent(name)}`,
+      {
+        method: "DELETE",
+      },
+    );
   },
 };

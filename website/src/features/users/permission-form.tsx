@@ -26,12 +26,21 @@ export interface PermissionFormProps {
   isUpdate?: boolean;
 }
 
-export function PermissionForm({ initialValues, onSubmit, isLoading, onCancel, apiClient, isUpdate }: PermissionFormProps) {
+export function PermissionForm({
+  initialValues,
+  onSubmit,
+  isLoading,
+  onCancel,
+  apiClient,
+  isUpdate,
+}: PermissionFormProps) {
   const { t } = useTranslation();
   const { data: vhosts, isPending } = useVhosts(apiClient);
 
   const form = useForm<PermissionBody & { vhost: string }>({
-    resolver: zodResolver(permissionBodySchema.extend({ vhost: z.string().min(1, "Virtual host is required") })),
+    resolver: zodResolver(
+      permissionBodySchema.extend({ vhost: z.string().min(1, "Virtual host is required") }),
+    ),
     defaultValues: {
       vhost: initialValues?.vhost || "",
       configure: initialValues?.configure || ".*",
@@ -40,61 +49,62 @@ export function PermissionForm({ initialValues, onSubmit, isLoading, onCancel, a
     },
   });
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = form;
 
   return (
     <form onSubmit={handleSubmit((data) => onSubmit(data.vhost, data))} className="space-y-4">
       <div className="space-y-2">
-        <Label>Virtual Host</Label>
-        {isPending ? <Skeleton className="h-10 w-full" /> : (
+        <Label htmlFor="permission-vhost">{t("users.vhost")}</Label>
+        {isPending ? (
+          <Skeleton className="h-10 w-full" />
+        ) : (
           <Select
             disabled={isLoading || isUpdate}
             value={watch("vhost")}
             onValueChange={(val) => setValue("vhost", val)}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a virtual host" />
+            <SelectTrigger id="permission-vhost">
+              <SelectValue placeholder={t("users.selectVhost")} />
             </SelectTrigger>
             <SelectContent>
               {vhosts?.map((v) => (
-                <SelectItem key={v.name} value={v.name}>{v.name}</SelectItem>
+                <SelectItem key={v.name} value={v.name}>
+                  {v.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         )}
-        {errors.vhost && <p className="text-sm text-destructive">{errors.vhost.message as string}</p>}
+        {errors.vhost && (
+          <p className="text-sm text-destructive">{errors.vhost.message as string}</p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="configure">Configure (Regex)</Label>
-        <Input 
-          id="configure" 
-          {...register("configure")} 
-          disabled={isLoading} 
-          placeholder=".*"
-        />
-        {errors.configure && <p className="text-sm text-destructive">{errors.configure.message as string}</p>}
+        <Label htmlFor="configure">{t("users.configureRegexField")}</Label>
+        <Input id="configure" {...register("configure")} disabled={isLoading} placeholder=".*" />
+        {errors.configure && (
+          <p className="text-sm text-destructive">{errors.configure.message as string}</p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="write">Write (Regex)</Label>
-        <Input 
-          id="write" 
-          {...register("write")} 
-          disabled={isLoading} 
-          placeholder=".*"
-        />
-        {errors.write && <p className="text-sm text-destructive">{errors.write.message as string}</p>}
+        <Label htmlFor="write">{t("users.writeRegexField")}</Label>
+        <Input id="write" {...register("write")} disabled={isLoading} placeholder=".*" />
+        {errors.write && (
+          <p className="text-sm text-destructive">{errors.write.message as string}</p>
+        )}
       </div>
-      
+
       <div className="space-y-2">
-        <Label htmlFor="read">Read (Regex)</Label>
-        <Input 
-          id="read" 
-          {...register("read")} 
-          disabled={isLoading} 
-          placeholder=".*"
-        />
+        <Label htmlFor="read">{t("users.readRegexField")}</Label>
+        <Input id="read" {...register("read")} disabled={isLoading} placeholder=".*" />
         {errors.read && <p className="text-sm text-destructive">{errors.read.message as string}</p>}
       </div>
 
@@ -105,7 +115,7 @@ export function PermissionForm({ initialValues, onSubmit, isLoading, onCancel, a
           </Button>
         )}
         <Button type="submit" disabled={isLoading || isPending}>
-          {isLoading ? t("common.loading") : "Set Permission"}
+          {isLoading ? t("common.loading") : t("users.setPermission")}
         </Button>
       </div>
     </form>

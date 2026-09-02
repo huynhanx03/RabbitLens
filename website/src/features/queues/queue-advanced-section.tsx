@@ -16,13 +16,7 @@ type QueueAdvancedSectionProps = {
   onOpenTracing: () => void;
 };
 
-function LazyDisclosure({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function LazyDisclosure({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -61,9 +55,7 @@ export function QueueAdvancedSection({
         <h2 id="queue-advanced" className="text-base font-semibold">
           {t("queues.advanced")}
         </h2>
-        <p className="text-sm text-muted-foreground">
-          {t("queues.advancedDescription")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("queues.advancedDescription")}</p>
       </div>
 
       <div className="grid gap-3">

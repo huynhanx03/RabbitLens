@@ -6,10 +6,7 @@ export type ResponsiveDataViewportProps = {
   className?: string;
 };
 
-export function ResponsiveDataViewport({
-  children,
-  className,
-}: ResponsiveDataViewportProps) {
+export function ResponsiveDataViewport({ children, className }: ResponsiveDataViewportProps) {
   return (
     <div className={cn("w-full overflow-x-auto", className)}>
       <div className="min-w-full">{children}</div>

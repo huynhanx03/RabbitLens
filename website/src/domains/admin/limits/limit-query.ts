@@ -49,8 +49,7 @@ export function useSetLimitMutation(client: ManagementApiClient) {
       scope === "vhost"
         ? putVhostLimit(client, owner, name, value)
         : putUserLimit(client, owner, name, value),
-    onSuccess: (_, { scope }) =>
-      queryClient.invalidateQueries({ queryKey: limitKeys.list(scope) }),
+    onSuccess: (_, { scope }) => queryClient.invalidateQueries({ queryKey: limitKeys.list(scope) }),
   });
 }
 
@@ -61,7 +60,6 @@ export function useClearLimitMutation(client: ManagementApiClient) {
       scope === "vhost"
         ? deleteVhostLimit(client, owner, name)
         : deleteUserLimit(client, owner, name),
-    onSuccess: (_, { scope }) =>
-      queryClient.invalidateQueries({ queryKey: limitKeys.list(scope) }),
+    onSuccess: (_, { scope }) => queryClient.invalidateQueries({ queryKey: limitKeys.list(scope) }),
   });
 }

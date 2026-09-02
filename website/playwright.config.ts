@@ -35,8 +35,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: process.env.RABBITLENS_REAL_API_URL 
-      ? "npm run dev" 
+    command: process.env.RABBITLENS_REAL_API_URL
+      ? "npm run dev"
       : "npm run build && npm run preview -- --host 127.0.0.1 --port 4173",
     url: process.env.RABBITLENS_REAL_API_URL ? "http://localhost:5173" : "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,

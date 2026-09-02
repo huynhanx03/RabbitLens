@@ -21,8 +21,7 @@ export function QueueLiveState({
   const members = queue.members ?? [];
   const online = queue.online ?? [];
   const majorityRequired = Math.floor(members.length / 2) + 1;
-  const replicationUnhealthy =
-    members.length > 0 && online.length < majorityRequired;
+  const replicationUnhealthy = members.length > 0 && online.length < majorityRequired;
   const capacity = queue.consumer_capacity ?? queue.consumer_utilisation;
 
   return (
@@ -31,14 +30,10 @@ export function QueueLiveState({
         <h2 id="queue-live-state" className="text-base font-semibold">
           {t("queues.liveState")}
         </h2>
-        <p className="text-sm text-muted-foreground">
-          {t("queues.liveStateDescription")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("queues.liveStateDescription")}</p>
       </div>
 
-      {!canShowQueueTotals ? (
-        <StatisticsAvailability reason={availabilityReason} />
-      ) : null}
+      {!canShowQueueTotals ? <StatisticsAvailability reason={availabilityReason} /> : null}
 
       {replicationUnhealthy ? (
         <Alert variant="destructive">
@@ -62,15 +57,9 @@ export function QueueLiveState({
         />
         <MetricCard
           title={t("queues.unacked")}
-          value={
-            canShowQueueTotals
-              ? (queue.messages_unacknowledged ?? 0)
-              : null
-          }
+          value={canShowQueueTotals ? (queue.messages_unacknowledged ?? 0) : null}
           icon={<PackageCheck aria-hidden="true" />}
-          status={
-            (queue.messages_unacknowledged ?? 0) > 0 ? "warning" : "normal"
-          }
+          status={(queue.messages_unacknowledged ?? 0) > 0 ? "warning" : "normal"}
           isUnavailable={!canShowQueueTotals}
           unavailableLabel={t("common.unavailable")}
         />

@@ -1,7 +1,4 @@
-export function createBasicAuthorization(
-  username: string,
-  password: string,
-): string {
+export function createBasicAuthorization(username: string, password: string): string {
   const bytes = new TextEncoder().encode(`${username}:${password}`);
   let binaryValue = "";
 

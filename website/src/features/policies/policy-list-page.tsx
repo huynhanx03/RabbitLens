@@ -12,17 +12,9 @@ import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { PageToolbar } from "@/components/shared/page-toolbar";
 import { Button } from "@/components/ui/button";
 import { destructiveIconButtonClassName } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  useCreatePolicyMutation,
-  useDeletePolicyMutation,
-} from "./policy-mutations";
+import { useCreatePolicyMutation, useDeletePolicyMutation } from "./policy-mutations";
 import { useOperatorPolicies, usePolicies } from "@/domains/admin/policies/policy-query";
 import type { PolicyResponse } from "@/domains/admin/policies/policy-schema";
 import { PolicyForm } from "./policy-form";
@@ -53,8 +45,7 @@ export function PolicyListPage() {
     if (!term) return rows ?? [];
     return (rows ?? []).filter(
       ({ name, vhost }) =>
-        name.toLocaleLowerCase().includes(term) ||
-        vhost.toLocaleLowerCase().includes(term),
+        name.toLocaleLowerCase().includes(term) || vhost.toLocaleLowerCase().includes(term),
     );
   };
 
@@ -94,10 +85,8 @@ export function PolicyListPage() {
   const standardColumns = columnsFor("standard");
   const operatorColumns = columnsFor("operator");
 
-  const activeCreate =
-    createKind === "operator" ? createOperatorPolicy : createPolicy;
-  const activeDelete =
-    deleteTarget?.kind === "operator" ? deleteOperatorPolicy : deletePolicy;
+  const activeCreate = createKind === "operator" ? createOperatorPolicy : createPolicy;
+  const activeDelete = deleteTarget?.kind === "operator" ? deleteOperatorPolicy : deletePolicy;
 
   const renderTable = (
     kind: PolicyKind,
@@ -116,11 +105,7 @@ export function PolicyListPage() {
           emptyTitle={t("policies.empty")}
         >
           <DataTable
-            ariaLabel={
-              kind === "operator"
-                ? t("policies.operatorPolicies")
-                : t("policies.title")
-            }
+            ariaLabel={kind === "operator" ? t("policies.operatorPolicies") : t("policies.title")}
             columns={columns}
             data={rows}
             getRowId={(row) => `${row.vhost}:${row.name}`}
@@ -132,36 +117,22 @@ export function PolicyListPage() {
 
   return (
     <div className="space-y-4">
-      <Tabs
-        value={selectedKind}
-        onValueChange={(value) => setSelectedKind(value as PolicyKind)}
-      >
+      <Tabs value={selectedKind} onValueChange={(value) => setSelectedKind(value as PolicyKind)}>
         <PageToolbar
           ariaLabel={t("policies.title")}
           primary={
             <div className="flex min-w-0 flex-1 flex-col gap-3 xl:flex-row xl:items-center">
-              <FilterBar
-                name={filter}
-                useRegex={false}
-                onSubmit={(name) => setFilter(name)}
-              />
+              <FilterBar name={filter} useRegex={false} onSubmit={(name) => setFilter(name)} />
               <TabsList className="shrink-0">
                 <TabsTrigger value="standard">{t("policies.title")}</TabsTrigger>
-                <TabsTrigger value="operator">
-                  {t("policies.operatorPolicies")}
-                </TabsTrigger>
+                <TabsTrigger value="operator">{t("policies.operatorPolicies")}</TabsTrigger>
               </TabsList>
             </div>
           }
           secondary={
             canManagePolicies ? (
-              <Button
-                type="button"
-                onClick={() => setCreateKind(selectedKind)}
-              >
-                {selectedKind === "operator"
-                  ? t("policies.addOpPolicy")
-                  : t("policies.addPolicy")}
+              <Button type="button" onClick={() => setCreateKind(selectedKind)}>
+                {selectedKind === "operator" ? t("policies.addOpPolicy") : t("policies.addPolicy")}
               </Button>
             ) : null
           }
@@ -174,16 +145,11 @@ export function PolicyListPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog
-        open={createKind !== null}
-        onOpenChange={(open) => !open && setCreateKind(null)}
-      >
+      <Dialog open={createKind !== null} onOpenChange={(open) => !open && setCreateKind(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {createKind === "operator"
-                ? t("policies.addOpPolicy")
-                : t("policies.addPolicy")}
+              {createKind === "operator" ? t("policies.addOpPolicy") : t("policies.addPolicy")}
             </DialogTitle>
           </DialogHeader>
           <MutationErrorAlert error={activeCreate.error} />
@@ -192,10 +158,7 @@ export function PolicyListPage() {
             isLoading={activeCreate.isPending}
             onCancel={() => setCreateKind(null)}
             onSubmit={(vhost, name, body) =>
-              activeCreate.mutate(
-                { vhost, name, body },
-                { onSuccess: () => setCreateKind(null) },
-              )
+              activeCreate.mutate({ vhost, name, body }, { onSuccess: () => setCreateKind(null) })
             }
           />
         </DialogContent>

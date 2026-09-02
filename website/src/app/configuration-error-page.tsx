@@ -54,12 +54,7 @@ export function ConfigurationErrorPage() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button
-            type="button"
-            size="lg"
-            onClick={() => window.location.reload()}
-            className="h-11"
-          >
+          <Button type="button" size="lg" onClick={() => window.location.reload()} className="h-11">
             <RefreshCw aria-hidden="true" />
             {t("errors.reloadPage")}
           </Button>

@@ -22,10 +22,7 @@ describe("cluster API", () => {
     await getClusterName(client);
     await putClusterName(client, "production");
 
-    expect(client.request).toHaveBeenCalledWith(
-      "/cluster-name",
-      expect.any(Object),
-    );
+    expect(client.request).toHaveBeenCalledWith("/cluster-name", expect.any(Object));
     expect(client.requestVoid).toHaveBeenCalledWith("/cluster-name", {
       method: "PUT",
       body: JSON.stringify({ name: "production" }),
@@ -39,10 +36,8 @@ describe("cluster API", () => {
     expect(client.requestVoid).toHaveBeenNthCalledWith(1, "/reset", {
       method: "DELETE",
     });
-    expect(client.requestVoid).toHaveBeenNthCalledWith(
-      2,
-      "/reset/rabbit%40node-1",
-      { method: "DELETE" },
-    );
+    expect(client.requestVoid).toHaveBeenNthCalledWith(2, "/reset/rabbit%40node-1", {
+      method: "DELETE",
+    });
   });
 });

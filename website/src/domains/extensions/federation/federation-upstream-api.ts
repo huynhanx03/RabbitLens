@@ -15,9 +15,7 @@ export const federationUpstreamSchema = z
   .passthrough();
 
 export type FederationUpstream = z.infer<typeof federationUpstreamSchema>;
-export type FederationUpstreamValue = z.infer<
-  typeof federationUpstreamValueSchema
->;
+export type FederationUpstreamValue = z.infer<typeof federationUpstreamValueSchema>;
 
 function upstreamPath(vhost?: string, name?: string) {
   const root = "/parameters/federation-upstream";
@@ -29,15 +27,8 @@ export function getFederationUpstreams(client: ManagementApiClient) {
   return client.request(upstreamPath(), z.array(federationUpstreamSchema));
 }
 
-export function getFederationUpstream(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
-  return client.request(
-    upstreamPath(vhost, name),
-    federationUpstreamSchema,
-  );
+export function getFederationUpstream(client: ManagementApiClient, vhost: string, name: string) {
+  return client.request(upstreamPath(vhost, name), federationUpstreamSchema);
 }
 
 export async function putFederationUpstream(
@@ -62,8 +53,7 @@ export async function deleteFederationUpstream(
 
 export function redactFederationUris(value: FederationUpstreamValue) {
   const uri = value.uri;
-  const redact = (input: string) =>
-    input.replace(/(amqps?:\/\/[^:/\s]+:)[^@/\s]+@/gi, "$1***@");
+  const redact = (input: string) => input.replace(/(amqps?:\/\/[^:/\s]+:)[^@/\s]+@/gi, "$1***@");
   if (typeof uri === "string") return { ...value, uri: redact(uri) };
   if (Array.isArray(uri)) {
     return {

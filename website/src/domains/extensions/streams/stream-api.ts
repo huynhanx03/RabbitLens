@@ -76,11 +76,7 @@ export function getStreamConnections(
   );
 }
 
-export function getStreamConnection(
-  client: ManagementApiClient,
-  vhost: string,
-  name: string,
-) {
+export function getStreamConnection(client: ManagementApiClient, vhost: string, name: string) {
   return client.request(connectionPath(vhost, name), streamConnectionSchema);
 }
 
@@ -100,10 +96,7 @@ export function getStreamConnectionConsumers(
   vhost: string,
   name: string,
 ) {
-  return client.request(
-    `${connectionPath(vhost, name)}/consumers`,
-    z.array(streamConsumerSchema),
-  );
+  return client.request(`${connectionPath(vhost, name)}/consumers`, z.array(streamConsumerSchema));
 }
 
 export function getStreamQueuePublishers(

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { AppBrand } from "@/app/layout/app-brand";
@@ -67,12 +67,12 @@ export function LoginForm() {
         fetcher: fetch,
         onUnauthorized: () => auth.logout(),
       });
-      
+
       const user = await getWhoAmI(client);
       auth.loginBasic(values.username, values.password);
       auth.setUser(user);
       setValue("password", "");
-      
+
       const redirect = search.redirect ?? "/";
       const isValidRedirect = redirect.startsWith("/") && !redirect.startsWith("//");
       navigate({ to: isValidRedirect ? redirect : "/" });
@@ -93,36 +93,33 @@ export function LoginForm() {
   const showOAuth = !!config.auth.oauth;
 
   return (
-    <main className="relative grid min-h-svh overflow-hidden bg-background lg:grid-cols-2">
+    <main className="relative flex min-h-svh items-center justify-center overflow-hidden bg-background px-4 py-12 sm:px-6">
+      <img
+        src="/login-bg.png"
+        alt=""
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center opacity-55"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-background/80" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,hsl(var(--background)/0.35)_52%,hsl(var(--background)/0.88)_100%)]" />
+
       <div className="absolute right-4 top-4 z-20 flex items-center gap-1">
         <ThemeToggle />
         <LanguageToggle />
       </div>
 
-      <section className="relative hidden overflow-hidden lg:flex lg:flex-col lg:items-center lg:justify-center lg:p-12">
-        <img src="/login-bg.png" alt="Background" className="absolute inset-0 h-full w-full object-cover animate-ken-burns" />
-        {/* Seamless gradient fading into the right side's background color */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-background/70 to-background" />
-        
-        <div className="relative z-10 flex flex-col items-center justify-center space-y-12 text-center">
-          <img src="/logo.png" alt="Logo" className="w-80 drop-shadow-xl animate-float" />
-          
-          <div className="max-w-xl space-y-4 animate-animated animate-fadeIn animate-slower">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{t("auth.welcomeTitle")}</h2>
-            <p className="text-lg leading-relaxed text-muted-foreground">{t("auth.welcomeDescription")}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="flex items-center justify-center px-4 py-20 sm:px-8">
-        <Card className="w-full max-w-md rounded-2xl border bg-card/80 shadow-2xl backdrop-blur-sm animate-animated animate-fadeInRight">
-          <CardHeader className="px-6 pt-7 sm:px-8 pb-0">
-            <div className="flex justify-center mb-4"><AppBrand /></div>
-            <h1 className="text-center text-2xl font-semibold tracking-tight">{t("auth.title")}</h1>
-            <CardDescription className="text-center">{t("auth.description")}</CardDescription>
+      <section className="relative z-10 w-full max-w-md">
+        <Card className="w-full rounded-3xl border-border/70 bg-card/92 shadow-2xl shadow-black/35 backdrop-blur-md animate-animated animate-fadeInUp">
+          <CardHeader className="space-y-4 px-6 pb-2 pt-8 text-center sm:px-9 sm:pt-9">
+            <div className="flex justify-center">
+              <AppBrand />
+            </div>
+            <div className="space-y-1.5">
+              <h1 className="text-2xl font-semibold tracking-tight">{t("auth.title")}</h1>
+              <p className="text-sm leading-relaxed text-muted-foreground">{t("auth.description")}</p>
+            </div>
           </CardHeader>
 
-          <CardContent className="space-y-6 px-6 pb-8 pt-4 sm:px-8">
+          <CardContent className="space-y-6 px-6 pb-8 pt-4 sm:px-9 sm:pb-9">
             {errorText ? (
               <Alert variant="destructive" tabIndex={-1} ref={(element) => element?.focus()}>
                 <AlertTitle>{t("auth.signInFailed")}</AlertTitle>
@@ -144,20 +141,51 @@ export function LoginForm() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
                 <div className="space-y-2">
                   <Label htmlFor="username">{t("auth.username")}</Label>
-                  <Input id="username" autoComplete="username" {...register("username")} disabled={isSubmitting} placeholder="admin" aria-invalid={Boolean(errors.username)} />
-                  {errors.username ? <p className="text-sm text-destructive" role="alert">{t(`auth.${errors.username.message}`)}</p> : null}
+                  <Input
+                    id="username"
+                    autoComplete="username"
+                    {...register("username")}
+                    disabled={isSubmitting}
+                    placeholder="admin"
+                    aria-invalid={Boolean(errors.username)}
+                  />
+                  {errors.username ? (
+                    <p className="text-sm text-destructive" role="alert">
+                      {t(`auth.${errors.username.message}`)}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">{t("auth.password")}</Label>
                   <div className="relative">
-                    <Input id="password" type={showPassword ? "text" : "password"} autoComplete="current-password" {...register("password")} disabled={isSubmitting} className="pr-10" placeholder="••••••••" aria-invalid={Boolean(errors.password)} />
-                    <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0" aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")} onClick={() => setShowPassword((visible) => !visible)}>
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      {...register("password")}
+                      disabled={isSubmitting}
+                      className="pr-10"
+                      placeholder="••••••••"
+                      aria-invalid={Boolean(errors.password)}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0"
+                      aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
+                      onClick={() => setShowPassword((visible) => !visible)}
+                    >
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </Button>
                   </div>
-                  {errors.password ? <p className="text-sm text-destructive" role="alert">{t(`auth.${errors.password.message}`)}</p> : null}
+                  {errors.password ? (
+                    <p className="text-sm text-destructive" role="alert">
+                      {t(`auth.${errors.password.message}`)}
+                    </p>
+                  ) : null}
                 </div>
-                <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
+                <Button type="submit" className="h-11 w-full" disabled={isSubmitting}>
                   {isSubmitting ? t("auth.signingIn") : t("auth.signIn")}
                 </Button>
               </form>

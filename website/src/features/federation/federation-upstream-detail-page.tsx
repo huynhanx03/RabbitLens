@@ -5,7 +5,10 @@ import { AsyncState } from "@/components/shared/async-state";
 import { JsonParameterForm } from "@/components/shared/json-parameter-form";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
 import { DetailPageHeader } from "@/components/shared/detail-page-header";
-import { federationUpstreamDetailQueryOptions, useSaveFederationUpstream } from "@/domains/extensions/federation/federation-upstream-query";
+import {
+  federationUpstreamDetailQueryOptions,
+  useSaveFederationUpstream,
+} from "@/domains/extensions/federation/federation-upstream-query";
 
 type Props = { vhost: string; name: string };
 

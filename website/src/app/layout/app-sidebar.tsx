@@ -94,15 +94,10 @@ export function AppSidebar({ groups, currentPath }: AppSidebarProps) {
                               const childLabel = t(child.labelKey);
                               return (
                                 <SidebarMenuSubItem key={child.id}>
-                                  <SidebarMenuSubButton
-                                    asChild
-                                    isActive={childActive}
-                                  >
+                                  <SidebarMenuSubButton asChild isActive={childActive}>
                                     <Link
                                       to={child.to as never}
-                                      aria-current={
-                                        childActive ? "page" : undefined
-                                      }
+                                      aria-current={childActive ? "page" : undefined}
                                       onClick={() => {
                                         if (isMobile) setOpenMobile(false);
                                       }}

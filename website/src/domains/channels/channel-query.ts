@@ -9,19 +9,15 @@ import { getChannel, getChannels } from "./channel-api";
 export const channelKeys = {
   all: ["channels"] as const,
   lists: () => [...channelKeys.all, "list"] as const,
-  list: (search: ResourceListSearch) =>
-    [...channelKeys.lists(), search] as const,
+  list: (search: ResourceListSearch) => [...channelKeys.lists(), search] as const,
   detail: (name: string) => [...channelKeys.all, "detail", name] as const,
-  
+
   // Extension of connectionKeys for its children
   connectionChannels: (connectionName: string, search: ResourceListSearch) =>
     [...connectionKeys.detail(connectionName), "channels", search] as const,
 };
 
-export function channelListQueryOptions(
-  client: ManagementApiClient,
-  search: ResourceListSearch,
-) {
+export function channelListQueryOptions(client: ManagementApiClient, search: ResourceListSearch) {
   return queryOptions({
     queryKey: channelKeys.list(search),
     queryFn: ({ signal }) => getChannels(client, search, signal),

@@ -28,7 +28,12 @@ function paginated(items: unknown[] = []) {
 function apiFixture(pathname: string): unknown {
   if (pathname === "/api/connections" || pathname === "/api/channels") return paginated();
   if (pathname === "/api/exchanges" || pathname === "/api/queues") return paginated();
-  if (pathname === "/api/users" || pathname === "/api/policies" || pathname === "/api/operator-policies") return [];
+  if (
+    pathname === "/api/users" ||
+    pathname === "/api/policies" ||
+    pathname === "/api/operator-policies"
+  )
+    return [];
   if (pathname.includes("limits")) return [];
   if (pathname === "/api/feature-flags" || pathname === "/api/deprecated-features") return [];
   if (pathname === "/api/cluster-name") return { name: "rabbitlens-demo" };
@@ -36,11 +41,21 @@ function apiFixture(pathname: string): unknown {
   if (pathname.startsWith("/api/shovels")) return [];
   if (pathname === "/api/parameters/federation-upstream") return [];
   if (pathname.startsWith("/api/parameters/federation-upstream/")) {
-    return { component: "federation-upstream", vhost: "demo", name: "demo", value: { uri: "amqp://remote" } };
+    return {
+      component: "federation-upstream",
+      vhost: "demo",
+      name: "demo",
+      value: { uri: "amqp://remote" },
+    };
   }
   if (pathname === "/api/parameters/shovel") return [];
   if (pathname.startsWith("/api/parameters/shovel/")) {
-    return { component: "shovel", vhost: "demo", name: "demo", value: { "src-uri": "amqp://source", "dest-uri": "amqp://destination" } };
+    return {
+      component: "shovel",
+      vhost: "demo",
+      name: "demo",
+      value: { "src-uri": "amqp://source", "dest-uri": "amqp://destination" },
+    };
   }
   if (pathname === "/api/stream/connections") return paginated();
   if (pathname.includes("/publishers") || pathname.includes("/consumers")) return [];
@@ -54,7 +69,13 @@ function apiFixture(pathname: string): unknown {
     return { node: "rabbit@localhost", row_count: 20, processes: [] };
   }
   if (pathname.startsWith("/api/process/")) {
-    return { pid: "<0.123.0>", name: { name: "rabbit_reader" }, memory: 1, reductions: 0, message_queue_len: 0 };
+    return {
+      pid: "<0.123.0>",
+      name: { name: "rabbit_reader" },
+      memory: 1,
+      reductions: 0,
+      message_queue_len: 0,
+    };
   }
   if (pathname.startsWith("/api/traces/node/")) {
     return pathname.split("/").length > 5
@@ -80,7 +101,14 @@ function concreteRoute(entry: ParityEntry): string {
 test("every covered parity route renders without the generic request boundary", async ({
   page,
   scenario,
-}) => {
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "Route parity is browser-independent.");
+
+  // This is an intentional exhaustive route sweep. Firefox/WebKit take longer
+  // than Chromium to mount all extension routes, so its budget must describe
+  // the work rather than inherit the default single-flow timeout.
+  test.setTimeout(120_000);
+
   const manifest = JSON.parse(await fs.readFile(manifestPath, "utf-8")) as ParityEntry[];
   const covered = manifest.filter((entry) => entry.status === "covered");
   expect(covered.length).toBeGreaterThan(0);
@@ -101,9 +129,7 @@ test("every covered parity route renders without the generic request boundary", 
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("region", { name: "Cluster health" })).toBeVisible();
 
-  const routes = new Map(
-    covered.map((entry) => [concreteRoute(entry), entry.sourceKey]),
-  );
+  const routes = new Map(covered.map((entry) => [concreteRoute(entry), entry.sourceKey]));
   for (const [route, sourceKey] of routes) {
     await test.step(`${sourceKey}: ${route}`, async () => {
       await page.goto(route);

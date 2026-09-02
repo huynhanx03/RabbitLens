@@ -51,11 +51,7 @@ export function ConfirmDialog({
           <AlertDialogCancel disabled={isConfirming}>
             {cancelText || t("common.cancel")}
           </AlertDialogCancel>
-          <Button
-            variant={variant}
-            onClick={onConfirm}
-            disabled={isConfirming}
-          >
+          <Button variant={variant} onClick={onConfirm} disabled={isConfirming}>
             {isConfirming ? t("common.loading") : confirmText || t("common.confirm")}
           </Button>
         </AlertDialogFooter>

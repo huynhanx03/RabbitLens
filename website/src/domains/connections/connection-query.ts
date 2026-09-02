@@ -1,8 +1,4 @@
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ManagementApiClient } from "@/api/management-api-client";
 import type { ResourceListSearch } from "@/api/pagination-schema";
 import { createPollingInterval } from "@/api/polling";
@@ -25,9 +21,7 @@ export function connectionListQueryOptions(
     queryKey: connectionKeys.list(search),
     queryFn: ({ signal }) => getConnections(client, search, signal),
     staleTime: PRODUCT_DEFAULTS.polling.heavyListsMs,
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.heavyListsMs,
-    ),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.heavyListsMs),
   });
 }
 
@@ -44,11 +38,8 @@ export function connectionDetailQueryOptions(
       range.ageSeconds,
       range.incrementSeconds,
     ] as const,
-    queryFn: ({ signal }) =>
-      getConnection(client, name, rangeParams, signal),
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.nodeDetailsMs,
-    ),
+    queryFn: ({ signal }) => getConnection(client, name, rangeParams, signal),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
 }
 

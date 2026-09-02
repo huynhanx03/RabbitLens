@@ -21,13 +21,16 @@ async function scanDirectory(dir) {
 
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
-      
+
       if (entry.isDirectory()) {
         const errorInSubdir = await scanDirectory(fullPath);
         if (errorInSubdir) hasError = true;
-      } else if (entry.isFile() && (entry.name.endsWith(".txt") || entry.name.endsWith(".log") || entry.name.endsWith(".json"))) {
+      } else if (
+        entry.isFile() &&
+        (entry.name.endsWith(".txt") || entry.name.endsWith(".log") || entry.name.endsWith(".json"))
+      ) {
         const content = await fs.readFile(fullPath, "utf-8");
-        
+
         for (const pattern of FORBIDDEN_PATTERNS) {
           if (pattern.test(content)) {
             console.error(`❌ Secret leaked in artifact: ${fullPath}`);

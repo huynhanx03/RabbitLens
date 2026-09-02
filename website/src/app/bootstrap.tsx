@@ -1,9 +1,6 @@
 import type { ReactElement } from "react";
 import { I18nextProvider } from "react-i18next";
-import {
-  PRODUCT_DEFAULTS,
-  type SupportedLocale,
-} from "@/config/defaults";
+import { PRODUCT_DEFAULTS, type SupportedLocale } from "@/config/defaults";
 import { loadRuntimeConfig } from "@/config/runtime-config";
 import { RuntimeConfigProvider } from "@/config/runtime-config-provider";
 import { createAppI18n } from "@/i18n/i18n";
@@ -21,9 +18,7 @@ function getBrowserLocale(): SupportedLocale {
   return navigator.language.toLowerCase().startsWith("vi") ? "vi" : "en";
 }
 
-export async function createApplication(
-  fetcher: typeof fetch = fetch,
-): Promise<ReactElement> {
+export async function createApplication(fetcher: typeof fetch = fetch): Promise<ReactElement> {
   const storedLocale = getStoredLocale();
   const i18n = await createAppI18n(storedLocale ?? getBrowserLocale());
 

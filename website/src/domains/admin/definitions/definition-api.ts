@@ -10,7 +10,11 @@ export const definitionApi = {
     return client.request(url, definitionDocumentSchema);
   },
 
-  importDefinitions: async (client: ManagementApiClient, body: DefinitionDocument, vhost?: string): Promise<void> => {
+  importDefinitions: async (
+    client: ManagementApiClient,
+    body: DefinitionDocument,
+    vhost?: string,
+  ): Promise<void> => {
     const url = vhost ? `/definitions/${encodeURIComponent(vhost)}` : "/definitions";
     await client.requestVoid(url, {
       method: "POST",

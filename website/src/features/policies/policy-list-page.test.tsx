@@ -40,15 +40,11 @@ describe("PolicyListPage", () => {
     renderWithProviders(<PolicyListPage />);
     await waitFor(() => expect(screen.getByText("ha-all")).toBeInTheDocument());
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Delete policy ha-all" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: "Delete policy ha-all" }));
     expect(client.requestVoid).not.toHaveBeenCalled();
 
     const dialog = screen.getByRole("alertdialog", { name: "Delete policy" });
-    await userEvent.click(
-      within(dialog).getByRole("button", { name: "Delete" }),
-    );
+    await userEvent.click(within(dialog).getByRole("button", { name: "Delete" }));
     await waitFor(() => expect(client.requestVoid).toHaveBeenCalledTimes(1));
   });
 });

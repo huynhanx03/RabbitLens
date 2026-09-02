@@ -13,7 +13,7 @@ export const mockFeatureFlags: FeatureFlagResponse[] = [
     desc: "Stream queues",
     state: "disabled",
     provided_by: "rabbit",
-  }
+  },
 ];
 
 export const mockDeprecatedFeatures: DeprecatedFeatureResponse[] = [
@@ -21,5 +21,5 @@ export const mockDeprecatedFeatures: DeprecatedFeatureResponse[] = [
     name: "classic_mirrored_queues",
     desc: "Classic Mirrored Queues",
     docs_url: "https://www.rabbitmq.com/classic-mirrored-queues",
-  }
+  },
 ];

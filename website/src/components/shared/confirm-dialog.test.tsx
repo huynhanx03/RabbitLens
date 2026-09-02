@@ -16,9 +16,7 @@ const defaultProps = {
 describe("ConfirmDialog", () => {
   it("prevents duplicate actions while the mutation is pending", async () => {
     const onConfirm = vi.fn();
-    renderWithProviders(
-      <ConfirmDialog {...defaultProps} onConfirm={onConfirm} isConfirming />,
-    );
+    renderWithProviders(<ConfirmDialog {...defaultProps} onConfirm={onConfirm} isConfirming />);
 
     expect(screen.getByRole("button", { name: "Loading" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
@@ -30,8 +28,6 @@ describe("ConfirmDialog", () => {
     const error = new ApiError("server", 500, true, "RabbitMQ refused the request");
     renderWithProviders(<ConfirmDialog {...defaultProps} error={error} />);
 
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "RabbitMQ refused the request",
-    );
+    expect(screen.getByRole("alert")).toHaveTextContent("RabbitMQ refused the request");
   });
 });

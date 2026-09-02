@@ -43,17 +43,14 @@ export function resolveCapabilityRegistry({
   vhosts,
   extensions,
 }: CapabilityInputs): CapabilityRegistry {
-  const markers = new Set(
-    extensions.map((extension) => getMarkerName(extension.javascript_src)),
-  );
+  const markers = new Set(extensions.map((extension) => getMarkerName(extension.javascript_src)));
 
   return {
     rabbitmqVersion: overview.rabbitmq_version,
     managementVersion: overview.management_version,
     userTags: [...userTags],
     visibleVhosts: vhosts.map((vhost) => vhost.name),
-    detailedStatistics:
-      !overview.disable_stats && overview.rates_mode !== "none",
+    detailedStatistics: !overview.disable_stats && overview.rates_mode !== "none",
     optionalFeatures: {
       federation: markers.has(EXTENSION_MARKERS.federation),
       shovel: markers.has(EXTENSION_MARKERS.shovel),
@@ -64,9 +61,6 @@ export function resolveCapabilityRegistry({
   };
 }
 
-export function hasUserTag(
-  registry: CapabilityRegistry,
-  tag: string,
-): boolean {
+export function hasUserTag(registry: CapabilityRegistry, tag: string): boolean {
   return registry.userTags.includes(tag);
 }

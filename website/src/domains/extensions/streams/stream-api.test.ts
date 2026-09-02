@@ -67,10 +67,10 @@ describe("stream management API", () => {
     };
     await createSuperStream(client, "/", "orders", body);
 
-    expect(client.requestVoid).toHaveBeenCalledWith(
-      "/stream/super-streams/%2F/orders",
-      { method: "PUT", body: JSON.stringify(body) },
-    );
+    expect(client.requestVoid).toHaveBeenCalledWith("/stream/super-streams/%2F/orders", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
   });
 
   it("reads publishers for an encoded stream queue", async () => {

@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
+import { useResetOnClose } from "@/components/shared/use-reset-on-close";
 import { useDeleteVhostMutation } from "./vhost-mutations";
 import { useNavigate } from "@tanstack/react-router";
 import type { ManagementApiClient } from "@/api/management-api-client";
@@ -22,32 +30,33 @@ export function DeleteVhostDialog({ name, open, onOpenChange, apiClient }: Delet
   const deleteMutation = useDeleteVhostMutation(apiClient);
   const navigate = useNavigate();
 
+  useResetOnClose(open, () => setConfirmName(""));
+
   const handleDelete = () => {
     deleteMutation.mutate(name, {
       onSuccess: () => {
         onOpenChange(false);
         navigate({ to: "/admin/vhosts" });
-      }
+      },
     });
   };
 
   return (
-    <Dialog open={open} onOpenChange={(val) => {
-      onOpenChange(val);
-      if (!val) setConfirmName("");
-    }}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete Virtual Host</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete the virtual host <strong>{name}</strong> and all of its queues, exchanges, and bindings.
+            This action cannot be undone. This will permanently delete the virtual host{" "}
+            <strong>{name}</strong> and all of its queues, exchanges, and bindings.
           </DialogDescription>
         </DialogHeader>
         <MutationErrorAlert error={deleteMutation.error} />
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Type the virtual host name to confirm</Label>
-            <Input 
+            <Label htmlFor="confirm-vhost-name">Type the virtual host name to confirm</Label>
+            <Input
+              id="confirm-vhost-name"
               value={confirmName}
               onChange={(e) => setConfirmName(e.target.value)}
               placeholder={name}
@@ -55,12 +64,16 @@ export function DeleteVhostDialog({ name, open, onOpenChange, apiClient }: Delet
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={deleteMutation.isPending}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={deleteMutation.isPending}
+          >
             {t("common.cancel")}
           </Button>
-          <Button 
-            variant="destructive" 
-            onClick={handleDelete} 
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
             disabled={confirmName !== name || deleteMutation.isPending}
           >
             {deleteMutation.isPending ? t("common.loading") : "Delete"}

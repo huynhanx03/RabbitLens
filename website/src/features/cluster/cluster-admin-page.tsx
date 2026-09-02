@@ -15,7 +15,7 @@ import {
   useResetAllStatisticsMutation,
   useSetClusterNameMutation,
 } from "@/domains/admin/cluster/cluster-query";
-import { DefinitionAdminPage } from "@/features/definitions/definition-admin-page";
+import { DefinitionAdminPage } from "@/domains/admin/definitions/definition-admin-page";
 
 export function ClusterAdminPage() {
   const { t } = useTranslation();
@@ -46,59 +46,49 @@ export function ClusterAdminPage() {
             <div className="space-y-4 lg:pr-6">
               <div>
                 <h3 className="text-base font-semibold">{t("cluster.name")}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {t("cluster.nameDescription")}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{t("cluster.nameDescription")}</p>
               </div>
 
-            <MutationErrorAlert error={updateName.error} />
-            <form
-              className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
-              onSubmit={(event) => {
-                event.preventDefault();
-                updateName.mutate(name.trim());
-              }}
-            >
-              <div className="space-y-2">
-                <Label htmlFor="cluster-name">{t("cluster.name")}</Label>
-                <Input
-                  id="cluster-name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  disabled={updateName.isPending}
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="sm:min-w-28"
-                disabled={
-                  updateName.isPending ||
-                  name.trim().length === 0 ||
-                  name === clusterName.data?.name
-                }
+              <MutationErrorAlert error={updateName.error} />
+              <form
+                className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  updateName.mutate(name.trim());
+                }}
               >
-                {updateName.isPending
-                  ? t("common.loading")
-                  : t("cluster.update")}
-              </Button>
-            </form>
+                <div className="space-y-2">
+                  <Label htmlFor="cluster-name">{t("cluster.name")}</Label>
+                  <Input
+                    id="cluster-name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    disabled={updateName.isPending}
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="sm:min-w-28"
+                  disabled={
+                    updateName.isPending ||
+                    name.trim().length === 0 ||
+                    name === clusterName.data?.name
+                  }
+                >
+                  {updateName.isPending ? t("common.loading") : t("cluster.update")}
+                </Button>
+              </form>
             </div>
 
             <div className="space-y-4 lg:pl-6">
               <div>
-                <h3 className="text-base font-semibold">
-                  {t("cluster.statistics")}
-                </h3>
+                <h3 className="text-base font-semibold">{t("cluster.statistics")}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("cluster.statisticsDescription")}
                 </p>
               </div>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => setResetOpen(true)}
-              >
+              <Button type="button" variant="destructive" onClick={() => setResetOpen(true)}>
                 <RotateCcw aria-hidden="true" />
                 {t("cluster.resetStatistics")}
               </Button>

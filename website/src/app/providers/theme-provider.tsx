@@ -1,19 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from "react";
-import {
-  PRODUCT_DEFAULTS,
-  type ThemePreference,
-} from "@/config/defaults";
-import {
-  ThemeContext,
-  type ResolvedTheme,
-  type ThemeContextValue,
-} from "./theme-context";
+import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from "react";
+import { PRODUCT_DEFAULTS, type ThemePreference } from "@/config/defaults";
+import { ThemeContext, type ResolvedTheme, type ThemeContextValue } from "./theme-context";
 
 const DARK_MODE_QUERY = "(prefers-color-scheme: dark)";
 
@@ -29,17 +16,10 @@ type ThemeProviderProps = PropsWithChildren<{
   defaultPreference: ThemePreference;
 }>;
 
-export function ThemeProvider({
-  defaultPreference,
-  children,
-}: ThemeProviderProps) {
+export function ThemeProvider({ defaultPreference, children }: ThemeProviderProps) {
   const [preference, setPreferenceState] = useState<ThemePreference>(() => {
-    const storedPreference = localStorage.getItem(
-      PRODUCT_DEFAULTS.persistenceKeys.theme,
-    );
-    return isThemePreference(storedPreference)
-      ? storedPreference
-      : defaultPreference;
+    const storedPreference = localStorage.getItem(PRODUCT_DEFAULTS.persistenceKeys.theme);
+    return isThemePreference(storedPreference) ? storedPreference : defaultPreference;
   });
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(() =>
     preference === "system" ? getSystemTheme() : "light",
@@ -69,10 +49,7 @@ export function ThemeProvider({
   }, [preference]);
 
   const setPreference = useCallback((nextPreference: ThemePreference) => {
-    localStorage.setItem(
-      PRODUCT_DEFAULTS.persistenceKeys.theme,
-      nextPreference,
-    );
+    localStorage.setItem(PRODUCT_DEFAULTS.persistenceKeys.theme, nextPreference);
     setPreferenceState(nextPreference);
   }, []);
 
@@ -81,7 +58,5 @@ export function ThemeProvider({
     [preference, resolvedTheme, setPreference],
   );
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

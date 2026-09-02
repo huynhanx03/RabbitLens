@@ -19,10 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useVhosts } from "@/domains/admin/vhosts/vhost-query";
 import { sanitizeFederationUri } from "@/domains/extensions/federation/federation-schema";
-import {
-  useRestartShovelMutation,
-  useShovels,
-} from "@/domains/extensions/shovels/shovel-query";
+import { useRestartShovelMutation, useShovels } from "@/domains/extensions/shovels/shovel-query";
 import type { ShovelStatusResponse } from "@/domains/extensions/shovels/shovel-schema";
 
 function stateVariant(state: string): StatusVariant {
@@ -40,9 +37,8 @@ export function ShovelStatusPage() {
   const vhosts = useVhosts(apiClient);
   const shovels = useShovels(apiClient, selectedVhost);
   const restart = useRestartShovelMutation(apiClient);
-  const canManage = auth.user?.tags.some((tag) =>
-    tag === "administrator" || tag === "policymaker",
-  ) ?? false;
+  const canManage =
+    auth.user?.tags.some((tag) => tag === "administrator" || tag === "policymaker") ?? false;
 
   const columns = useMemo<ColumnDef<ShovelStatusResponse>[]>(
     () => [
@@ -56,9 +52,7 @@ export function ShovelStatusPage() {
         accessorKey: "state",
         header: t("shovels.state"),
         cell: ({ row }) => (
-          <StatusBadge variant={stateVariant(row.original.state)}>
-            {row.original.state}
-          </StatusBadge>
+          <StatusBadge variant={stateVariant(row.original.state)}>{row.original.state}</StatusBadge>
         ),
       },
       {
@@ -80,16 +74,17 @@ export function ShovelStatusPage() {
       {
         id: "actions",
         header: t("common.actions"),
-        cell: ({ row }) => canManage ? (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`${t("shovels.restartShovel")} ${row.original.name}`}
-            onClick={() => setShovelToRestart(row.original)}
-          >
-            <RotateCcw aria-hidden="true" />
-          </Button>
-        ) : null,
+        cell: ({ row }) =>
+          canManage ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`${t("shovels.restartShovel")} ${row.original.name}`}
+              onClick={() => setShovelToRestart(row.original)}
+            >
+              <RotateCcw aria-hidden="true" />
+            </Button>
+          ) : null,
       },
     ],
     [canManage, t],
@@ -107,18 +102,20 @@ export function ShovelStatusPage() {
             <SelectContent>
               <SelectItem value="all">{t("definitions.allVhosts")}</SelectItem>
               {vhosts.data?.map(({ name }) => (
-                <SelectItem key={name} value={name}>{name}</SelectItem>
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         }
-        secondary={canManage ? (
-          <Button asChild variant="outline">
-            <Link to="/extensions/shovels/management">
-              {t("shovels.management")}
-            </Link>
-          </Button>
-        ) : undefined}
+        secondary={
+          canManage ? (
+            <Button asChild variant="outline">
+              <Link to="/extensions/shovels/management">{t("shovels.management")}</Link>
+            </Button>
+          ) : undefined
+        }
       />
       <AsyncState
         isPending={shovels.isPending}
@@ -146,10 +143,17 @@ export function ShovelStatusPage() {
         confirmText={t("shovels.restart")}
         isConfirming={restart.isPending}
         error={restart.error}
-        onConfirm={() => shovelToRestart && restart.mutate(
-          { vhost: shovelToRestart.vhost, name: shovelToRestart.name, node: shovelToRestart.node },
-          { onSuccess: () => setShovelToRestart(null) },
-        )}
+        onConfirm={() =>
+          shovelToRestart &&
+          restart.mutate(
+            {
+              vhost: shovelToRestart.vhost,
+              name: shovelToRestart.name,
+              node: shovelToRestart.node,
+            },
+            { onSuccess: () => setShovelToRestart(null) },
+          )
+        }
       />
     </div>
   );

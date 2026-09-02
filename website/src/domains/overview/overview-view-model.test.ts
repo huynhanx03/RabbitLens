@@ -52,10 +52,9 @@ describe("createOverviewViewModel", () => {
   });
 
   it("uses null for statistics that RabbitMQ omits", () => {
-    const viewModel = createOverviewViewModel(
-      { ...baseOverview, disable_stats: true },
-      [{ name: "rabbit@one", running: true, mem_alarm: true }],
-    );
+    const viewModel = createOverviewViewModel({ ...baseOverview, disable_stats: true }, [
+      { name: "rabbit@one", running: true, mem_alarm: true },
+    ]);
 
     expect(viewModel.statisticsDisabled).toBe(true);
     expect(viewModel.totals.connections).toBeNull();

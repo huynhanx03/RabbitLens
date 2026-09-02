@@ -8,12 +8,7 @@ describe("FormActions", () => {
   it("locks both actions while a form is pending", async () => {
     const onCancel = vi.fn();
     renderWithProviders(
-      <FormActions
-        isPending
-        onCancel={onCancel}
-        submitLabel="Save"
-        pendingLabel="Saving"
-      />,
+      <FormActions isPending onCancel={onCancel} submitLabel="Save" pendingLabel="Saving" />,
     );
 
     expect(screen.getByTestId("form-actions")).toHaveClass("rl-form-actions");

@@ -37,9 +37,7 @@ describe("FeatureFlagListPage", () => {
 
   it("confirms before enabling an irreversible feature flag", async () => {
     renderWithProviders(<FeatureFlagListPage />);
-    await waitFor(() =>
-      expect(screen.getByText("quorum_queue")).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText("quorum_queue")).toBeInTheDocument());
 
     await userEvent.click(screen.getByRole("button", { name: "Enable" }));
     expect(client.requestVoid).not.toHaveBeenCalled();
@@ -47,9 +45,7 @@ describe("FeatureFlagListPage", () => {
     const dialog = screen.getByRole("alertdialog", {
       name: "Enable feature flag",
     });
-    await userEvent.click(
-      within(dialog).getByRole("button", { name: "Enable" }),
-    );
+    await userEvent.click(within(dialog).getByRole("button", { name: "Enable" }));
     await waitFor(() => expect(client.requestVoid).toHaveBeenCalledTimes(1));
   });
 });

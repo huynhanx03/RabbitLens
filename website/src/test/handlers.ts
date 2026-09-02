@@ -7,10 +7,10 @@ export const handlers = [
     if (!auth || auth !== "Basic Z3Vlc3Q6Z3Vlc3Q=") {
       return HttpResponse.json(
         { error: "not_authorized", reason: "Not authorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
-    
+
     return HttpResponse.json({
       name: "guest",
       tags: ["administrator"],

@@ -31,11 +31,7 @@ type JsonParameterFormProps = {
   initialValue?: Record<string, unknown>;
   isUpdate?: boolean;
   isPending?: boolean;
-  onSubmit: (input: {
-    vhost: string;
-    name: string;
-    value: Record<string, unknown>;
-  }) => void;
+  onSubmit: (input: { vhost: string; name: string; value: Record<string, unknown> }) => void;
   onCancel: () => void;
 };
 

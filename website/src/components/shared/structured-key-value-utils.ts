@@ -1,9 +1,7 @@
 import type { ReactNode } from "react";
 import type { StructuredKeyValueEntry } from "./structured-key-value";
 
-export function objectToStructuredEntries(
-  value: unknown,
-): StructuredKeyValueEntry[] {
+export function objectToStructuredEntries(value: unknown): StructuredKeyValueEntry[] {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return [];
   }
@@ -20,11 +18,7 @@ function formatStructuredValue(value: unknown): ReactNode {
     return "null";
   }
 
-  if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
     return String(value);
   }
 
@@ -34,9 +28,7 @@ function formatStructuredValue(value: unknown): ReactNode {
     }
 
     return value
-      .map((item) =>
-        typeof item === "object" ? JSON.stringify(item) : String(item),
-      )
+      .map((item) => (typeof item === "object" ? JSON.stringify(item) : String(item)))
       .join(", ");
   }
 

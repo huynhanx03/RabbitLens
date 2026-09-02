@@ -38,5 +38,5 @@ export const mockVhosts: VhostResponse[] = [
     messages: 0,
     messages_ready: 0,
     messages_unacknowledged: 0,
-  }
+  },
 ];

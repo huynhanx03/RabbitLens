@@ -51,9 +51,7 @@ export function MetricCard({
       )}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         {icon ? (
           <span className="rl-icon-tile flex size-10 items-center justify-center rounded-xl text-primary [&_svg]:size-4">
             {icon}
@@ -72,19 +70,11 @@ export function MetricCard({
             <div className={cn("rl-metric-value text-2xl font-bold", statusColors[status])}>
               {value ?? "—"}
             </div>
-            {statusLabel ? (
-              <span className="sr-only">{statusLabel}</span>
-            ) : null}
-            {unit && (
-              <span className="text-xs text-muted-foreground font-medium">
-                {unit}
-              </span>
-            )}
+            {statusLabel ? <span className="sr-only">{statusLabel}</span> : null}
+            {unit && <span className="text-xs text-muted-foreground font-medium">{unit}</span>}
           </div>
         )}
-        {description ? (
-          <p className="mt-2 text-xs text-muted-foreground">{description}</p>
-        ) : null}
+        {description ? <p className="mt-2 text-xs text-muted-foreground">{description}</p> : null}
       </CardContent>
     </Card>
   );

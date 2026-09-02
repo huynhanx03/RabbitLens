@@ -17,10 +17,8 @@ import {
 export const exchangeKeys = {
   all: ["exchanges"] as const,
   lists: () => [...exchangeKeys.all, "list"] as const,
-  list: (search: ResourceListSearch) =>
-    [...exchangeKeys.lists(), search] as const,
-  detail: (vhost: string, name: string) =>
-    [...exchangeKeys.all, "detail", vhost, name] as const,
+  list: (search: ResourceListSearch) => [...exchangeKeys.lists(), search] as const,
+  detail: (vhost: string, name: string) => [...exchangeKeys.all, "detail", vhost, name] as const,
 };
 
 export function exchangeConfigQueryOptions(
@@ -50,12 +48,9 @@ export function exchangeDetailQueryOptions(
       range.ageSeconds,
       range.incrementSeconds,
     ] as const,
-    queryFn: ({ signal }) =>
-      getExchange(apiClient, vhost, name, rangeParams, signal),
+    queryFn: ({ signal }) => getExchange(apiClient, vhost, name, rangeParams, signal),
     staleTime: PRODUCT_DEFAULTS.polling.nodeDetailsMs,
-    refetchInterval: createPollingInterval(
-      PRODUCT_DEFAULTS.polling.nodeDetailsMs,
-    ),
+    refetchInterval: createPollingInterval(PRODUCT_DEFAULTS.polling.nodeDetailsMs),
   });
 }
 

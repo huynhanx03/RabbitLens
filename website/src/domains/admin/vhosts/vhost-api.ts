@@ -11,11 +11,7 @@ export const vhostApi = {
     return client.request(`/vhosts/${encodeURIComponent(name)}`, vhostSchema);
   },
 
-  putVhost: async (
-    client: ManagementApiClient,
-    name: string,
-    body: VhostBody
-  ): Promise<void> => {
+  putVhost: async (client: ManagementApiClient, name: string, body: VhostBody): Promise<void> => {
     await client.requestVoid(`/vhosts/${encodeURIComponent(name)}`, {
       method: "PUT",
       body: JSON.stringify(body),
@@ -28,10 +24,7 @@ export const vhostApi = {
     });
   },
 
-  putVhostDeletionProtection: async (
-    client: ManagementApiClient,
-    name: string
-  ): Promise<void> => {
+  putVhostDeletionProtection: async (client: ManagementApiClient, name: string): Promise<void> => {
     // API endpoint: /api/vhosts/:vhost/deletion/protection (assuming body not needed or empty)
     await client.requestVoid(`/vhosts/${encodeURIComponent(name)}/deletion/protection`, {
       method: "PUT",
@@ -40,7 +33,7 @@ export const vhostApi = {
 
   deleteVhostDeletionProtection: async (
     client: ManagementApiClient,
-    name: string
+    name: string,
   ): Promise<void> => {
     await client.requestVoid(`/vhosts/${encodeURIComponent(name)}/deletion/protection`, {
       method: "DELETE",
@@ -50,10 +43,13 @@ export const vhostApi = {
   postVhostStart: async (
     client: ManagementApiClient,
     vhost: string,
-    node: string
+    node: string,
   ): Promise<void> => {
-    await client.requestVoid(`/vhosts/${encodeURIComponent(vhost)}/start/${encodeURIComponent(node)}`, {
-      method: "POST",
-    });
+    await client.requestVoid(
+      `/vhosts/${encodeURIComponent(vhost)}/start/${encodeURIComponent(node)}`,
+      {
+        method: "POST",
+      },
+    );
   },
 };

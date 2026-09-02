@@ -105,7 +105,7 @@ async function verifyBudgets() {
 
     const filePath = path.join(distDir, entryInfo.file);
     let gzipSize = 0;
-    
+
     try {
       gzipSize = await getAssetGzipSize(entryInfo.file);
     } catch {
@@ -122,18 +122,26 @@ async function verifyBudgets() {
     } else if (entryInfo.file.includes("echarts") || entryInfo.file.includes("rate-chart")) {
       budget = PERFORMANCE_BUDGETS.chartChunkGzipBytes;
       budgetName = "chartChunkGzipBytes";
-    } else if (entryInfo.file.includes("vendor") || entryInfo.file.includes("react") || entryInfo.file.includes("tanstack")) {
+    } else if (
+      entryInfo.file.includes("vendor") ||
+      entryInfo.file.includes("react") ||
+      entryInfo.file.includes("tanstack")
+    ) {
       budget = PERFORMANCE_BUDGETS.sharedChunkGzipBytes;
       budgetName = "sharedChunkGzipBytes";
     }
 
     const overBudget = gzipSize > budget;
-    
+
     if (overBudget) {
-      console.error(`❌ ${entryInfo.file} (${formatBytes(gzipSize)}) exceeds ${budgetName} (${formatBytes(budget)}) by ${formatBytes(gzipSize - budget)}`);
+      console.error(
+        `❌ ${entryInfo.file} (${formatBytes(gzipSize)}) exceeds ${budgetName} (${formatBytes(budget)}) by ${formatBytes(gzipSize - budget)}`,
+      );
       hasError = true;
     } else if (entryInfo.isEntry || entryInfo.file.includes("echarts")) {
-      console.log(`✅ ${entryInfo.file}: ${formatBytes(gzipSize)} (Budget: ${formatBytes(budget)})`);
+      console.log(
+        `✅ ${entryInfo.file}: ${formatBytes(gzipSize)} (Budget: ${formatBytes(budget)})`,
+      );
     }
   }
 
@@ -146,11 +154,10 @@ async function verifyBudgets() {
 }
 
 const isDirectRun =
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
 if (isDirectRun) {
-  verifyBudgets().catch(err => {
+  verifyBudgets().catch((err) => {
     console.error("Verification script error:", err);
     process.exit(1);
   });

@@ -6,13 +6,6 @@ type RuntimeConfigProviderProps = PropsWithChildren<{
   config: RuntimeConfig;
 }>;
 
-export function RuntimeConfigProvider({
-  config,
-  children,
-}: RuntimeConfigProviderProps) {
-  return (
-    <RuntimeConfigContext.Provider value={config}>
-      {children}
-    </RuntimeConfigContext.Provider>
-  );
+export function RuntimeConfigProvider({ config, children }: RuntimeConfigProviderProps) {
+  return <RuntimeConfigContext.Provider value={config}>{children}</RuntimeConfigContext.Provider>;
 }

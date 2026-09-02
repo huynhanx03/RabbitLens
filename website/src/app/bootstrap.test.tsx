@@ -24,9 +24,7 @@ describe("createApplication", () => {
   });
 
   it("mounts the app only after runtime configuration is valid", async () => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(jsonResponse(validConfig));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse(validConfig));
 
     render(await createApplication(fetcher));
 
@@ -36,9 +34,7 @@ describe("createApplication", () => {
 
   it("honors a stored locale over the deployment default", async () => {
     localStorage.setItem(PRODUCT_DEFAULTS.persistenceKeys.locale, "vi");
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(jsonResponse(validConfig));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse(validConfig));
 
     render(await createApplication(fetcher));
 
@@ -60,9 +56,7 @@ describe("createApplication", () => {
 
   it("renders a localized error without making API calls when config is invalid", async () => {
     localStorage.setItem(PRODUCT_DEFAULTS.persistenceKeys.locale, "vi");
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(jsonResponse({}, 503));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({}, 503));
 
     render(await createApplication(fetcher));
 
@@ -73,10 +67,7 @@ describe("createApplication", () => {
     expect(fetcher.mock.calls[0]?.[0]).toEqual(
       new URL("/runtime-config.json", window.location.origin),
     );
-    expect(screen.getByRole("link", { name: "Về đăng nhập" })).toHaveAttribute(
-      "href",
-      "/login",
-    );
+    expect(screen.getByRole("link", { name: "Về đăng nhập" })).toHaveAttribute("href", "/login");
     expect(screen.getByRole("button", { name: "Tải lại trang" })).toBeInTheDocument();
   });
 });

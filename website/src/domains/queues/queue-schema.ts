@@ -43,10 +43,7 @@ export const queueSchema = z
     policy: z.string().nullish(),
     operator_policy: z.string().nullish(),
     effective_policy_definition: z.record(z.string(), z.unknown()).nullish(),
-    owner_pid_details: z
-      .object({ name: z.string().optional() })
-      .passthrough()
-      .nullish(),
+    owner_pid_details: z.object({ name: z.string().optional() }).passthrough().nullish(),
     idle_since: z.string().optional(),
     memory: z.number().optional(),
     message_bytes: z.number().optional(),

@@ -23,6 +23,7 @@ import {
 import { ArgumentsEditor, type ArgumentValue } from "@/components/shared/arguments-editor";
 import { FormFieldRow } from "@/components/shared/form-field-row";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
+import { useResetOnClose } from "@/components/shared/use-reset-on-close";
 import { useCreateExchangeMutation } from "@/domains/exchanges/exchange-query";
 import { useRouteContext } from "@tanstack/react-router";
 
@@ -43,11 +44,7 @@ export interface CreateExchangeDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateExchangeDialog({
-  vhost,
-  open,
-  onOpenChange,
-}: CreateExchangeDialogProps) {
+export function CreateExchangeDialog({ vhost, open, onOpenChange }: CreateExchangeDialogProps) {
   const { t } = useTranslation();
   const context = useRouteContext({ from: "__root__" });
   const createMutation = useCreateExchangeMutation(context.apiClient);
@@ -71,6 +68,8 @@ export function CreateExchangeDialog({
     },
   });
 
+  useResetOnClose(open, reset);
+
   const onSubmit = (data: CreateExchangeFormValues) => {
     createMutation.mutate(
       {
@@ -89,7 +88,7 @@ export function CreateExchangeDialog({
           reset();
           onOpenChange(false);
         },
-      }
+      },
     );
   };
 
@@ -97,7 +96,9 @@ export function CreateExchangeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto p-6 sm:max-w-3xl">
         <DialogHeader className="space-y-2 pr-10">
-          <DialogTitle className="text-2xl font-semibold tracking-tight">{t("exchanges.createTitle")}</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold tracking-tight">
+            {t("exchanges.createTitle")}
+          </DialogTitle>
           <DialogDescription className="text-base">
             {t("exchanges.createDescription", { vhost })}
           </DialogDescription>
@@ -107,16 +108,8 @@ export function CreateExchangeDialog({
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/30 px-4 py-1">
-            <FormFieldRow
-              htmlFor="name"
-              label={t("vhosts.name")}
-              error={errors.name?.message}
-            >
-              <Input
-                id="name"
-                {...register("name")}
-                disabled={createMutation.isPending}
-              />
+            <FormFieldRow htmlFor="name" label={t("vhosts.name")} error={errors.name?.message}>
+              <Input id="name" {...register("name")} disabled={createMutation.isPending} />
             </FormFieldRow>
 
             <div className="grid gap-4 py-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -161,7 +154,10 @@ export function CreateExchangeDialog({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="auto_delete" className="text-sm font-semibold text-muted-foreground">
+                <Label
+                  htmlFor="auto_delete"
+                  className="text-sm font-semibold text-muted-foreground"
+                >
                   {t("exchanges.autoDelete")}
                 </Label>
                 <Select
@@ -219,7 +215,11 @@ export function CreateExchangeDialog({
             >
               {t("common.cancel")}
             </Button>
-            <Button type="submit" disabled={createMutation.isPending} className="h-11 rounded-full px-7">
+            <Button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="h-11 rounded-full px-7"
+            >
               {createMutation.isPending ? t("common.loading") : t("common.create")}
             </Button>
           </div>

@@ -6,8 +6,6 @@ describe("Input", () => {
   it("uses the shared RabbitLens input surface", () => {
     render(<Input aria-label="Name" />);
 
-    expect(screen.getByRole("textbox", { name: "Name" })).toHaveClass(
-      "rl-input",
-    );
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveClass("rl-input");
   });
 });

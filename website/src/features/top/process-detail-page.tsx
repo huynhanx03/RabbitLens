@@ -80,7 +80,10 @@ export function ProcessDetailPage({ pid }: Props) {
                   items={[
                     { label: t("top.links"), value: <ProcessLinks pids={process.links} /> },
                     { label: t("top.monitors"), value: <ProcessLinks pids={process.monitors} /> },
-                    { label: t("top.monitoredBy"), value: <ProcessLinks pids={process.monitored_by} /> },
+                    {
+                      label: t("top.monitoredBy"),
+                      value: <ProcessLinks pids={process.monitored_by} />,
+                    },
                   ]}
                 />
               </div>

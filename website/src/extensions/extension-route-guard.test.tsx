@@ -22,15 +22,13 @@ describe("ExtensionRouteGuard", () => {
     client.request.mockResolvedValue([{ javascript: "top.js" }]);
 
     renderWithProviders(
-      <ExtensionRouteGuard id="top"><div>secret page</div></ExtensionRouteGuard>,
+      <ExtensionRouteGuard id="top">
+        <div>secret page</div>
+      </ExtensionRouteGuard>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Extension unavailable")).toBeVisible(),
-    );
-    expect(
-      screen.getByText("Your account cannot access this extension."),
-    ).toBeVisible();
+    await waitFor(() => expect(screen.getByText("Extension unavailable")).toBeVisible());
+    expect(screen.getByText("Your account cannot access this extension.")).toBeVisible();
     expect(screen.queryByText("secret page")).not.toBeInTheDocument();
   });
 
@@ -38,14 +36,12 @@ describe("ExtensionRouteGuard", () => {
     client.request.mockResolvedValue([]);
 
     renderWithProviders(
-      <ExtensionRouteGuard id="top"><div>secret page</div></ExtensionRouteGuard>,
+      <ExtensionRouteGuard id="top">
+        <div>secret page</div>
+      </ExtensionRouteGuard>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Extension unavailable")).toBeVisible(),
-    );
-    expect(
-      screen.getByText("This extension is not enabled on the RabbitMQ server."),
-    ).toBeVisible();
+    await waitFor(() => expect(screen.getByText("Extension unavailable")).toBeVisible());
+    expect(screen.getByText("This extension is not enabled on the RabbitMQ server.")).toBeVisible();
   });
 });

@@ -43,9 +43,8 @@ export function FederationStatusPage() {
   const vhosts = useVhosts(apiClient);
   const links = useFederationLinks(apiClient, selectedVhost);
   const restart = useRestartFederationLinkMutation(apiClient);
-  const canManage = auth.user?.tags.some((tag) =>
-    tag === "administrator" || tag === "policymaker",
-  ) ?? false;
+  const canManage =
+    auth.user?.tags.some((tag) => tag === "administrator" || tag === "policymaker") ?? false;
 
   const columns = useMemo<ColumnDef<FederationLinkResponse>[]>(
     () => [
@@ -54,18 +53,15 @@ export function FederationStatusPage() {
         accessorKey: "uri",
         header: t("federation.uri"),
         cell: ({ row }) => (
-          <span className="font-mono text-xs">
-            {sanitizeFederationUri(row.original.uri)}
-          </span>
+          <span className="font-mono text-xs">{sanitizeFederationUri(row.original.uri)}</span>
         ),
       },
       {
         id: "destination",
         header: t("federation.destination"),
         cell: ({ row }) => {
-          const name = row.original.type === "exchange"
-            ? row.original.exchange
-            : row.original.queue;
+          const name =
+            row.original.type === "exchange" ? row.original.exchange : row.original.queue;
           return (
             <span className="flex items-center gap-2">
               {name ?? "—"}
@@ -88,25 +84,29 @@ export function FederationStatusPage() {
       {
         accessorKey: "error",
         header: t("federation.lastError"),
-        cell: ({ row }) => row.original.error ? (
-          <span className="line-clamp-2 text-sm text-destructive" title={row.original.error}>
-            {row.original.error}
-          </span>
-        ) : "—",
+        cell: ({ row }) =>
+          row.original.error ? (
+            <span className="line-clamp-2 text-sm text-destructive" title={row.original.error}>
+              {row.original.error}
+            </span>
+          ) : (
+            "—"
+          ),
       },
       {
         id: "actions",
         header: t("common.actions"),
-        cell: ({ row }) => canManage ? (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`${t("federation.restartLink")} ${row.original.upstream}`}
-            onClick={() => setLinkToRestart(row.original)}
-          >
-            <RotateCcw aria-hidden="true" />
-          </Button>
-        ) : null,
+        cell: ({ row }) =>
+          canManage ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`${t("federation.restartLink")} ${row.original.upstream}`}
+              onClick={() => setLinkToRestart(row.original)}
+            >
+              <RotateCcw aria-hidden="true" />
+            </Button>
+          ) : null,
       },
     ],
     [canManage, t],
@@ -124,18 +124,20 @@ export function FederationStatusPage() {
             <SelectContent>
               <SelectItem value="all">{t("definitions.allVhosts")}</SelectItem>
               {vhosts.data?.map(({ name }) => (
-                <SelectItem key={name} value={name}>{name}</SelectItem>
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         }
-        secondary={canManage ? (
-          <Button asChild variant="outline">
-            <Link to="/extensions/federation/upstreams">
-              {t("federation.upstreams")}
-            </Link>
-          </Button>
-        ) : undefined}
+        secondary={
+          canManage ? (
+            <Button asChild variant="outline">
+              <Link to="/extensions/federation/upstreams">{t("federation.upstreams")}</Link>
+            </Button>
+          ) : undefined
+        }
       />
       <AsyncState
         isPending={links.isPending}
@@ -163,10 +165,13 @@ export function FederationStatusPage() {
         confirmText={t("federation.restart")}
         isConfirming={restart.isPending}
         error={restart.error}
-        onConfirm={() => linkToRestart && restart.mutate(
-          { vhost: linkToRestart.vhost, id: linkToRestart.id, node: linkToRestart.node },
-          { onSuccess: () => setLinkToRestart(null) },
-        )}
+        onConfirm={() =>
+          linkToRestart &&
+          restart.mutate(
+            { vhost: linkToRestart.vhost, id: linkToRestart.id, node: linkToRestart.node },
+            { onSuccess: () => setLinkToRestart(null) },
+          )
+        }
       />
     </div>
   );

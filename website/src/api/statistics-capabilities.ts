@@ -1,15 +1,13 @@
 import type { OverviewResponse } from "@/domains/overview/overview-schema";
 
 export type StatisticsMode =
-  | "disabled"
-  | "queue-totals-only"
-  | "no-rates"
-  | "basic-rates"
-  | "detailed-rates";
+  "disabled" | "queue-totals-only" | "no-rates" | "basic-rates" | "detailed-rates";
 
-export function resolveStatisticsMode(overview: Partial<OverviewResponse> | undefined | null): StatisticsMode {
+export function resolveStatisticsMode(
+  overview: Partial<OverviewResponse> | undefined | null,
+): StatisticsMode {
   if (!overview) return "basic-rates"; // fallback if not loaded yet
-  
+
   if (overview.disable_stats) {
     return overview.enable_queue_totals ? "queue-totals-only" : "disabled";
   }
@@ -17,7 +15,7 @@ export function resolveStatisticsMode(overview: Partial<OverviewResponse> | unde
   const rm = overview.rates_mode;
   if (rm === "none") return "no-rates";
   if (rm === "detailed") return "detailed-rates";
-  
+
   // Default when disable_stats is false and rates_mode is undefined or "basic"
   return "basic-rates";
 }
@@ -58,7 +56,8 @@ export function getStatisticsSelectors(mode: StatisticsMode): StatisticsSelector
         canShowRates: false,
         canShowFineStats: false,
         canPollSamples: false,
-        availabilityReason: "Rates mode is set to 'none'. Metric rates and samples are not available.",
+        availabilityReason:
+          "Rates mode is set to 'none'. Metric rates and samples are not available.",
       };
     case "basic-rates":
       return {

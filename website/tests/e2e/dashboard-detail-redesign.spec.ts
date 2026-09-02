@@ -36,14 +36,25 @@ async function signIn(page: Page) {
 test.describe("Dashboard and detail archetypes", () => {
   test.beforeEach(async ({ page, scenario }) => {
     await scenario({ role: "administrator", statsMode: "detailed-rates" });
-    await page.route("**/api/channels?*", (route) => route.fulfill({ json: {
-      items: [channel], filtered_count: 1, item_count: 1, page: 1,
-      page_count: 1, page_size: 100, total_count: 1,
-    } }));
+    await page.route("**/api/channels?*", (route) =>
+      route.fulfill({
+        json: {
+          items: [channel],
+          filtered_count: 1,
+          item_count: 1,
+          page: 1,
+          page_count: 1,
+          page_size: 100,
+          total_count: 1,
+        },
+      }),
+    );
     await page.route("**/api/channels/**", (route) => route.fulfill({ json: channel }));
   });
 
-  test("Overview presents operational hierarchy without accessibility violations", async ({ page }) => {
+  test("Overview presents operational hierarchy without accessibility violations", async ({
+    page,
+  }) => {
     await signIn(page);
     const clusterHealth = page.getByRole("region", { name: "Cluster health" });
     await expect(clusterHealth).toBeVisible();
@@ -62,6 +73,10 @@ test.describe("Dashboard and detail archetypes", () => {
     await page.getByRole("link", { name: channel.name }).click();
     await expect(page.getByRole("heading", { name: channel.name })).toBeVisible();
     await expect(page.getByRole("region", { name: "Properties" })).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
   });
 });

@@ -19,9 +19,7 @@ function stateToVariant(state: string): StatusVariant {
   }
 }
 
-export function createQueueColumns(
-  t: (key: string) => string,
-): ColumnDef<QueueViewModel>[] {
+export function createQueueColumns(t: (key: string) => string): ColumnDef<QueueViewModel>[] {
   return [
     {
       accessorKey: "vhost",
@@ -34,9 +32,7 @@ export function createQueueColumns(
       enableSorting: true,
       meta: { className: "min-w-60 max-w-[24rem]", variant: "code", wrap: "break" },
       cell: ({ getValue }) => (
-        <span className="font-mono text-sm font-medium">
-          {getValue<string>()}
-        </span>
+        <span className="font-mono text-sm font-medium">{getValue<string>()}</span>
       ),
     },
     {
@@ -69,11 +65,7 @@ export function createQueueColumns(
       meta: { align: "center", variant: "status" },
       cell: ({ getValue }) => {
         const state = getValue<string>();
-        return (
-          <StatusBadge variant={stateToVariant(state)}>
-            {state}
-          </StatusBadge>
-        );
+        return <StatusBadge variant={stateToVariant(state)}>{state}</StatusBadge>;
       },
     },
     {
@@ -81,18 +73,14 @@ export function createQueueColumns(
       header: t("queues.ready"),
       enableSorting: true,
       meta: { align: "center", variant: "numeric" },
-      cell: ({ getValue }) => (
-        <span className="tabular-nums">{getValue<number>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="tabular-nums">{getValue<number>()}</span>,
     },
     {
       accessorKey: "messagesUnacked",
       header: t("queues.unacked"),
       enableSorting: true,
       meta: { align: "center", variant: "numeric" },
-      cell: ({ getValue }) => (
-        <span className="tabular-nums">{getValue<number>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="tabular-nums">{getValue<number>()}</span>,
     },
     {
       accessorKey: "messagesTotal",

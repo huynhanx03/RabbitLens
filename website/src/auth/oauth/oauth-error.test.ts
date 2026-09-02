@@ -1,26 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import {
-  getOAuthFailureTranslationKey,
-  reportOAuthFailure,
-} from "./oauth-error";
+import { getOAuthFailureTranslationKey, reportOAuthFailure } from "./oauth-error";
 
 describe("OAuth failure boundary", () => {
   it("maps failures to fixed translation keys", () => {
-    expect(getOAuthFailureTranslationKey("login")).toBe(
-      "auth.oauth.loginFailedDescription",
-    );
-    expect(getOAuthFailureTranslationKey("logout")).toBe(
-      "auth.oauth.logoutFailedDescription",
-    );
+    expect(getOAuthFailureTranslationKey("login")).toBe("auth.oauth.loginFailedDescription");
+    expect(getOAuthFailureTranslationKey("logout")).toBe("auth.oauth.logoutFailedDescription");
   });
 
   it("never sends provider-controlled details to diagnostics", () => {
     const logger = vi.fn();
-    const providerError = new Error(
-      "code=secret-code state=secret-state token=secret-token",
-    );
+    const providerError = new Error("code=secret-code state=secret-state token=secret-token");
 
     reportOAuthFailure("login", providerError, logger);
 

@@ -8,12 +8,23 @@ describe("queue API", () => {
 
   it("builds the correct list URL with search params", async () => {
     const fetcher = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ items: [], filtered_count: 0, item_count: 0, page: 1, page_count: 0, page_size: 100, total_count: 0 }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      })
+      new Response(
+        JSON.stringify({
+          items: [],
+          filtered_count: 0,
+          item_count: 0,
+          page: 1,
+          page_count: 0,
+          page_size: 100,
+          total_count: 0,
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
-    
+
     const client = new ManagementApiClient({
       baseUrl: "http://localhost:15672/api",
       getSession,
@@ -32,7 +43,7 @@ describe("queue API", () => {
 
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/queues?page=1&page_size=50&name=my-",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -41,9 +52,9 @@ describe("queue API", () => {
       new Response(JSON.stringify({ name: "my-queue" }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     );
-    
+
     const client = new ManagementApiClient({
       baseUrl: "http://localhost:15672/api",
       getSession,
@@ -57,25 +68,30 @@ describe("queue API", () => {
 
     expect(fetcher).toHaveBeenCalledWith(
       "http://localhost:15672/api/queues/%2Fmy-vhost/my%2Fqueue",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
   it("parses get-message responses through the queue domain schema", async () => {
     const fetcher = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify([{
-        payload_bytes: 5,
-        redelivered: false,
-        exchange: "events",
-        routing_key: "created",
-        message_count: 0,
-        properties: {},
-        payload: "hello",
-        payload_encoding: "string",
-      }]), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Response(
+        JSON.stringify([
+          {
+            payload_bytes: 5,
+            redelivered: false,
+            exchange: "events",
+            routing_key: "created",
+            message_count: 0,
+            properties: {},
+            payload: "hello",
+            payload_encoding: "string",
+          },
+        ]),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
     const client = new ManagementApiClient({
       baseUrl: "http://localhost:15672/api",

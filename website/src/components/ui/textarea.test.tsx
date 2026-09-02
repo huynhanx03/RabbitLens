@@ -6,8 +6,6 @@ describe("Textarea", () => {
   it("uses the shared RabbitLens input surface", () => {
     render(<Textarea aria-label="JSON" />);
 
-    expect(screen.getByRole("textbox", { name: "JSON" })).toHaveClass(
-      "rl-input",
-    );
+    expect(screen.getByRole("textbox", { name: "JSON" })).toHaveClass("rl-input");
   });
 });

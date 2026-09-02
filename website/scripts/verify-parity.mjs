@@ -6,10 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function loadManifest() {
-  const manifestPath = path.resolve(
-    __dirname,
-    "../tests/parity/legacy-management-ui.json",
-  );
+  const manifestPath = path.resolve(__dirname, "../tests/parity/legacy-management-ui.json");
   const raw = fs.readFileSync(manifestPath, "utf-8");
   return JSON.parse(raw);
 }
@@ -39,8 +36,7 @@ export function verifyManifest(manifest, options = {}) {
   const keys = new Set();
   const routeCapabilities = new Set();
   const existsSync =
-    options.existsSync ??
-    ((file) => fs.existsSync(path.resolve(__dirname, "..", file)));
+    options.existsSync ?? ((file) => fs.existsSync(path.resolve(__dirname, "..", file)));
   let covered = 0;
   let excluded = 0;
 
@@ -64,14 +60,10 @@ export function verifyManifest(manifest, options = {}) {
       if (!entry.sourceFile) {
         errors.push(`Missing sourceFile for covered entry: ${entry.sourceKey}`);
       } else if (!existsSync(entry.sourceFile)) {
-        errors.push(
-          `Source file not found for covered entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Source file not found for covered entry: ${entry.sourceKey}`);
       }
       if (!entry.sourceRouteOrAction) {
-        errors.push(
-          `Missing sourceRouteOrAction for covered entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Missing sourceRouteOrAction for covered entry: ${entry.sourceKey}`);
       }
       if (!entry.evidence || entry.evidence.length === 0) {
         errors.push(`Missing evidence for covered entry: ${entry.sourceKey}`);
@@ -85,18 +77,12 @@ export function verifyManifest(manifest, options = {}) {
         }
       }
       if (!entry.rabbitLensRoute) {
-        errors.push(
-          `Missing rabbitLensRoute for covered entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Missing rabbitLensRoute for covered entry: ${entry.sourceKey}`);
       }
       if (!entry.routeModule) {
-        errors.push(
-          `Missing routeModule for covered entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Missing routeModule for covered entry: ${entry.sourceKey}`);
       } else if (!existsSync(entry.routeModule)) {
-        errors.push(
-          `Route module not found for covered entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Route module not found for covered entry: ${entry.sourceKey}`);
       }
       if (!entry.capability) {
         errors.push(`Missing capability for covered entry: ${entry.sourceKey}`);
@@ -125,9 +111,7 @@ export function verifyManifest(manifest, options = {}) {
     } else if (entry.status === "checked-source-exclusion") {
       excluded++;
       if (!entry.exclusionReason) {
-        errors.push(
-          `Missing exclusionReason for excluded entry: ${entry.sourceKey}`,
-        );
+        errors.push(`Missing exclusionReason for excluded entry: ${entry.sourceKey}`);
       }
     } else {
       errors.push(`Invalid status for entry: ${entry.sourceKey}`);

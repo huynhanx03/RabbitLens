@@ -21,7 +21,10 @@ export function ConnectivityBanner() {
   if (online) return null;
 
   return (
-    <Alert role="alert" className="mx-(--page-gutter) mt-4 rounded-xl border-warning/40 bg-warning/10">
+    <Alert
+      role="alert"
+      className="mx-(--page-gutter) mt-4 rounded-xl border-warning/40 bg-warning/10"
+    >
       <WifiOff aria-hidden="true" />
       <AlertTitle>{t("common.offline")}</AlertTitle>
       <AlertDescription>{t("common.offlineDescription")}</AlertDescription>

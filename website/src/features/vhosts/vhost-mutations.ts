@@ -24,7 +24,7 @@ export function useDeleteVhostMutation(client: ManagementApiClient) {
     mutationFn: (name: string) => vhostApi.deleteVhost(client, name),
     onSuccess: () => {
       // Deleting a vhost can affect many resources (queues, exchanges, etc.), so invalidate broadly
-      queryClient.invalidateQueries(); 
+      queryClient.invalidateQueries();
     },
   });
 }

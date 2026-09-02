@@ -32,17 +32,15 @@ describe("ManagementApiClient", () => {
   afterEach(() => vi.useRealTimers());
 
   it("joins the API URL, adds Basic auth, and parses the response schema", async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      jsonResponse({ value: "ok" }),
-    );
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ value: "ok" }));
     const client = createClient({
       fetcher,
       session: { type: "basic", authorization: "Basic encoded" },
     });
 
-    await expect(client.request("/nodes/rabbit%40one", resultSchema)).resolves.toEqual(
-      { value: "ok" },
-    );
+    await expect(client.request("/nodes/rabbit%40one", resultSchema)).resolves.toEqual({
+      value: "ok",
+    });
 
     const [url, init] = fetcher.mock.calls[0] ?? [];
     const headers = new Headers(init?.headers);
@@ -66,9 +64,7 @@ describe("ManagementApiClient", () => {
   });
 
   it("adds Bearer auth without accepting a caller override", async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      jsonResponse({ value: "ok" }),
-    );
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ value: "ok" }));
     const client = createClient({
       fetcher,
       session: { type: "bearer", accessToken: "access-token" },
@@ -83,9 +79,7 @@ describe("ManagementApiClient", () => {
   });
 
   it("omits authorization for anonymous requests", async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      jsonResponse({ value: "ok" }),
-    );
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ value: "ok" }));
     const client = createClient({ fetcher });
 
     await client.request("/overview", resultSchema);
@@ -95,18 +89,18 @@ describe("ManagementApiClient", () => {
   });
 
   it("supports empty successful responses", async () => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(new Response(null, { status: 204 }));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response(null, { status: 204 }));
     const client = createClient({ fetcher });
 
     await expect(client.requestVoid("/reset", { method: "DELETE" })).resolves.toBeUndefined();
   });
 
   it("downloads authenticated non-JSON responses as blobs", async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response("trace contents", { headers: { "content-type": "text/plain" } }),
-    );
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        new Response("trace contents", { headers: { "content-type": "text/plain" } }),
+      );
     const client = createClient({
       fetcher,
       session: { type: "basic", authorization: "Basic encoded" },
@@ -127,25 +121,22 @@ describe("ManagementApiClient", () => {
     [409, "conflict", false],
     [412, "validation", false],
     [503, "server", true],
-  ] as const)(
-    "normalizes HTTP %s as %s",
-    async (status, kind, retryable) => {
-      const fetcher = vi
-        .fn<typeof fetch>()
-        .mockResolvedValue(jsonResponse({ error: "request_failed", reason: "Denied" }, status));
-      const client = createClient({ fetcher });
+  ] as const)("normalizes HTTP %s as %s", async (status, kind, retryable) => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ error: "request_failed", reason: "Denied" }, status));
+    const client = createClient({ fetcher });
 
-      const rejection = client.request("/overview", resultSchema);
+    const rejection = client.request("/overview", resultSchema);
 
-      await expect(rejection).rejects.toMatchObject({
-        name: "ApiError",
-        kind,
-        status,
-        retryable,
-        message: "Denied",
-      });
-    },
-  );
+    await expect(rejection).rejects.toMatchObject({
+      name: "ApiError",
+      kind,
+      status,
+      retryable,
+      message: "Denied",
+    });
+  });
 
   it("ends the local session exactly once on 401", async () => {
     const onUnauthorized = vi.fn();
@@ -154,16 +145,12 @@ describe("ManagementApiClient", () => {
       .mockResolvedValue(jsonResponse({ error: "not_authorised" }, 401));
     const client = createClient({ fetcher, onUnauthorized });
 
-    await expect(client.request("/whoami", resultSchema)).rejects.toBeInstanceOf(
-      ApiError,
-    );
+    await expect(client.request("/whoami", resultSchema)).rejects.toBeInstanceOf(ApiError);
     expect(onUnauthorized).toHaveBeenCalledOnce();
   });
 
   it("reports incompatible successful responses without retrying", async () => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(jsonResponse({ value: 42 }));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ value: 42 }));
     const client = createClient({ fetcher });
 
     await expect(client.request("/overview", resultSchema)).rejects.toMatchObject({
@@ -172,10 +159,22 @@ describe("ManagementApiClient", () => {
     });
   });
 
-  it("normalizes network failures as retryable", async () => {
+  it("reports malformed successful JSON as a non-retryable compatibility error", async () => {
     const fetcher = vi
       .fn<typeof fetch>()
-      .mockRejectedValue(new TypeError("Connection refused"));
+      .mockResolvedValue(new Response("<html>proxy error</html>", { status: 200 }));
+    const client = createClient({ fetcher });
+
+    await expect(client.request("/overview", resultSchema)).rejects.toMatchObject({
+      kind: "compatibility",
+      status: 200,
+      retryable: false,
+      message: "RabbitMQ returned invalid JSON",
+    });
+  });
+
+  it("normalizes network failures as retryable", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockRejectedValue(new TypeError("Connection refused"));
     const client = createClient({ fetcher });
 
     await expect(client.request("/overview", resultSchema)).rejects.toMatchObject({
@@ -218,12 +217,9 @@ describe("ManagementApiClient", () => {
 
   it("redacts the active authorization value from server diagnostics", async () => {
     const authorization = "Basic secret-value";
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      jsonResponse(
-        { reason: `Rejected header ${authorization}` },
-        400,
-      ),
-    );
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ reason: `Rejected header ${authorization}` }, 400));
     const client = createClient({
       fetcher,
       session: { type: "basic", authorization },

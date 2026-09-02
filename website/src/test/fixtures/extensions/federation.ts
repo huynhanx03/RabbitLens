@@ -25,5 +25,5 @@ export const mockFederationLinks: FederationLinkResponse[] = [
     uri: "amqps://admin:secret@remote:5671",
     timestamp: "2024-03-20 10:05:00",
     error: "connection refused",
-  }
+  },
 ];

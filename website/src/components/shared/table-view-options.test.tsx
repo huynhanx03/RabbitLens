@@ -22,8 +22,6 @@ describe("TableViewOptions", () => {
     await user.click(screen.getByRole("button", { name: "Toggle columns" }));
     await user.click(screen.getByRole("checkbox", { name: "State" }));
     expect(onChange).toHaveBeenCalledWith(["name"]);
-    expect(
-      screen.queryByRole("button", { name: "Density" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Density" })).not.toBeInTheDocument();
   });
 });

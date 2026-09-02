@@ -5,7 +5,13 @@ import { FilterBar } from "@/components/shared/filter-bar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { UserForm } from "./user-form";
 import { useCreateUserMutation } from "./user-mutations";
 import { MutationErrorAlert } from "@/components/shared/mutation-error-alert";
@@ -26,22 +32,24 @@ export function UserListPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const createMutation = useCreateUserMutation(context.apiClient);
 
-  const canManageUsers = usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !== "deny";
+  const canManageUsers =
+    usePermissionDecision({ requiredAnyTag: ["administrator"] }).kind !== "deny";
 
   if (isPending) return <Skeleton className="h-[400px] w-full" />;
-  if (isError) return <AsyncState isError error={error} onRetry={() => undefined}><span /></AsyncState>;
+  if (isError)
+    return (
+      <AsyncState isError error={error} onRetry={() => undefined}>
+        <span />
+      </AsyncState>
+    );
 
-  const filteredUsers = users.filter((u) => 
-    u.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filteredUsers = users.filter((u) => u.name.toLowerCase().includes(filter.toLowerCase()));
 
   const columns: ColumnDef<UserResponse>[] = [
     {
       accessorKey: "name",
       header: t("users.name"),
-      cell: ({ row }) => (
-        <span className="font-medium text-primary">{row.original.name}</span>
-      ),
+      cell: ({ row }) => <span className="font-medium text-primary">{row.original.name}</span>,
     },
     {
       accessorKey: "tags",
@@ -53,7 +61,9 @@ export function UserListPage() {
         return (
           <div className="flex gap-1 flex-wrap">
             {tagsArray.map((tag: string) => (
-              <Badge key={tag} variant="secondary">{tag.trim()}</Badge>
+              <Badge key={tag} variant="secondary">
+                {tag.trim()}
+              </Badge>
             ))}
           </div>
         );
@@ -66,35 +76,31 @@ export function UserListPage() {
       <PageToolbar
         ariaLabel={t("users.filter")}
         primary={
-          <FilterBar
-            name={filter}
-            useRegex={false}
-            onSubmit={(name, _) => setFilter(name)}
-          />
+          <FilterBar name={filter} useRegex={false} onSubmit={(name, _) => setFilter(name)} />
         }
         secondary={
           canManageUsers ? (
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button>{t("users.addUser")}</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{t("users.createTitle")}</DialogTitle>
-              </DialogHeader>
-              <MutationErrorAlert error={createMutation.error} />
-              <UserForm 
-                onSubmit={(data) => {
-                  createMutation.mutate(
-                    { name: data.name, body: { password: data.password, tags: data.tags } },
-                    { onSuccess: () => setIsCreateOpen(false) }
-                  );
-                }} 
-                isLoading={createMutation.isPending}
-                onCancel={() => setIsCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button>{t("users.addUser")}</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>{t("users.createTitle")}</DialogTitle>
+                </DialogHeader>
+                <MutationErrorAlert error={createMutation.error} />
+                <UserForm
+                  onSubmit={(data) => {
+                    createMutation.mutate(
+                      { name: data.name, body: { password: data.password, tags: data.tags } },
+                      { onSuccess: () => setIsCreateOpen(false) },
+                    );
+                  }}
+                  isLoading={createMutation.isPending}
+                  onCancel={() => setIsCreateOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           ) : null
         }
       />

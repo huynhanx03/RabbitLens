@@ -12,11 +12,7 @@ export async function getExchanges(
   signal?: AbortSignal,
 ) {
   const query = buildListQuery(search);
-  return client.request(
-    withQuery("/exchanges", query),
-    paginatedExchangesSchema,
-    { signal },
-  );
+  return client.request(withQuery("/exchanges", query), paginatedExchangesSchema, { signal });
 }
 
 export async function getExchange(

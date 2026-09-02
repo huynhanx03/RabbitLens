@@ -72,9 +72,7 @@ export function AppErrorBoundary({ error, reset }: AppErrorBoundaryProps) {
     );
   }
 
-  const messageKey = apiError
-    ? getErrorTranslationKey(apiError.kind)
-    : "errors.unexpected";
+  const messageKey = apiError ? getErrorTranslationKey(apiError.kind) : "errors.unexpected";
 
   return (
     <div className="p-8">

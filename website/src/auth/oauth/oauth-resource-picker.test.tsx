@@ -15,11 +15,25 @@ describe("OAuthResourcePicker", () => {
       basic: false,
       oauth: {
         resources: [
-          { id: "idp1", label: "IdP 1", authority: "https://auth1", clientId: "client1", scopes: ["openid"], redirectUri: "https://cb" },
-          { id: "idp2", label: "IdP 2", authority: "https://auth2", clientId: "client2", scopes: ["openid"], redirectUri: "https://cb" },
-        ]
-      }
-    }
+          {
+            id: "idp1",
+            label: "IdP 1",
+            authority: "https://auth1",
+            clientId: "client1",
+            scopes: ["openid"],
+            redirectUri: "https://cb",
+          },
+          {
+            id: "idp2",
+            label: "IdP 2",
+            authority: "https://auth2",
+            clientId: "client2",
+            scopes: ["openid"],
+            redirectUri: "https://cb",
+          },
+        ],
+      },
+    },
   };
 
   it("renders buttons for each resource", () => {
@@ -29,7 +43,7 @@ describe("OAuthResourcePicker", () => {
         <OAuthContext.Provider value={manager}>
           <OAuthResourcePicker />
         </OAuthContext.Provider>
-      </RuntimeConfigContext.Provider>
+      </RuntimeConfigContext.Provider>,
     );
 
     expect(screen.getByText("Log in with IdP 1")).toBeInTheDocument();
@@ -37,13 +51,15 @@ describe("OAuthResourcePicker", () => {
   });
 
   it("disables buttons and calls login on click", async () => {
-    const manager = { login: vi.fn().mockReturnValue(new Promise(() => {})) } as unknown as OAuthManager; // pending promise
+    const manager = {
+      login: vi.fn().mockReturnValue(new Promise(() => {})),
+    } as unknown as OAuthManager; // pending promise
     render(
       <RuntimeConfigContext.Provider value={config}>
         <OAuthContext.Provider value={manager}>
           <OAuthResourcePicker />
         </OAuthContext.Provider>
-      </RuntimeConfigContext.Provider>
+      </RuntimeConfigContext.Provider>,
     );
 
     const btn = screen.getByText("Log in with IdP 1");

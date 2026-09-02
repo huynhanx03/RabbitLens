@@ -5,7 +5,12 @@ import { NodesPage } from "./nodes-page";
 import { server } from "@/test/server";
 import { http, HttpResponse } from "msw";
 import { ManagementApiClient } from "@/api/management-api-client";
-import { createRootRouteWithContext, createRouter, createMemoryHistory, RouterProvider } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  createRouter,
+  createMemoryHistory,
+  RouterProvider,
+} from "@tanstack/react-router";
 
 describe("NodesPage", () => {
   const setup = () => {
@@ -46,7 +51,7 @@ describe("NodesPage", () => {
             uptime: 0,
           },
         ]);
-      })
+      }),
     );
 
     setup();
@@ -54,7 +59,7 @@ describe("NodesPage", () => {
     // Wait for the table to load
     expect(await screen.findByText("rabbit@node1", {}, { timeout: 3000 })).toBeInTheDocument();
     expect(screen.getByText("rabbit@node2")).toBeInTheDocument();
-    
+
     // Verify types
     expect(screen.getByText("disc")).toBeInTheDocument();
     expect(screen.getByText("ram")).toBeInTheDocument();

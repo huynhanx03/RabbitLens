@@ -31,7 +31,13 @@ declare module "@tanstack/react-router" {
   }
 }
 
-function InnerApp({ queryClient, apiClient }: { queryClient: QueryClient, apiClient: ManagementApiClient }) {
+function InnerApp({
+  queryClient,
+  apiClient,
+}: {
+  queryClient: QueryClient;
+  apiClient: ManagementApiClient;
+}) {
   const auth = useAuth();
   const config = useRuntimeConfig();
 
@@ -55,29 +61,35 @@ export function App() {
   const translateRef = useRef(t);
   translateRef.current = t;
 
-  const [queryClient] = useState(() => new QueryClient({
-    mutationCache: new MutationCache({
-      onSuccess: () => toast.success(translateRef.current("common.changesSaved")),
-    }),
-    defaultOptions: {
-      queries: {
-        networkMode: "offlineFirst",
-        retry: shouldRetry,
-        retryDelay: getRetryDelay,
-      }
-    }
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        mutationCache: new MutationCache({
+          onSuccess: () => toast.success(translateRef.current("common.changesSaved")),
+        }),
+        defaultOptions: {
+          queries: {
+            networkMode: "offlineFirst",
+            retry: shouldRetry,
+            retryDelay: getRetryDelay,
+          },
+        },
+      }),
+  );
 
-  const [apiClient] = useState(() => new ManagementApiClient({
-    baseUrl: config.apiBaseUrl,
-    getSession: () => authStore.getSnapshot().session,
-    timeoutMs: PRODUCT_DEFAULTS.requests.timeoutMs,
-    fetcher: fetch,
-    onUnauthorized: () => {
-      authStore.clear();
-      queryClient.clear();
-    }
-  }));
+  const [apiClient] = useState(
+    () =>
+      new ManagementApiClient({
+        baseUrl: config.apiBaseUrl,
+        getSession: () => authStore.getSnapshot().session,
+        timeoutMs: PRODUCT_DEFAULTS.requests.timeoutMs,
+        fetcher: fetch,
+        onUnauthorized: () => {
+          authStore.clear();
+          queryClient.clear();
+        },
+      }),
+  );
 
   const handleLogout = useCallback(() => {
     queryClient.clear();

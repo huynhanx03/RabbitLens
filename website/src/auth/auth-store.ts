@@ -1,8 +1,4 @@
-import type {
-  AuthenticatedUser,
-  AuthSession,
-  AuthState,
-} from "./auth-session";
+import type { AuthenticatedUser, AuthSession, AuthState } from "./auth-session";
 
 export type AuthStore = {
   getSnapshot: () => AuthState;

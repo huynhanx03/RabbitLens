@@ -70,9 +70,7 @@ export function PolicyForm({
 
   const submit = (values: FormValues) => {
     try {
-      const definition = policyBodySchema.shape.definition.parse(
-        JSON.parse(values.definition),
-      );
+      const definition = policyBodySchema.shape.definition.parse(JSON.parse(values.definition));
       setDefinitionError(false);
       onSubmit(values.vhost, values.name, {
         pattern: values.pattern,
@@ -123,11 +121,7 @@ export function PolicyForm({
 
       <div className="space-y-2">
         <Label htmlFor="policy-name">{t("policies.name")}</Label>
-        <Input
-          id="policy-name"
-          {...register("name")}
-          disabled={isLoading || isUpdate}
-        />
+        <Input id="policy-name" {...register("name")} disabled={isLoading || isUpdate} />
         {errors.name ? (
           <p role="alert" className="text-sm text-destructive">
             {t("policies.nameRequired")}
@@ -137,20 +131,14 @@ export function PolicyForm({
 
       <div className="space-y-2">
         <Label htmlFor="policy-pattern">{t("policies.pattern")}</Label>
-        <Input
-          id="policy-pattern"
-          {...register("pattern")}
-          disabled={isLoading}
-        />
+        <Input id="policy-pattern" {...register("pattern")} disabled={isLoading} />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="policy-apply-to">{t("policies.applyTo")}</Label>
         <Select
           value={watch("apply-to")}
-          onValueChange={(value) =>
-            setValue("apply-to", value as FormValues["apply-to"])
-          }
+          onValueChange={(value) => setValue("apply-to", value as FormValues["apply-to"])}
           disabled={isLoading}
         >
           <SelectTrigger id="policy-apply-to" className="w-full">
@@ -175,9 +163,7 @@ export function PolicyForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="policy-definition">
-          {t("policies.definitionJson")}
-        </Label>
+        <Label htmlFor="policy-definition">{t("policies.definitionJson")}</Label>
         <Textarea
           id="policy-definition"
           rows={6}
@@ -196,9 +182,7 @@ export function PolicyForm({
       <FormActions
         isPending={isLoading || vhosts.isPending}
         onCancel={onCancel}
-        submitLabel={
-          isUpdate ? t("policies.updatePolicy") : t("policies.addPolicy")
-        }
+        submitLabel={isUpdate ? t("policies.updatePolicy") : t("policies.addPolicy")}
         pendingLabel={t("common.loading")}
       />
     </form>

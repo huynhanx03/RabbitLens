@@ -28,9 +28,6 @@ describe("Top API", () => {
   it("requests one encoded process", async () => {
     vi.mocked(client.request).mockResolvedValue({});
     await getProcess(client, "<0.123.0>");
-    expect(client.request).toHaveBeenCalledWith(
-      "/process/%3C0.123.0%3E",
-      expect.any(Object),
-    );
+    expect(client.request).toHaveBeenCalledWith("/process/%3C0.123.0%3E", expect.any(Object));
   });
 });

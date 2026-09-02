@@ -102,6 +102,10 @@ export const test = base.extend<{
         await route.fulfill({ json: [{ name: "rabbit@localhost", type: "disc", running: true }] });
       });
 
+      await page.route("**/api/cluster-name", async (route) => {
+        await route.fulfill({ json: { name: "rabbit@localhost" } });
+      });
+
       // Flaky network (e.g. abort 1/3 of requests)
       if (options.networkFlaky) {
         let reqCount = 0;

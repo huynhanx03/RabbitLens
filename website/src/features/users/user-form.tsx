@@ -15,7 +15,13 @@ export interface UserFormProps {
   onCancel?: () => void;
 }
 
-export function UserForm({ initialValues, onSubmit, isLoading, isUpdate, onCancel }: UserFormProps) {
+export function UserForm({
+  initialValues,
+  onSubmit,
+  isLoading,
+  isUpdate,
+  onCancel,
+}: UserFormProps) {
   const { t } = useTranslation();
 
   const form = useForm<UserBody & { name: string }>({
@@ -27,7 +33,11 @@ export function UserForm({ initialValues, onSubmit, isLoading, isUpdate, onCance
     },
   });
 
-  const { register, handleSubmit, formState: { errors } } = form;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = form;
 
   return (
     <form
@@ -37,10 +47,10 @@ export function UserForm({ initialValues, onSubmit, isLoading, isUpdate, onCance
     >
       <div className="space-y-2">
         <Label htmlFor="name">{t("users.name")}</Label>
-        <Input 
-          id="name" 
-          {...register("name")} 
-          disabled={isUpdate || isLoading} 
+        <Input
+          id="name"
+          {...register("name")}
+          disabled={isUpdate || isLoading}
           placeholder={t("users.namePlaceholder")}
         />
         {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
@@ -50,27 +60,30 @@ export function UserForm({ initialValues, onSubmit, isLoading, isUpdate, onCance
         <Label htmlFor="password">
           {isUpdate ? t("users.passwordKeepExisting") : t("users.password")}
         </Label>
-        <Input 
-          id="password" 
+        <Input
+          id="password"
           type="password"
           autoComplete="new-password"
-          {...register("password")} 
-          disabled={isLoading} 
+          {...register("password")}
+          disabled={isLoading}
           placeholder={t("users.password")}
         />
-        {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+        {errors.password && (
+          <p className="text-sm text-destructive">{errors.password.message as string}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="tags">{t("vhosts.tags")}</Label>
-        <Input 
-          id="tags" 
-          {...register("tags")} 
-          disabled={isLoading} 
+        <Input
+          id="tags"
+          {...register("tags")}
+          disabled={isLoading}
           placeholder={t("users.tagsHelp")}
         />
         <p className="text-xs text-muted-foreground">
-          {t("users.supportedTags")} <code>administrator</code>, <code>monitoring</code>, <code>policymaker</code>, <code>management</code>, <code>impersonator</code>
+          {t("users.supportedTags")} <code>administrator</code>, <code>monitoring</code>,{" "}
+          <code>policymaker</code>, <code>management</code>, <code>impersonator</code>
         </p>
       </div>
 
