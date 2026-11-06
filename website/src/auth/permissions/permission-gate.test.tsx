@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { RouterProvider } from "@tanstack/react-router";
 import { PermissionGate } from "./permission-gate";
 import { AuthContext } from "../auth-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RuntimeConfigContext } from "@/config/runtime-config-context";
+import { createTestRouter } from "@/test/router";
 import type { AuthenticatedUser } from "../auth-session";
 import type { RuntimeConfig } from "@/config/runtime-config-schema";
 
@@ -20,7 +22,7 @@ describe("PermissionGate", () => {
   };
 
   function renderWithProviders(ui: React.ReactNode, user: AuthenticatedUser | null) {
-    return render(
+    const router = createTestRouter(() => (
       <RuntimeConfigContext.Provider value={config}>
         <AuthContext.Provider
           value={{
@@ -37,8 +39,10 @@ describe("PermissionGate", () => {
         >
           <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
         </AuthContext.Provider>
-      </RuntimeConfigContext.Provider>,
-    );
+      </RuntimeConfigContext.Provider>
+    ));
+
+    return render(<RouterProvider router={router} />);
   }
 
   it("renders fallback if access denied", () => {
