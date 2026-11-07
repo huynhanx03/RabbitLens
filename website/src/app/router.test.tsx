@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { waitFor } from "@testing-library/react";
 import { renderWithProviders } from "@/test/render";
 import { RouterProvider, createRouter, createMemoryHistory } from "@tanstack/react-router";
 import { routeTree } from "./route-tree.gen";
@@ -47,9 +48,9 @@ describe("Router Guards", () => {
 
     renderWithProviders(<RouterProvider router={router} />);
 
-    // We wait for the router to finish resolving and redirecting
-    // @ts-expect-error isReady is not in the type definition but works at runtime for test resolution
-    await router.isReady;
+    await waitFor(() => {
+      expect(router.state.resolvedLocation?.pathname).toBe("/login");
+    });
     expect(router.state.location.pathname).toBe("/login");
     // @ts-expect-error The search object is typed generically here
     expect(router.state.location.search.redirect).toBe("/nodes");
@@ -80,8 +81,9 @@ describe("Router Guards", () => {
 
     renderWithProviders(<RouterProvider router={router} />);
 
-    // @ts-expect-error isReady is not in the type definition but works at runtime
-    await router.isReady;
+    await waitFor(() => {
+      expect(router.state.resolvedLocation?.pathname).toBe("/");
+    });
     expect(router.state.location.pathname).toBe("/");
   });
 });
