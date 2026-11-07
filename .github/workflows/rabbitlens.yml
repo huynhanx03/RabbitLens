@@ -69,6 +69,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -132,6 +134,9 @@ jobs:
   browser:
     name: Browser
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --user 1001
     timeout-minutes: 30
     needs: validate
 
@@ -152,9 +157,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run end-to-end tests
         run: npm run test:e2e
