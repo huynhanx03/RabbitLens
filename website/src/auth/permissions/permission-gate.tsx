@@ -23,15 +23,10 @@ function hasApiClient(value: unknown): value is { apiClient: ManagementApiClient
 export function usePermissionDecision(policy: ActionPolicy): PermissionDecision {
   const { user } = useAuth();
 
-  // Try to grab apiClient from route context.
-  // In tests without router, this might throw or be undefined, so we default safely.
-  let apiClient: ManagementApiClient | undefined;
-  try {
-    const context: unknown = useRouteContext({ strict: false });
-    apiClient = hasApiClient(context) ? context.apiClient : undefined;
-  } catch {
-    apiClient = undefined;
-  }
+  const context: unknown = useRouteContext({ strict: false });
+  const apiClient: ManagementApiClient | undefined = hasApiClient(context)
+    ? context.apiClient
+    : undefined;
 
   const enabled = !!apiClient && !!policy.requiredFeature;
   const { data: overview } = useQuery({
